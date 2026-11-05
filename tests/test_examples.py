@@ -107,7 +107,16 @@ class ExamplesTest(unittest.TestCase):
         code = code.replace("client = Sync()", f'client = Sync(base_url="{self.base}")')
         (self.dir / "example.py").write_text(code)
         import threading
-        threading.Timer(1.0, lambda: setattr(self.fake, "limit", 1)).start()
+
+        def lift_limit_after_first_refusal():
+            # Wait for the first create (refused with 429 under the fake's lock), not a wall-clock
+            # timer: on a cold CI runner the sample can take over a second to reach its first create.
+            deadline = time.time() + 120
+            while not self.fake.creates and time.time() < deadline:
+                time.sleep(0.01)
+            self.fake.limit = 1
+
+        threading.Thread(target=lift_limit_after_first_refusal, daemon=True).start()
         self.run_in_dir([python, "example.py"])
         keys = {k for k, _ in self.fake.creates}
         self.assertGreater(len(self.fake.creates), 1, "the sample retried after 429")
