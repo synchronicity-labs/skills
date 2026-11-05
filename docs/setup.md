@@ -10,7 +10,7 @@
 - When sync. tools are missing or signed out.
 - To check your account, plan or credits.
 
-Media requests like "lipsync this" go straight to their own skill, which connects you the same way when needed.
+Media requests like "lipsync this" go straight to their own skill, which connects you the same way when needed. If something failed or seems stuck, use [troubleshoot](troubleshoot.md).
 
 ## Try
 

@@ -4,7 +4,7 @@
 
 `batch-lipsync` lip-syncs many videos in one go: one output per row of a CSV, a spreadsheet, a folder, or a list like "this presenter with each of these 40 audio files". It builds a manifest, quotes the whole run, offers a pilot, then runs every row within your plan's limits and collects the outputs into a results table.
 
-With an API key it uses a bundled script, `sync_batch.py`, that uploads each file once, keeps to your plan's concurrency, resumes after an interruption, and downloads every result. On Scale plans and above it can send the rows through the Batch API instead.
+With an API key it uses a bundled script, `sync_batch.py`, that uploads each file once, keeps to your plan's concurrency, resumes after an interruption, and downloads every result. On Scale plans and above, 20 or more rows can go through the Batch API instead, either with the script or straight through the MCP server's batch tools.
 
 ## When to reach for it
 

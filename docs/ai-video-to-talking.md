@@ -38,7 +38,7 @@ Generated clips are often 5 to 10 seconds, which holds about 12 to 25 words. The
 Yes, with the timeline tool. Each line gets its own voice and is placed on the shot where that character speaks. The lines, voices and total cost are agreed before anything is created.
 
 **Can I use my own voice?**
-Yes, record it and pass the audio. The skill can also clone a voice, but only when you ask for it and own the sample.
+Yes, record it and pass the audio. The skill can also clone a voice, but only when you ask for it and own the sample. Cloning saves a voice to your account once; if the response gets lost, the skill checks your voice list before trying again.
 
 ## It's working if
 

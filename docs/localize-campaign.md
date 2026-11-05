@@ -36,6 +36,9 @@ On-screen text, burned-in captions, logos and end cards stay in the source langu
 **What are the files called?**
 `<campaign>_<video>_<lang>.mp4` by default, for example `spring24_hero-30s_de.mp4`. Agree another pattern before the run if you need one.
 
+**Can it run as one batch?**
+On Scale plans and above, 20 or more versions can go in one batch through the MCP server's batch tools. Below that, versions run side by side up to your plan's limit.
+
 **The run was interrupted.**
 Each version has its own saved key and generation ID, so resuming picks up where it stopped without paying twice.
 
