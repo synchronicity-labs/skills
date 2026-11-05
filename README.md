@@ -23,7 +23,15 @@ Add `--skill lipsync` to install one skill, or `--agent claude-code` to pick the
 
 Then run `/mcp`, select `sync` and sign in with your sync. account.
 
-**Cursor and Codex** read the plugin manifests in `.cursor-plugin/` and `.codex-plugin/`.
+**Gemini CLI** extension, with the same skills and MCP server:
+
+```bash
+gemini extensions install https://github.com/synchronicity-labs/skills
+```
+
+Then run `/mcp auth sync` and sign in with your sync. account.
+
+**Cursor and Codex** read the plugin manifests in `.cursor-plugin/` and `.codex-plugin/`. **Kiro** and other clients that read [Agent Plugins](https://agent-plugins.org) use the root `plugin.json` and `mcp.json`.
 
 ### Connect sync.
 
@@ -55,6 +63,8 @@ docs/i18n/<locale>/          translations of every guide (es, fr, pt-BR, de)
 shared/                      reference files copied into the skills that use them
 .claude-plugin/              Claude Code plugin and marketplace manifests
 .codex-plugin/, .cursor-plugin/
+plugin.json, mcp.json        Agent Plugins manifest (Kiro and other clients)
+gemini-extension.json        Gemini CLI extension, with GEMINI.md as its context
 .mcp.json                    the hosted sync. MCP server
 evals/                       `claude plugin eval` suite with MCP mocks
 catalog.json                 generated list of skills that Studio and the docs read
@@ -72,6 +82,13 @@ See [AGENTS.md](AGENTS.md) for the rules. In short:
 4. Run the evals for what you changed: `claude plugin eval . --case '<skill>-*'`. See [evals/README.md](evals/README.md).
 
 When the MCP server's tools change, refresh `evals/mocks/sync/_tools.json` (see `evals/README.md`). The validator then flags any tool name a skill mentions that no longer exists.
+
+## Support, privacy and security
+
+- Support: https://support.sync.so
+- Privacy policy: https://sync.so/privacy
+- Terms of service: https://sync.so/terms
+- Security: report vulnerabilities as described in [SECURITY.md](SECURITY.md).
 
 ## Changelog
 

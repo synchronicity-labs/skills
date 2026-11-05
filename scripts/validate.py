@@ -12,7 +12,8 @@ Checks:
 - Every backticked tool name a skill mentions exists in the hosted server's tool list
   (evals/mocks/sync/_tools.json), apart from the chat-app-only tools listed below.
 - Shared copies are current (scripts/sync_shared.py --check).
-- The plugin manifests parse, use only known top-level keys, and list only skills that exist.
+- The plugin manifests (Claude Code, Codex, Cursor, Agent Plugins and Gemini CLI) parse, use only known
+  top-level keys, list only skills that exist, share one version and point at the same hosted MCP server.
 - No em dashes or en dashes anywhere in the repo's text files.
 - docs/ has a page per skill plus overview.md, each with title, subtitle, description and
   og:description front matter, links only to other pages (name.md) or absolute URLs, and no
@@ -34,6 +35,7 @@ ROOT = Path(__file__).resolve().parents[1]
 LOCALES = ["es", "fr", "pt-BR", "de"]
 DOC_FIELDS = ("title", "subtitle", "description", "og:description")
 NAME_RE = re.compile(r"^[a-z0-9]+(-[a-z0-9]+)*$")
+HOSTED_MCP_URL = "https://mcp.sync.so/mcp"
 # Tools the hosted server shows only to chat apps with file uploads (ChatGPT, Codex app).
 APP_ONLY_TOOLS = {"upload-media"}
 TOOL_LIKE = re.compile(r"`((?:[a-z]+_)?[a-z]+(?:-[a-z]+)+|[a-z]+_[a-z]+(?:-[a-z]+)*)`")
@@ -220,7 +222,7 @@ def main() -> int:
         errors.append(shared.stdout.strip())
 
     for manifest in [".claude-plugin/plugin.json", ".claude-plugin/marketplace.json", ".codex-plugin/plugin.json",
-                     ".cursor-plugin/plugin.json", ".mcp.json"]:
+                     ".cursor-plugin/plugin.json", ".mcp.json", "plugin.json", "mcp.json", "gemini-extension.json"]:
         path = ROOT / manifest
         try:
             data = json.loads(path.read_text())
@@ -240,11 +242,43 @@ def main() -> int:
         ".cursor-plugin/plugin.json": {"name", "displayName", "version", "description", "author", "publisher", "homepage",
                                        "repository", "license", "logo", "keywords", "category", "tags", "skills",
                                        "rules", "agents", "commands", "hooks", "mcpServers", "minClientVersions", "variables"},
+        # Agent Plugins 1.0.0 (https://agent-plugins.org/schemas/1.0.0/), which Kiro and Cursor read.
+        "plugin.json": {"$schema", "name", "version", "description", "author", "homepage", "repository", "license",
+                        "keywords", "extensions"},
+        "mcp.json": {"$schema", "mcpServers"},
+        "gemini-extension.json": {"name", "version", "description", "mcpServers", "contextFileName", "excludeTools",
+                                  "settings", "themes", "migratedTo", "plan"},
     }
     for manifest, keys in known_keys.items():
         extra = set(json.loads((ROOT / manifest).read_text())) - keys
         if extra:
             errors.append(f"{manifest}: unknown top-level keys {sorted(extra)}")
+
+    # Every client installs the same plugin: one version, one hosted server.
+    versions = {m: json.loads((ROOT / m).read_text()).get("version") for m in [
+        ".claude-plugin/plugin.json", ".codex-plugin/plugin.json", ".cursor-plugin/plugin.json", "plugin.json",
+        "gemini-extension.json"]}
+    if len(set(versions.values())) != 1:
+        errors.append(f"manifest versions differ: {versions}")
+    hosted = {
+        ".mcp.json": ("mcpServers", "sync", "url"),
+        ".cursor-plugin/plugin.json": ("mcpServers", "sync", "url"),
+        "mcp.json": ("mcpServers", "sync", "url"),
+        "gemini-extension.json": ("mcpServers", "sync", "httpUrl"),
+    }
+    for manifest, keys in hosted.items():
+        value = json.loads((ROOT / manifest).read_text())
+        for key in keys:
+            value = value.get(key, {}) if isinstance(value, dict) else {}
+        if value != HOSTED_MCP_URL:
+            errors.append(f"{manifest}: {'.'.join(keys)} must be {HOSTED_MCP_URL}")
+    agent_mcp = json.loads((ROOT / "mcp.json").read_text()).get("mcpServers", {})
+    for name, server in agent_mcp.items():
+        # Agent Plugins makes an entry without one of these transports invalid (.mcp.json's "http" isn't one).
+        if server.get("type") not in {"stdio", "streamable-http", "sse"}:
+            errors.append(f"mcp.json: server {name} needs type stdio, streamable-http or sse")
+    if not (ROOT / json.loads((ROOT / "gemini-extension.json").read_text()).get("contextFileName", "GEMINI.md")).exists():
+        errors.append("gemini-extension.json: contextFileName points to a missing file")
 
     for path in ROOT.rglob("*"):
         if not path.is_file() or ".git" in path.parts or "results" in path.parts:
