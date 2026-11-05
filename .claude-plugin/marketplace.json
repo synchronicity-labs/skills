@@ -1,0 +1,18 @@
+{
+  "name": "sync",
+  "owner": {
+    "name": "sync. labs",
+    "url": "https://sync.so"
+  },
+  "metadata": {
+    "description": "Official sync. labs skills and MCP server for lipsync, dubbing and talking video."
+  },
+  "plugins": [
+    {
+      "name": "sync",
+      "source": "./",
+      "description": "Lipsync videos, make photos and AI characters talk, translate and dub videos, fix spoken words, localize campaigns, run batch lipsync, and build sync. into apps. Uses the hosted sync. MCP server.",
+      "category": "media"
+    }
+  ]
+}

@@ -1,0 +1,1 @@
+{"account":{"email":"dana@acme.test"},"organization":{"id":"org_1","name":"Acme Studio"},"plan":{"name":"creator"},"generationLimits":{"concurrency":3,"maxOutputDurationSeconds":300},"capabilities":{"editDialogue":true,"translation":true}}

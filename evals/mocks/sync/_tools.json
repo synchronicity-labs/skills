@@ -1,0 +1,6722 @@
+{
+ "tools": [
+  {
+   "name": "get-account-context",
+   "title": "read connected sync account",
+   "description": "Read the authenticated account and selected organization for account display and personal asset scope, its plan, generation limits (concurrency and longest output), team seats and voice-clone limits. API keys have no signed-in account. This does not grant permissions or change the connected organization.",
+   "inputSchema": {
+    "type": "object",
+    "properties": {},
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "additionalProperties": false
+   },
+   "outputSchema": {
+    "type": "object",
+    "anyOf": [
+     {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "properties": {
+       "account": {
+        "anyOf": [
+         {
+          "type": "object",
+          "properties": {
+           "id": {
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+           },
+           "email": {
+            "type": [
+             "string",
+             "null"
+            ]
+           },
+           "name": {
+            "type": [
+             "string",
+             "null"
+            ]
+           }
+          },
+          "required": [
+           "id",
+           "email",
+           "name"
+          ],
+          "additionalProperties": false
+         },
+         {
+          "type": "null"
+         }
+        ]
+       },
+       "limits": {
+        "type": "object",
+        "properties": {
+         "seats": {
+          "type": "number",
+          "minimum": 0
+         },
+         "voiceClone": {
+          "type": "number",
+          "minimum": 0
+         }
+        },
+        "required": [
+         "seats",
+         "voiceClone"
+        ],
+        "additionalProperties": false
+       },
+       "organization": {
+        "type": "object",
+        "properties": {
+         "id": {
+          "type": "string",
+          "format": "uuid",
+          "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+         },
+         "name": {
+          "type": [
+           "string",
+           "null"
+          ]
+         },
+         "role": {
+          "type": "string"
+         }
+        },
+        "required": [
+         "id",
+         "name",
+         "role"
+        ],
+        "additionalProperties": false
+       },
+       "plan": {
+        "type": "object",
+        "properties": {
+         "id": {
+          "type": "string"
+         },
+         "name": {
+          "type": "string"
+         }
+        },
+        "required": [
+         "id",
+         "name"
+        ],
+        "additionalProperties": false
+       },
+       "generationLimits": {
+        "description": "Generations that can run at once and the longest output one may produce, in seconds. Plan a job within these before creating it.",
+        "type": "object",
+        "properties": {
+         "concurrency": {
+          "type": "number",
+          "minimum": 0
+         },
+         "maxOutputDurationSeconds": {
+          "type": "number",
+          "minimum": 0
+         }
+        },
+        "required": [
+         "concurrency",
+         "maxOutputDurationSeconds"
+        ],
+        "additionalProperties": false
+       },
+       "capabilities": {
+        "type": "object",
+        "properties": {
+         "projectRenaming": {
+          "type": "boolean",
+          "const": true
+         },
+         "chatgptAnalytics": {
+          "type": "boolean",
+          "const": true
+         },
+         "studioDraftSync": {
+          "type": "boolean",
+          "const": true
+         },
+         "studioViewSync": {
+          "type": "boolean",
+          "const": true
+         },
+         "audioTrimming": {
+          "type": "boolean",
+          "const": true
+         }
+        },
+        "required": [
+         "projectRenaming"
+        ],
+        "additionalProperties": false
+       }
+      },
+      "required": [
+       "account",
+       "organization",
+       "capabilities"
+      ],
+      "additionalProperties": false
+     },
+     {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "properties": {
+       "error": {
+        "type": "object",
+        "properties": {
+         "message": {
+          "type": "string"
+         },
+         "status": {
+          "type": "integer",
+          "minimum": -9007199254740991,
+          "maximum": 9007199254740991
+         },
+         "code": {
+          "type": "string"
+         },
+         "retryable": {
+          "type": "boolean"
+         },
+         "retryAfterMs": {
+          "type": "number"
+         },
+         "generationId": {
+          "type": "string"
+         },
+         "importJobId": {
+          "type": "string",
+          "format": "uuid",
+          "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+         },
+         "importStatus": {
+          "type": "string",
+          "enum": [
+           "queued",
+           "downloading",
+           "processing",
+           "completed",
+           "failed"
+          ]
+         },
+         "progress": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100
+         }
+        },
+        "required": [
+         "message"
+        ],
+        "additionalProperties": false
+       }
+      },
+      "required": [
+       "error"
+      ],
+      "additionalProperties": false
+     }
+    ]
+   },
+   "annotations": {
+    "readOnlyHint": true,
+    "destructiveHint": false,
+    "idempotentHint": true,
+    "openWorldHint": false
+   },
+   "_meta": {
+    "securitySchemes": [
+     {
+      "type": "oauth2",
+      "scopes": []
+     }
+    ]
+   }
+  },
+  {
+   "name": "get-account-usage",
+   "title": "read sync usage and balance",
+   "description": "Read the connected organization’s available credits, free allowance, or complete billed usage for the current period. Does not purchase credits, change plans, or start generation.",
+   "inputSchema": {
+    "type": "object",
+    "properties": {},
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "additionalProperties": false
+   },
+   "outputSchema": {
+    "type": "object",
+    "anyOf": [
+     {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "properties": {
+       "plan": {
+        "type": [
+         "string",
+         "null"
+        ]
+       },
+       "canManageBilling": {
+        "type": "boolean"
+       },
+       "credits": {
+        "anyOf": [
+         {
+          "anyOf": [
+           {
+            "type": "object",
+            "properties": {
+             "balance": {
+              "type": "number"
+             },
+             "available": {
+              "type": "number"
+             },
+             "inFlight": {
+              "type": "number"
+             }
+            },
+            "required": [
+             "balance",
+             "available",
+             "inFlight"
+            ],
+            "additionalProperties": false
+           },
+           {
+            "type": "null"
+           }
+          ]
+         },
+         {
+          "type": "null"
+         }
+        ]
+       },
+       "freeMonthlyLimits": {
+        "anyOf": [
+         {
+          "type": "object",
+          "properties": {
+           "generations": {
+            "type": "object",
+            "properties": {
+             "used": {
+              "type": "number",
+              "minimum": 0
+             },
+             "max": {
+              "type": "number",
+              "minimum": 0
+             }
+            },
+            "required": [
+             "used",
+             "max"
+            ],
+            "additionalProperties": false
+           },
+           "tts": {
+            "type": "object",
+            "properties": {
+             "used": {
+              "type": "number",
+              "minimum": 0
+             },
+             "max": {
+              "type": "number",
+              "minimum": 0
+             }
+            },
+            "required": [
+             "used",
+             "max"
+            ],
+            "additionalProperties": false
+           },
+           "monthlyResetDate": {
+            "type": "string",
+            "format": "date-time",
+            "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$"
+           }
+          },
+          "required": [
+           "generations",
+           "tts",
+           "monthlyResetDate"
+          ],
+          "additionalProperties": false
+         },
+         {
+          "type": "null"
+         }
+        ]
+       },
+       "usage": {
+        "anyOf": [
+         {
+          "type": "object",
+          "properties": {
+           "totalCostCents": {
+            "type": "number"
+           },
+           "totalFrames": {
+            "type": "number",
+            "minimum": 0
+           },
+           "totalTtsSeconds": {
+            "type": "number",
+            "minimum": 0
+           }
+          },
+          "required": [
+           "totalCostCents",
+           "totalFrames",
+           "totalTtsSeconds"
+          ],
+          "additionalProperties": false
+         },
+         {
+          "type": "null"
+         }
+        ]
+       }
+      },
+      "required": [
+       "plan",
+       "canManageBilling",
+       "credits",
+       "freeMonthlyLimits",
+       "usage"
+      ],
+      "additionalProperties": false
+     },
+     {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "properties": {
+       "error": {
+        "type": "object",
+        "properties": {
+         "message": {
+          "type": "string"
+         },
+         "status": {
+          "type": "integer",
+          "minimum": -9007199254740991,
+          "maximum": 9007199254740991
+         },
+         "code": {
+          "type": "string"
+         },
+         "retryable": {
+          "type": "boolean"
+         },
+         "retryAfterMs": {
+          "type": "number"
+         },
+         "generationId": {
+          "type": "string"
+         },
+         "importJobId": {
+          "type": "string",
+          "format": "uuid",
+          "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+         },
+         "importStatus": {
+          "type": "string",
+          "enum": [
+           "queued",
+           "downloading",
+           "processing",
+           "completed",
+           "failed"
+          ]
+         },
+         "progress": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100
+         }
+        },
+        "required": [
+         "message"
+        ],
+        "additionalProperties": false
+       }
+      },
+      "required": [
+       "error"
+      ],
+      "additionalProperties": false
+     }
+    ]
+   },
+   "annotations": {
+    "readOnlyHint": true,
+    "destructiveHint": false,
+    "idempotentHint": true,
+    "openWorldHint": false
+   },
+   "_meta": {
+    "securitySchemes": [
+     {
+      "type": "oauth2",
+      "scopes": []
+     }
+    ]
+   }
+  },
+  {
+   "name": "rename-project",
+   "title": "rename a sync project",
+   "description": "Change only the name of an accessible Sync project in the connected organization. Does not change visibility, ownership, media, or generations. Requires an explicit user request. When supplying projectId, projectIntent=explicit is required: the user must explicitly ask to work in that project, select it in the interface, or this must be the project just created for this request. A matching workflow/name or an already-open editor is never permission to modify it. Default new work to a new project.",
+   "inputSchema": {
+    "type": "object",
+    "properties": {
+     "projectId": {
+      "type": "string",
+      "format": "uuid",
+      "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+     },
+     "name": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 255
+     },
+     "projectIntent": {
+      "description": "Required with projectId. Set only for an explicit user project selection/update, or the new project just created for this request. Never infer intent from a matching project name, workflow name or active editor.",
+      "type": "string",
+      "const": "explicit"
+     }
+    },
+    "required": [
+     "projectId",
+     "name"
+    ],
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "additionalProperties": false
+   },
+   "outputSchema": {
+    "type": "object",
+    "anyOf": [
+     {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "properties": {
+       "id": {
+        "type": "string",
+        "format": "uuid",
+        "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+       },
+       "name": {
+        "type": "string"
+       }
+      },
+      "required": [
+       "id",
+       "name"
+      ],
+      "additionalProperties": false
+     },
+     {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "properties": {
+       "error": {
+        "type": "object",
+        "properties": {
+         "message": {
+          "type": "string"
+         },
+         "status": {
+          "type": "integer",
+          "minimum": -9007199254740991,
+          "maximum": 9007199254740991
+         },
+         "code": {
+          "type": "string"
+         },
+         "retryable": {
+          "type": "boolean"
+         },
+         "retryAfterMs": {
+          "type": "number"
+         },
+         "generationId": {
+          "type": "string"
+         },
+         "importJobId": {
+          "type": "string",
+          "format": "uuid",
+          "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+         },
+         "importStatus": {
+          "type": "string",
+          "enum": [
+           "queued",
+           "downloading",
+           "processing",
+           "completed",
+           "failed"
+          ]
+         },
+         "progress": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100
+         }
+        },
+        "required": [
+         "message"
+        ],
+        "additionalProperties": false
+       }
+      },
+      "required": [
+       "error"
+      ],
+      "additionalProperties": false
+     }
+    ]
+   },
+   "annotations": {
+    "readOnlyHint": false,
+    "destructiveHint": false,
+    "idempotentHint": true,
+    "openWorldHint": false
+   },
+   "_meta": {
+    "securitySchemes": [
+     {
+      "type": "oauth2",
+      "scopes": []
+     }
+    ]
+   }
+  },
+  {
+   "name": "get-generation-costs",
+   "title": "view actual generation costs",
+   "description": "Read recorded costs for a past Sync generation, with dubbing and lip sync listed separately. Use for what a generation actually cost, not a preflight estimate. Credit amounts express credit face value, not a card payment. Pending or unavailable components have no known total. Does not generate media or change billing.",
+   "inputSchema": {
+    "type": "object",
+    "properties": {
+     "generationId": {
+      "type": "string",
+      "format": "uuid",
+      "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$",
+      "description": "Existing Sync generation ID returned by generation creation or history tools."
+     }
+    },
+    "required": [
+     "generationId"
+    ],
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "additionalProperties": false
+   },
+   "outputSchema": {
+    "type": "object",
+    "anyOf": [
+     {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "properties": {
+       "generationId": {
+        "type": "string",
+        "format": "uuid",
+        "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+       },
+       "generationStatus": {
+        "type": "string"
+       },
+       "currency": {
+        "type": "string",
+        "const": "USD"
+       },
+       "availability": {
+        "type": "string",
+        "enum": [
+         "complete",
+         "pending",
+         "partial",
+         "unavailable"
+        ]
+       },
+       "totalCostUsd": {
+        "anyOf": [
+         {
+          "type": "string",
+          "pattern": "^\\d+\\.\\d{5}$"
+         },
+         {
+          "type": "null"
+         }
+        ]
+       },
+       "knownSubtotalUsd": {
+        "type": "string",
+        "pattern": "^\\d+\\.\\d{5}$"
+       },
+       "retryAfterSeconds": {
+        "anyOf": [
+         {
+          "type": "integer",
+          "exclusiveMinimum": 0,
+          "maximum": 9007199254740991
+         },
+         {
+          "type": "null"
+         }
+        ]
+       },
+       "components": {
+        "type": "array",
+        "items": {
+         "type": "object",
+         "properties": {
+          "type": {
+           "type": "string",
+           "enum": [
+            "lipsync",
+            "dubbing",
+            "speech_synthesis"
+           ]
+          },
+          "operationId": {
+           "anyOf": [
+            {
+             "type": "string",
+             "format": "uuid",
+             "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+            },
+            {
+             "type": "null"
+            }
+           ]
+          },
+          "status": {
+           "type": "string",
+           "enum": [
+            "recorded",
+            "pending",
+            "unavailable",
+            "not_charged"
+           ]
+          },
+          "amountUsd": {
+           "anyOf": [
+            {
+             "type": "string",
+             "pattern": "^\\d+\\.\\d{5}$"
+            },
+            {
+             "type": "null"
+            }
+           ]
+          },
+          "credits": {
+           "anyOf": [
+            {
+             "type": "string",
+             "pattern": "^\\d+$"
+            },
+            {
+             "type": "null"
+            }
+           ]
+          },
+          "valueBasis": {
+           "anyOf": [
+            {
+             "type": "string",
+             "enum": [
+              "credit_face_value",
+              "metered_usage",
+              "none"
+             ]
+            },
+            {
+             "type": "null"
+            }
+           ]
+          },
+          "quantity": {
+           "anyOf": [
+            {
+             "type": "number",
+             "minimum": 0
+            },
+            {
+             "type": "null"
+            }
+           ]
+          },
+          "unit": {
+           "type": "string",
+           "enum": [
+            "frames",
+            "seconds"
+           ]
+          },
+          "unitRateUsd": {
+           "anyOf": [
+            {
+             "type": "string",
+             "pattern": "^\\d+\\.\\d{5}$"
+            },
+            {
+             "type": "null"
+            }
+           ]
+          },
+          "source": {
+           "anyOf": [
+            {
+             "type": "string",
+             "enum": [
+              "credit_ledger",
+              "recorded_usage",
+              "billing_context"
+             ]
+            },
+            {
+             "type": "null"
+            }
+           ]
+          },
+          "reason": {
+           "type": [
+            "string",
+            "null"
+           ]
+          }
+         },
+         "required": [
+          "type",
+          "operationId",
+          "status",
+          "amountUsd",
+          "credits",
+          "valueBasis",
+          "quantity",
+          "unit",
+          "unitRateUsd",
+          "source",
+          "reason"
+         ],
+         "additionalProperties": false
+        }
+       },
+       "excludedCosts": {
+        "type": "array",
+        "items": {
+         "type": "string"
+        }
+       }
+      },
+      "required": [
+       "generationId",
+       "generationStatus",
+       "currency",
+       "availability",
+       "totalCostUsd",
+       "knownSubtotalUsd",
+       "retryAfterSeconds",
+       "components",
+       "excludedCosts"
+      ],
+      "additionalProperties": false
+     },
+     {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "properties": {
+       "error": {
+        "type": "object",
+        "properties": {
+         "message": {
+          "type": "string"
+         },
+         "status": {
+          "type": "integer",
+          "minimum": -9007199254740991,
+          "maximum": 9007199254740991
+         },
+         "code": {
+          "type": "string"
+         },
+         "retryable": {
+          "type": "boolean"
+         },
+         "retryAfterMs": {
+          "type": "number"
+         },
+         "generationId": {
+          "type": "string"
+         },
+         "importJobId": {
+          "type": "string",
+          "format": "uuid",
+          "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+         },
+         "importStatus": {
+          "type": "string",
+          "enum": [
+           "queued",
+           "downloading",
+           "processing",
+           "completed",
+           "failed"
+          ]
+         },
+         "progress": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100
+         }
+        },
+        "required": [
+         "message"
+        ],
+        "additionalProperties": false
+       }
+      },
+      "required": [
+       "error"
+      ],
+      "additionalProperties": false
+     }
+    ]
+   },
+   "annotations": {
+    "readOnlyHint": true,
+    "destructiveHint": false,
+    "idempotentHint": true,
+    "openWorldHint": false
+   },
+   "_meta": {
+    "securitySchemes": [
+     {
+      "type": "oauth2",
+      "scopes": []
+     }
+    ]
+   }
+  },
+  {
+   "name": "get-playback-metadata",
+   "title": "read video playback metadata",
+   "description": "Read timing, frame rate, dimensions and playback proxy metadata for an accessible Sync asset. Requires a connected user; API keys return unsupported. Missing metadata stays unknown. Does not analyze media, read transcripts, or modify assets.",
+   "inputSchema": {
+    "type": "object",
+    "properties": {
+     "assetId": {
+      "type": "string",
+      "format": "uuid",
+      "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+     }
+    },
+    "required": [
+     "assetId"
+    ],
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "additionalProperties": false
+   },
+   "outputSchema": {
+    "type": "object",
+    "anyOf": [
+     {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "properties": {
+       "supported": {
+        "type": "boolean"
+       },
+       "metadata": {
+        "anyOf": [
+         {
+          "type": "object",
+          "properties": {
+           "assetId": {
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+           },
+           "duration": {
+            "anyOf": [
+             {
+              "type": "number",
+              "minimum": 0
+             },
+             {
+              "type": "null"
+             }
+            ]
+           },
+           "fps": {
+            "anyOf": [
+             {
+              "type": "number",
+              "exclusiveMinimum": 0
+             },
+             {
+              "type": "null"
+             }
+            ]
+           },
+           "frameCount": {
+            "anyOf": [
+             {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+             },
+             {
+              "type": "null"
+             }
+            ]
+           },
+           "width": {
+            "anyOf": [
+             {
+              "type": "integer",
+              "exclusiveMinimum": 0,
+              "maximum": 9007199254740991
+             },
+             {
+              "type": "null"
+             }
+            ]
+           },
+           "height": {
+            "anyOf": [
+             {
+              "type": "integer",
+              "exclusiveMinimum": 0,
+              "maximum": 9007199254740991
+             },
+             {
+              "type": "null"
+             }
+            ]
+           },
+           "codec": {
+            "type": [
+             "string",
+             "null"
+            ]
+           },
+           "format": {
+            "type": [
+             "string",
+             "null"
+            ]
+           },
+           "proxyPath": {
+            "anyOf": [
+             {
+              "type": "string",
+              "format": "uri"
+             },
+             {
+              "type": "null"
+             }
+            ]
+           },
+           "proxyRequested": {
+            "type": "boolean"
+           },
+           "thumbnailsManifestUrl": {
+            "anyOf": [
+             {
+              "type": "string",
+              "format": "uri"
+             },
+             {
+              "type": "null"
+             }
+            ]
+           }
+          },
+          "required": [
+           "assetId"
+          ],
+          "additionalProperties": false
+         },
+         {
+          "type": "null"
+         }
+        ]
+       }
+      },
+      "required": [
+       "supported",
+       "metadata"
+      ],
+      "additionalProperties": false
+     },
+     {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "properties": {
+       "error": {
+        "type": "object",
+        "properties": {
+         "message": {
+          "type": "string"
+         },
+         "status": {
+          "type": "integer",
+          "minimum": -9007199254740991,
+          "maximum": 9007199254740991
+         },
+         "code": {
+          "type": "string"
+         },
+         "retryable": {
+          "type": "boolean"
+         },
+         "retryAfterMs": {
+          "type": "number"
+         },
+         "generationId": {
+          "type": "string"
+         },
+         "importJobId": {
+          "type": "string",
+          "format": "uuid",
+          "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+         },
+         "importStatus": {
+          "type": "string",
+          "enum": [
+           "queued",
+           "downloading",
+           "processing",
+           "completed",
+           "failed"
+          ]
+         },
+         "progress": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100
+         }
+        },
+        "required": [
+         "message"
+        ],
+        "additionalProperties": false
+       }
+      },
+      "required": [
+       "error"
+      ],
+      "additionalProperties": false
+     }
+    ]
+   },
+   "annotations": {
+    "readOnlyHint": true,
+    "destructiveHint": false,
+    "idempotentHint": true,
+    "openWorldHint": false
+   },
+   "_meta": {
+    "securitySchemes": [
+     {
+      "type": "oauth2",
+      "scopes": []
+     }
+    ]
+   }
+  },
+  {
+   "name": "get-generation-continuation",
+   "title": "read generation continuation inputs",
+   "description": "Read one accessible generation and its original inputs through the same Studio API. Rechecks project and referenced asset access. Does not create a draft, asset, transcription, preview or generation. Use the shared Studio continuation policy to choose source versus completed output.",
+   "inputSchema": {
+    "type": "object",
+    "properties": {
+     "projectId": {
+      "type": "string",
+      "format": "uuid",
+      "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+     },
+     "id": {
+      "type": "string",
+      "format": "uuid",
+      "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+     }
+    },
+    "required": [
+     "projectId",
+     "id"
+    ],
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "additionalProperties": false
+   },
+   "outputSchema": {
+    "type": "object",
+    "anyOf": [
+     {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "properties": {
+       "submissionContextVersion": {
+        "type": "number",
+        "const": 1
+       },
+       "generation": {
+        "type": "object",
+        "properties": {
+         "id": {
+          "type": "string",
+          "format": "uuid",
+          "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+         },
+         "projectId": {
+          "type": "string",
+          "format": "uuid",
+          "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+         },
+         "status": {
+          "type": "string",
+          "enum": [
+           "PENDING",
+           "PROCESSING",
+           "COMPLETED",
+           "FAILED",
+           "REJECTED"
+          ]
+         },
+         "workflow": {
+          "anyOf": [
+           {
+            "type": "string",
+            "enum": [
+             "lipsync",
+             "translate_and_dub",
+             "image_to_video",
+             "edit_dialogue",
+             "change_appearance",
+             "timeline",
+             "assistant"
+            ]
+           },
+           {
+            "type": "null"
+           }
+          ]
+         },
+         "modelName": {
+          "type": "string",
+          "minLength": 1
+         },
+         "options": {
+          "type": "object",
+          "properties": {
+           "sync_mode": {
+            "type": "string",
+            "enum": [
+             "bounce",
+             "loop",
+             "cut_off",
+             "silence",
+             "remap"
+            ]
+           },
+           "temperature": {
+            "anyOf": [
+             {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1
+             },
+             {
+              "type": "null"
+             }
+            ]
+           },
+           "active_speaker_detection": {
+            "anyOf": [
+             {
+              "type": "boolean"
+             },
+             {
+              "type": "object",
+              "properties": {
+               "auto_detect": {
+                "type": "boolean"
+               },
+               "use_v2": {
+                "type": "boolean"
+               },
+               "v3": {
+                "type": "boolean"
+               },
+               "face_image": {
+                "type": "string"
+               },
+               "frame_number": {
+                "type": "number"
+               },
+               "coordinates": {
+                "type": "array",
+                "prefixItems": [
+                 {
+                  "type": "number"
+                 },
+                 {
+                  "type": "number"
+                 }
+                ],
+                "items": false,
+                "minItems": 2,
+                "maxItems": 2
+               },
+               "bounding_boxes": {
+                "type": "array",
+                "items": {
+                 "anyOf": [
+                  {
+                   "type": "array",
+                   "items": {
+                    "type": "number"
+                   }
+                  },
+                  {
+                   "type": "null"
+                  }
+                 ]
+                }
+               },
+               "bounding_boxes_url": {
+                "type": "string",
+                "format": "uri"
+               }
+              },
+              "additionalProperties": false
+             }
+            ]
+           },
+           "occlusion_detection_enabled": {
+            "type": "boolean"
+           },
+           "reasoning_enabled": {
+            "description": "Only lipsync-2-pro supports reasoning; it is ignored for other models.",
+            "type": "boolean"
+           },
+           "model_mode": {
+            "type": "string"
+           }
+          },
+          "additionalProperties": false
+         },
+         "inputs": {
+          "type": "array",
+          "items": {
+           "type": "object",
+           "properties": {
+            "type": {
+             "type": "string",
+             "enum": [
+              "video",
+              "image",
+              "audio",
+              "text"
+             ]
+            },
+            "assetId": {
+             "type": "string",
+             "format": "uuid",
+             "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+            },
+            "url": {
+             "type": "string",
+             "format": "uri"
+            },
+            "refId": {
+             "type": "string"
+            },
+            "generatedBy": {
+             "type": "string",
+             "const": "tts"
+            },
+            "provider": {
+             "type": "object",
+             "properties": {
+              "name": {
+               "type": "string"
+              },
+              "script": {
+               "type": "string"
+              },
+              "voiceId": {
+               "type": "string"
+              },
+              "stability": {
+               "type": "number",
+               "minimum": 0,
+               "maximum": 1
+              },
+              "similarityBoost": {
+               "type": "number",
+               "minimum": 0,
+               "maximum": 1
+              }
+             },
+             "required": [
+              "name",
+              "script",
+              "voiceId"
+             ],
+             "additionalProperties": false
+            },
+            "trim_secs": {
+             "type": "array",
+             "items": {
+              "type": "number"
+             }
+            },
+            "segments_secs": {
+             "type": "array",
+             "items": {
+              "type": "array",
+              "items": {
+               "type": "number"
+              }
+             }
+            },
+            "segments_frames": {
+             "type": "array",
+             "items": {
+              "type": "array",
+              "items": {
+               "type": "number"
+              }
+             }
+            }
+           },
+           "required": [
+            "type"
+           ],
+           "additionalProperties": false
+          }
+         },
+         "segments": {
+          "anyOf": [
+           {
+            "type": "array",
+            "items": {
+             "type": "object",
+             "properties": {
+              "startTime": {
+               "type": "number"
+              },
+              "endTime": {
+               "type": "number"
+              },
+              "startFrame": {
+               "type": "number"
+              },
+              "endFrame": {
+               "type": "number"
+              },
+              "audioInput": {
+               "type": "object",
+               "properties": {
+                "refId": {
+                 "type": "string"
+                },
+                "startTime": {
+                 "type": "number"
+                },
+                "endTime": {
+                 "type": "number"
+                }
+               },
+               "required": [
+                "refId"
+               ],
+               "additionalProperties": false
+              },
+              "optionsOverride": {
+               "type": "object",
+               "properties": {
+                "sync_mode": {
+                 "type": "string",
+                 "enum": [
+                  "bounce",
+                  "loop",
+                  "cut_off",
+                  "silence",
+                  "remap"
+                 ]
+                },
+                "temperature": {
+                 "anyOf": [
+                  {
+                   "type": "number",
+                   "minimum": 0,
+                   "maximum": 1
+                  },
+                  {
+                   "type": "null"
+                  }
+                 ]
+                },
+                "active_speaker_detection": {
+                 "anyOf": [
+                  {
+                   "type": "boolean"
+                  },
+                  {
+                   "type": "object",
+                   "properties": {
+                    "auto_detect": {
+                     "type": "boolean"
+                    },
+                    "use_v2": {
+                     "type": "boolean"
+                    },
+                    "v3": {
+                     "type": "boolean"
+                    },
+                    "face_image": {
+                     "type": "string"
+                    },
+                    "frame_number": {
+                     "type": "number"
+                    },
+                    "coordinates": {
+                     "type": "array",
+                     "prefixItems": [
+                      {
+                       "type": "number"
+                      },
+                      {
+                       "type": "number"
+                      }
+                     ],
+                     "items": false,
+                     "minItems": 2,
+                     "maxItems": 2
+                    },
+                    "bounding_boxes": {
+                     "type": "array",
+                     "items": {
+                      "anyOf": [
+                       {
+                        "type": "array",
+                        "items": {
+                         "type": "number"
+                        }
+                       },
+                       {
+                        "type": "null"
+                       }
+                      ]
+                     }
+                    },
+                    "bounding_boxes_url": {
+                     "type": "string",
+                     "format": "uri"
+                    }
+                   },
+                   "additionalProperties": false
+                  }
+                 ]
+                },
+                "occlusion_detection_enabled": {
+                 "type": "boolean"
+                },
+                "reasoning_enabled": {
+                 "description": "Only lipsync-2-pro supports reasoning; it is ignored for other models.",
+                 "type": "boolean"
+                },
+                "model_mode": {
+                 "type": "string"
+                }
+               },
+               "additionalProperties": false
+              }
+             },
+             "additionalProperties": false
+            }
+           },
+           {
+            "type": "null"
+           }
+          ]
+         },
+         "speakers": {
+          "anyOf": [
+           {
+            "type": "array",
+            "items": {
+             "type": "object",
+             "properties": {
+              "id": {
+               "type": "string"
+              },
+              "audio": {
+               "type": "object",
+               "properties": {
+                "refId": {
+                 "type": "string"
+                },
+                "startTime": {
+                 "type": "number"
+                },
+                "endTime": {
+                 "type": "number"
+                }
+               },
+               "required": [
+                "refId"
+               ],
+               "additionalProperties": false
+              },
+              "face": {
+               "type": "object",
+               "properties": {
+                "use_v2": {
+                 "type": "boolean"
+                },
+                "v3": {
+                 "type": "boolean"
+                },
+                "face_image": {
+                 "type": "string"
+                },
+                "frame_number": {
+                 "type": "number"
+                },
+                "coordinates": {
+                 "type": "array",
+                 "prefixItems": [
+                  {
+                   "type": "number"
+                  },
+                  {
+                   "type": "number"
+                  }
+                 ],
+                 "items": false,
+                 "minItems": 2,
+                 "maxItems": 2
+                },
+                "bounding_boxes": {
+                 "type": "array",
+                 "items": {
+                  "anyOf": [
+                   {
+                    "type": "array",
+                    "items": {
+                     "type": "number"
+                    }
+                   },
+                   {
+                    "type": "null"
+                   }
+                  ]
+                 }
+                },
+                "bounding_boxes_url": {
+                 "type": "string",
+                 "format": "uri"
+                }
+               },
+               "additionalProperties": false
+              }
+             },
+             "required": [
+              "id",
+              "audio",
+              "face"
+             ],
+             "additionalProperties": false
+            }
+           },
+           {
+            "type": "null"
+           }
+          ]
+         },
+         "outputMediaUrl": {
+          "anyOf": [
+           {
+            "type": "string",
+            "format": "uri"
+           },
+           {
+            "type": "null"
+           }
+          ]
+         },
+         "parentGenerationId": {
+          "anyOf": [
+           {
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+           },
+           {
+            "type": "null"
+           }
+          ]
+         },
+         "dialogueEditJobId": {
+          "anyOf": [
+           {
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+           },
+           {
+            "type": "null"
+           }
+          ]
+         },
+         "renderedFromAssetId": {
+          "anyOf": [
+           {
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+           },
+           {
+            "type": "null"
+           }
+          ]
+         }
+        },
+        "required": [
+         "id",
+         "projectId",
+         "status",
+         "modelName",
+         "options",
+         "inputs"
+        ],
+        "additionalProperties": false
+       }
+      },
+      "required": [
+       "submissionContextVersion",
+       "generation"
+      ],
+      "additionalProperties": false
+     },
+     {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "properties": {
+       "error": {
+        "type": "object",
+        "properties": {
+         "message": {
+          "type": "string"
+         },
+         "status": {
+          "type": "integer",
+          "minimum": -9007199254740991,
+          "maximum": 9007199254740991
+         },
+         "code": {
+          "type": "string"
+         },
+         "retryable": {
+          "type": "boolean"
+         },
+         "retryAfterMs": {
+          "type": "number"
+         },
+         "generationId": {
+          "type": "string"
+         },
+         "importJobId": {
+          "type": "string",
+          "format": "uuid",
+          "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+         },
+         "importStatus": {
+          "type": "string",
+          "enum": [
+           "queued",
+           "downloading",
+           "processing",
+           "completed",
+           "failed"
+          ]
+         },
+         "progress": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100
+         }
+        },
+        "required": [
+         "message"
+        ],
+        "additionalProperties": false
+       }
+      },
+      "required": [
+       "error"
+      ],
+      "additionalProperties": false
+     }
+    ]
+   },
+   "annotations": {
+    "readOnlyHint": true,
+    "destructiveHint": false,
+    "idempotentHint": true,
+    "openWorldHint": false
+   },
+   "_meta": {
+    "securitySchemes": [
+     {
+      "type": "oauth2",
+      "scopes": []
+     }
+    ]
+   }
+  },
+  {
+   "name": "create-lipsync",
+   "title": "create lipsync",
+   "description": "Create one lipsync generation from exactly one image/video URL or Sync asset ID and one audio URL/asset ID or script plus a voiceId returned by voices_get-voices. Defaults to sync-3; new work creates a NEW project, even with a duplicate projectName. Supply a fresh projectCreationKey for keyed creation; preserve it on retries. Use projectId only for an explicit user selection and supply projectIntent=explicit. Poll the returned id with generate_get-generation.",
+   "inputSchema": {
+    "type": "object",
+    "properties": {
+     "continuation": {
+      "type": "object",
+      "properties": {
+       "workflow": {
+        "type": "string",
+        "enum": [
+         "lipsync",
+         "translate_and_dub",
+         "image_to_video",
+         "edit_dialogue"
+        ]
+       },
+       "parentGenerationId": {
+        "type": "string",
+        "format": "uuid",
+        "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+       }
+      },
+      "required": [
+       "workflow",
+       "parentGenerationId"
+      ],
+      "additionalProperties": false
+     },
+     "videoUrl": {
+      "description": "Public or Sync-hosted video URL. Supply exactly one visual input.",
+      "type": "string"
+     },
+     "videoAssetId": {
+      "description": "Existing Sync asset ID in the same organization.",
+      "type": "string"
+     },
+     "imageUrl": {
+      "type": "string",
+      "description": "Public or Sync-hosted still image URL. Use this for image-to-video lipsync with sync-3."
+     },
+     "imageAssetId": {
+      "description": "Existing Sync asset ID in the same organization.",
+      "type": "string"
+     },
+     "audioUrl": {
+      "type": "string",
+      "description": "Public or Sync-hosted audio URL. Use this when the user supplies audio."
+     },
+     "audioAssetId": {
+      "description": "Existing Sync asset ID in the same organization.",
+      "type": "string"
+     },
+     "script": {
+      "type": "string",
+      "description": "Text for the image or video to say."
+     },
+     "voiceId": {
+      "type": "string",
+      "description": "Voice id from voices_get-voices. Required when script is provided."
+     },
+     "provider": {
+      "type": "string",
+      "description": "Voice provider for script-driven lipsync. Defaults to elevenlabs."
+     },
+     "stability": {
+      "type": "number",
+      "description": "Optional ElevenLabs voice stability for script input."
+     },
+     "similarityBoost": {
+      "type": "number",
+      "description": "Optional ElevenLabs similarity boost for script input."
+     },
+     "model": {
+      "type": "string",
+      "description": "Optional model override. Image and video inputs default to sync-3."
+     },
+     "options": {
+      "description": "Model-specific generation preferences. Keep unchanged when retrying the same idempotency key.",
+      "type": "object",
+      "properties": {
+       "sync_mode": {
+        "type": "string",
+        "enum": [
+         "bounce",
+         "loop",
+         "cut_off",
+         "silence",
+         "remap"
+        ]
+       },
+       "temperature": {
+        "anyOf": [
+         {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+         },
+         {
+          "type": "null"
+         }
+        ]
+       },
+       "active_speaker_detection": {
+        "anyOf": [
+         {
+          "type": "boolean"
+         },
+         {
+          "type": "object",
+          "properties": {
+           "auto_detect": {
+            "type": "boolean"
+           },
+           "use_v2": {
+            "type": "boolean"
+           },
+           "v3": {
+            "type": "boolean"
+           },
+           "face_image": {
+            "type": "string"
+           },
+           "frame_number": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+           },
+           "coordinates": {
+            "type": "array",
+            "prefixItems": [
+             {
+              "type": "number"
+             },
+             {
+              "type": "number"
+             }
+            ],
+            "items": false,
+            "minItems": 2,
+            "maxItems": 2
+           }
+          },
+          "additionalProperties": false
+         }
+        ]
+       },
+       "occlusion_detection_enabled": {
+        "type": "boolean"
+       },
+       "reasoning_enabled": {
+        "description": "Only lipsync-2-pro supports reasoning; it is ignored for other models.",
+        "type": "boolean"
+       },
+       "model_mode": {
+        "type": "string",
+        "enum": [
+         "lips",
+         "face",
+         "head"
+        ]
+       }
+      },
+      "additionalProperties": false
+     },
+     "idempotencyKey": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9._~-]{1,128}$",
+      "description": "Unique key for one generation action. Persist and reuse the same key, projectCreationKey (for new projects) or explicit projectId, model, and inputs when retrying after a lost response. Use durable asset IDs or stable URLs; upload files before starting the keyed action. A new intentional generation needs a new key. Passed as the Sync API Idempotency-Key header."
+     },
+     "projectCreationKey": {
+      "description": "Fresh random UUID identifying this NEW project creation, not a project ID. Required for keyed generation without projectId. Persist this key, name and generation key on retries; the server derives a separate project UUID.",
+      "type": "string",
+      "format": "uuid",
+      "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+     },
+     "projectId": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Existing Sync project ID returned by projects_get-all or projects_get. Use this to select the same project as the web app. Cannot be combined with projectName."
+     },
+     "projectName": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Name for a NEW project only. Never search or reuse a matching name. Cannot be combined with projectId."
+     },
+     "projectIntent": {
+      "description": "Required with projectId. Set only for an explicit user project selection/update, or the new project just created for this request. Never infer intent from a matching project name, workflow name or active editor.",
+      "type": "string",
+      "const": "explicit"
+     }
+    },
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "additionalProperties": false
+   },
+   "outputSchema": {
+    "type": "object",
+    "anyOf": [
+     {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "properties": {
+       "id": {
+        "type": "string",
+        "description": "Sync generation id."
+       },
+       "projectId": {
+        "description": "Sync project containing this generation.",
+        "type": [
+         "string",
+         "null"
+        ]
+       },
+       "status": {
+        "type": "string",
+        "description": "Current generation status."
+       },
+       "model": {
+        "type": "string",
+        "description": "Model used for the generation."
+       },
+       "outputMediaUrl": {
+        "description": "Signed result URL when the generation is complete, named as in the API (GET /v2/generations/{id}). Copy this exact string verbatim; do not reconstruct, shorten, or edit it.",
+        "type": [
+         "string",
+         "null"
+        ]
+       },
+       "outputUrl": {
+        "description": "Deprecated alias of outputMediaUrl, with the same value. Read outputMediaUrl.",
+        "deprecated": true,
+        "type": [
+         "string",
+         "null"
+        ]
+       },
+       "generationEstimate": {
+        "description": "Server-provided completion estimate and server clock. Use only for approximate remaining time; do not invent an estimate when absent.",
+        "anyOf": [
+         {
+          "type": "object",
+          "propertyNames": {
+           "type": "string"
+          },
+          "additionalProperties": {}
+         },
+         {
+          "type": "null"
+         }
+        ]
+       },
+       "outputDuration": {
+        "description": "Output duration in seconds.",
+        "type": [
+         "number",
+         "null"
+        ]
+       },
+       "error": {},
+       "errorCode": {}
+      },
+      "additionalProperties": false
+     },
+     {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "properties": {
+       "error": {
+        "type": "object",
+        "properties": {
+         "message": {
+          "type": "string"
+         },
+         "status": {
+          "type": "integer",
+          "minimum": -9007199254740991,
+          "maximum": 9007199254740991
+         },
+         "code": {
+          "type": "string"
+         },
+         "retryable": {
+          "type": "boolean"
+         },
+         "retryAfterMs": {
+          "type": "number"
+         },
+         "generationId": {
+          "type": "string"
+         },
+         "importJobId": {
+          "type": "string",
+          "format": "uuid",
+          "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+         },
+         "importStatus": {
+          "type": "string",
+          "enum": [
+           "queued",
+           "downloading",
+           "processing",
+           "completed",
+           "failed"
+          ]
+         },
+         "progress": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100
+         }
+        },
+        "required": [
+         "message"
+        ],
+        "additionalProperties": false
+       }
+      },
+      "required": [
+       "error"
+      ],
+      "additionalProperties": false
+     }
+    ]
+   },
+   "annotations": {
+    "readOnlyHint": false,
+    "destructiveHint": true,
+    "idempotentHint": false,
+    "openWorldHint": true
+   },
+   "_meta": {
+    "securitySchemes": [
+     {
+      "type": "oauth2",
+      "scopes": []
+     }
+    ]
+   }
+  },
+  {
+   "name": "create-timeline-lipsync",
+   "title": "create timeline lipsync",
+   "description": "Lipsync one video with several audio clips placed at given times, like a Studio timeline. Each clip names a Sync audio asset or audio URL, the seconds (or frames) of the video it covers, and optionally the part of the audio file it plays, its sync mode and the face it lipsyncs. Parts of the video no clip covers keep their original picture and sound, so leave a gap wherever the user wants no lipsync. For one audio across the whole video, use create-lipsync. Defaults to sync-3 and, unless projectId names a project the user picked, a new project; a keyed request without projectId needs a fresh projectCreationKey. Estimate and confirm before creating; this starts an asynchronous generation and returns its id. Poll it with generate_get-generation and wait: true. Clips are checked before anything is created, and errors name the clip index. When supplying projectId, projectIntent=explicit is required: the user must explicitly ask to work in that project, select it in the interface, or this must be the project just created for this request. A matching workflow/name or an already-open editor is never permission to modify it. Default new work to a new project.",
+   "inputSchema": {
+    "type": "object",
+    "properties": {
+     "videoAssetId": {
+      "type": "string",
+      "format": "uuid",
+      "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$",
+      "description": "Sync asset id of the video."
+     },
+     "clips": {
+      "minItems": 1,
+      "maxItems": 200,
+      "type": "array",
+      "items": {
+       "type": "object",
+       "properties": {
+        "audioAssetId": {
+         "description": "Sync asset id of the audio clip. Give audioAssetId or audioUrl.",
+         "type": "string",
+         "format": "uuid",
+         "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+        },
+        "audioUrl": {
+         "description": "HTTPS URL of the audio instead of an asset, such as a completed translation preview’s outputMediaUrl.",
+         "type": "string",
+         "format": "uri"
+        },
+        "startTime": {
+         "description": "Second on the video where this clip starts. Give startTime and endTime, or startFrame and endFrame.",
+         "type": "number",
+         "minimum": 0
+        },
+        "endTime": {
+         "description": "Second on the video where this clip ends.",
+         "type": "number",
+         "minimum": 0
+        },
+        "startFrame": {
+         "description": "First frame of the video this clip covers, used when its speaker is picked.",
+         "type": "integer",
+         "minimum": 0,
+         "maximum": 9007199254740991
+        },
+        "endFrame": {
+         "description": "Last frame of the video this clip covers, inclusive.",
+         "type": "integer",
+         "minimum": 0,
+         "maximum": 9007199254740991
+        },
+        "audioStartTime": {
+         "description": "Second into the audio file this clip plays from. Omit to start at 0.",
+         "type": "number",
+         "minimum": 0
+        },
+        "audioEndTime": {
+         "description": "Second into the audio file this clip plays to. Omit to play on from the start.",
+         "type": "number",
+         "minimum": 0
+        },
+        "syncMode": {
+         "description": "How this clip fits when its audio and video lengths differ. Omit to use options.sync_mode.",
+         "type": "string",
+         "enum": [
+          "bounce",
+          "loop",
+          "cut_off",
+          "silence",
+          "remap"
+         ]
+        },
+        "speaker": {
+         "description": "The face this clip lipsyncs: a point on it in one of the clip’s frames, a face track, or automatic detection. Omit to use options.active_speaker_detection.",
+         "anyOf": [
+          {
+           "type": "object",
+           "properties": {
+            "frameNumber": {
+             "type": "integer",
+             "minimum": 0,
+             "maximum": 9007199254740991,
+             "description": "Frame of this clip, counted from its first frame, showing the face."
+            },
+            "x": {
+             "type": "number",
+             "description": "Pixel x on the face in that frame of the video. A point off the face (even on the hair) rejects the whole generation, so aim at the face centre."
+            },
+            "y": {
+             "type": "number",
+             "description": "Pixel y on the face in that frame of the video."
+            }
+           },
+           "required": [
+            "frameNumber",
+            "x",
+            "y"
+           ],
+           "additionalProperties": false
+          },
+          {
+           "type": "object",
+           "properties": {
+            "faceTrackUrl": {
+             "type": "string",
+             "format": "uri",
+             "description": "HTTPS URL of a JSON face track: one bounding box per frame of this clip."
+            }
+           },
+           "required": [
+            "faceTrackUrl"
+           ],
+           "additionalProperties": false
+          },
+          {
+           "type": "object",
+           "properties": {
+            "detect": {
+             "type": "boolean",
+             "const": true,
+             "description": "Detect the speaking face in this clip automatically."
+            }
+           },
+           "required": [
+            "detect"
+           ],
+           "additionalProperties": false
+          }
+         ]
+        }
+       },
+       "additionalProperties": false
+      },
+      "description": "Audio clips placed on the video, in any order, without overlapping. Parts of the video no clip covers keep their original picture and sound."
+     },
+     "model": {
+      "description": "Model to use. Defaults to sync-3.",
+      "type": "string",
+      "minLength": 1
+     },
+     "options": {
+      "type": "object",
+      "properties": {
+       "sync_mode": {
+        "type": "string",
+        "enum": [
+         "bounce",
+         "loop",
+         "cut_off",
+         "silence",
+         "remap"
+        ]
+       },
+       "temperature": {
+        "anyOf": [
+         {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+         },
+         {
+          "type": "null"
+         }
+        ]
+       },
+       "active_speaker_detection": {
+        "anyOf": [
+         {
+          "type": "boolean"
+         },
+         {
+          "type": "object",
+          "properties": {
+           "auto_detect": {
+            "type": "boolean"
+           },
+           "use_v2": {
+            "type": "boolean"
+           },
+           "v3": {
+            "type": "boolean"
+           },
+           "face_image": {
+            "type": "string"
+           },
+           "frame_number": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+           },
+           "coordinates": {
+            "type": "array",
+            "prefixItems": [
+             {
+              "type": "number"
+             },
+             {
+              "type": "number"
+             }
+            ],
+            "items": false,
+            "minItems": 2,
+            "maxItems": 2
+           }
+          },
+          "additionalProperties": false
+         }
+        ]
+       },
+       "occlusion_detection_enabled": {
+        "type": "boolean"
+       },
+       "reasoning_enabled": {
+        "description": "Only lipsync-2-pro supports reasoning; it is ignored for other models.",
+        "type": "boolean"
+       },
+       "model_mode": {
+        "type": "string",
+        "enum": [
+         "lips",
+         "face",
+         "head"
+        ]
+       }
+      },
+      "additionalProperties": false
+     },
+     "idempotencyKey": {
+      "description": "Unique key for this generation. Reuse it with identical arguments when retrying after a lost response. Passed as the Idempotency-Key header.",
+      "type": "string",
+      "pattern": "^[A-Za-z0-9._~-]{1,128}$"
+     },
+     "projectCreationKey": {
+      "description": "Fresh random UUID identifying this NEW project creation, not a project ID. Required for keyed generation without projectId. Persist this key, name and generation key on retries; the server derives a separate project UUID.",
+      "type": "string",
+      "format": "uuid",
+      "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+     },
+     "projectId": {
+      "description": "Existing Sync project id, only for a project the user explicitly selected or one just created for this request.",
+      "type": "string",
+      "minLength": 1
+     },
+     "projectName": {
+      "description": "Name for a NEW project only. Never search or reuse a matching name. Cannot be combined with projectId.",
+      "type": "string",
+      "minLength": 1
+     },
+     "projectIntent": {
+      "description": "Required with projectId. Set only for an explicit user project selection/update, or the new project just created for this request. Never infer intent from a matching project name, workflow name or active editor.",
+      "type": "string",
+      "const": "explicit"
+     }
+    },
+    "required": [
+     "videoAssetId",
+     "clips"
+    ],
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "additionalProperties": false
+   },
+   "outputSchema": {
+    "type": "object",
+    "anyOf": [
+     {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "properties": {
+       "id": {
+        "type": "string",
+        "description": "Sync generation id."
+       },
+       "projectId": {
+        "description": "Sync project containing this generation.",
+        "type": [
+         "string",
+         "null"
+        ]
+       },
+       "status": {
+        "type": "string",
+        "description": "Current generation status."
+       },
+       "model": {
+        "type": "string",
+        "description": "Model used for the generation."
+       },
+       "outputMediaUrl": {
+        "description": "Signed result URL when the generation is complete, named as in the API (GET /v2/generations/{id}). Copy this exact string verbatim; do not reconstruct, shorten, or edit it.",
+        "type": [
+         "string",
+         "null"
+        ]
+       },
+       "outputUrl": {
+        "description": "Deprecated alias of outputMediaUrl, with the same value. Read outputMediaUrl.",
+        "deprecated": true,
+        "type": [
+         "string",
+         "null"
+        ]
+       },
+       "generationEstimate": {
+        "description": "Server-provided completion estimate and server clock. Use only for approximate remaining time; do not invent an estimate when absent.",
+        "anyOf": [
+         {
+          "type": "object",
+          "propertyNames": {
+           "type": "string"
+          },
+          "additionalProperties": {}
+         },
+         {
+          "type": "null"
+         }
+        ]
+       },
+       "outputDuration": {
+        "description": "Output duration in seconds.",
+        "type": [
+         "number",
+         "null"
+        ]
+       },
+       "error": {},
+       "errorCode": {}
+      },
+      "additionalProperties": false
+     },
+     {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "properties": {
+       "error": {
+        "type": "object",
+        "properties": {
+         "message": {
+          "type": "string"
+         },
+         "status": {
+          "type": "integer",
+          "minimum": -9007199254740991,
+          "maximum": 9007199254740991
+         },
+         "code": {
+          "type": "string"
+         },
+         "retryable": {
+          "type": "boolean"
+         },
+         "retryAfterMs": {
+          "type": "number"
+         },
+         "generationId": {
+          "type": "string"
+         },
+         "importJobId": {
+          "type": "string",
+          "format": "uuid",
+          "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+         },
+         "importStatus": {
+          "type": "string",
+          "enum": [
+           "queued",
+           "downloading",
+           "processing",
+           "completed",
+           "failed"
+          ]
+         },
+         "progress": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100
+         }
+        },
+        "required": [
+         "message"
+        ],
+        "additionalProperties": false
+       }
+      },
+      "required": [
+       "error"
+      ],
+      "additionalProperties": false
+     }
+    ]
+   },
+   "annotations": {
+    "readOnlyHint": false,
+    "destructiveHint": true,
+    "idempotentHint": false,
+    "openWorldHint": true
+   },
+   "_meta": {
+    "securitySchemes": [
+     {
+      "type": "oauth2",
+      "scopes": []
+     }
+    ]
+   }
+  },
+  {
+   "name": "projects_get-generations",
+   "title": "read project history",
+   "description": "Read generation history for an accessible Sync project. Requires a projectId returned by projects_get-all. Pass limit and the last returned generation id as cursor to load another page. These are the same records used by the Sync web app.",
+   "inputSchema": {
+    "type": "object",
+    "properties": {
+     "status": {
+      "type": "string",
+      "description": "Filter generations by status"
+     },
+     "limit": {
+      "type": "number",
+      "description": "Maximum number of generations to return (1-100). When set, results are ordered newest-first and can be paged with `cursor`."
+     },
+     "cursor": {
+      "type": "string",
+      "description": "Generation id to page after - pass the last id of the previous page. Only used together with `limit`."
+     },
+     "projectId": {
+      "type": "string",
+      "description": "Filter to a live project accessible to the session user or API-key owner. Inaccessible projects return an empty list."
+     }
+    },
+    "required": [
+     "projectId"
+    ],
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "additionalProperties": false
+   },
+   "annotations": {
+    "readOnlyHint": true,
+    "destructiveHint": false,
+    "openWorldHint": false
+   },
+   "_meta": {
+    "securitySchemes": [
+     {
+      "type": "oauth2",
+      "scopes": []
+     }
+    ]
+   }
+  },
+  {
+   "name": "create-translate-and-dub",
+   "title": "translate and dub a video",
+   "description": "Use this when the user wants to translate and dub a video into another language with matching lip movements. Not for subtitles only or translating a text document. Requires a saved video asset, model, and persistent idempotency key. By default creates a NEW project using a fresh projectCreationKey, even when projectName matches existing work. Preserve that UUID and key on retries. Supply projectId only for an explicit selection or the project just created for this request; never infer it from a workflow name or open editor. For social video URLs, import through assets_create and wait for the saved asset before estimating or calling this tool. This is a paid action: confirm the requested language, configuration and estimated cost with the user before calling. Use generate_estimate-cost with workflow=translate-and-dub when that input is supported, and disclose any excluded external provider charges. Without the combined breakdown, lip-sync pricing is not the full workflow cost. The API manages dubbing and final rendering under the returned generation id. Poll generate_get-generation for that same id until COMPLETED; do not create another job to finish or recover it. When supplying projectId, projectIntent=explicit is required: the user must explicitly ask to work in that project, select it in the interface, or this must be the project just created for this request. A matching workflow/name or an already-open editor is never permission to modify it. Default new work to a new project.",
+   "inputSchema": {
+    "type": "object",
+    "properties": {
+     "continuation": {
+      "type": "object",
+      "properties": {
+       "workflow": {
+        "type": "string",
+        "enum": [
+         "lipsync",
+         "translate_and_dub",
+         "image_to_video",
+         "edit_dialogue"
+        ]
+       },
+       "parentGenerationId": {
+        "type": "string",
+        "format": "uuid",
+        "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+       }
+      },
+      "required": [
+       "workflow",
+       "parentGenerationId"
+      ],
+      "additionalProperties": false
+     },
+     "videoAssetId": {
+      "type": "string",
+      "format": "uuid",
+      "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$",
+      "description": "Existing Sync VIDEO asset in the connected organization. For a social link, first create a NEW project unless the user explicitly chose an existing one. Import via assets_create with type=VIDEO and that projectId, wait for its saved asset id, then pass the same projectId with projectIntent=explicit."
+     },
+     "projectCreationKey": {
+      "description": "Fresh random UUID identifying this NEW project creation, not a project ID. Required for keyed generation without projectId. Persist this key, name and generation key on retries; the server derives a separate project UUID.",
+      "type": "string",
+      "format": "uuid",
+      "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+     },
+     "projectName": {
+      "description": "Name for a NEW project. A matching existing name is never reused.",
+      "type": "string",
+      "minLength": 1
+     },
+     "projectId": {
+      "description": "Project ID only when explicitly selected by the user, or just created for this request. Otherwise omit it to create a new project. Keep unchanged on retries.",
+      "type": "string",
+      "format": "uuid",
+      "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+     },
+     "targetLang": {
+      "type": "string",
+      "enum": [
+       "af",
+       "ak",
+       "sq",
+       "am",
+       "ar",
+       "ar-EG",
+       "hy",
+       "as",
+       "az",
+       "eu",
+       "be",
+       "bs",
+       "bg",
+       "my",
+       "yue",
+       "ca",
+       "ceb",
+       "zh",
+       "zh-TW",
+       "hr",
+       "cs",
+       "da",
+       "dgo",
+       "nl",
+       "en",
+       "en-AU",
+       "en-CA",
+       "en-GB",
+       "en-US",
+       "et",
+       "fil",
+       "fi",
+       "fr",
+       "fr-CA",
+       "fr-FR",
+       "gl",
+       "ka",
+       "de",
+       "el",
+       "gu",
+       "ha",
+       "he",
+       "hi",
+       "hu",
+       "is",
+       "id",
+       "it",
+       "ja",
+       "jv",
+       "kn",
+       "kk",
+       "ki",
+       "rw",
+       "rn",
+       "ko",
+       "ky",
+       "lv",
+       "lt",
+       "lg",
+       "mk",
+       "ms",
+       "ml",
+       "cmn",
+       "mr",
+       "mn",
+       "ne",
+       "no",
+       "fa",
+       "pl",
+       "pt",
+       "pt-BR",
+       "pt-PT",
+       "pa",
+       "ro",
+       "ru",
+       "nso",
+       "st",
+       "sd",
+       "sk",
+       "sl",
+       "es",
+       "es-AR",
+       "es-CL",
+       "es-ES",
+       "es-MX",
+       "su",
+       "sw",
+       "ss",
+       "sv",
+       "tg",
+       "ta",
+       "te",
+       "th",
+       "bo",
+       "ts",
+       "tn",
+       "tr",
+       "uk",
+       "ur",
+       "ug",
+       "uz",
+       "ve",
+       "vi",
+       "war",
+       "cy",
+       "wo",
+       "yo",
+       "zu",
+       "doi",
+       "tl"
+      ],
+      "description": "Target language from the API-supported list."
+     },
+     "sourceLang": {
+      "default": "auto",
+      "type": "string",
+      "enum": [
+       "auto",
+       "af",
+       "ak",
+       "sq",
+       "am",
+       "ar",
+       "ar-EG",
+       "hy",
+       "as",
+       "az",
+       "eu",
+       "be",
+       "bs",
+       "bg",
+       "my",
+       "yue",
+       "ca",
+       "ceb",
+       "zh",
+       "zh-TW",
+       "hr",
+       "cs",
+       "da",
+       "dgo",
+       "nl",
+       "en",
+       "en-AU",
+       "en-CA",
+       "en-GB",
+       "en-US",
+       "et",
+       "fil",
+       "fi",
+       "fr",
+       "fr-CA",
+       "fr-FR",
+       "gl",
+       "ka",
+       "de",
+       "el",
+       "gu",
+       "ha",
+       "he",
+       "hi",
+       "hu",
+       "is",
+       "id",
+       "it",
+       "ja",
+       "jv",
+       "kn",
+       "kk",
+       "ki",
+       "rw",
+       "rn",
+       "ko",
+       "ky",
+       "lv",
+       "lt",
+       "lg",
+       "mk",
+       "ms",
+       "ml",
+       "cmn",
+       "mr",
+       "mn",
+       "ne",
+       "no",
+       "fa",
+       "pl",
+       "pt",
+       "pt-BR",
+       "pt-PT",
+       "pa",
+       "ro",
+       "ru",
+       "nso",
+       "st",
+       "sd",
+       "sk",
+       "sl",
+       "es",
+       "es-AR",
+       "es-CL",
+       "es-ES",
+       "es-MX",
+       "su",
+       "sw",
+       "ss",
+       "sv",
+       "tg",
+       "ta",
+       "te",
+       "th",
+       "bo",
+       "ts",
+       "tn",
+       "tr",
+       "uk",
+       "ur",
+       "ug",
+       "uz",
+       "ve",
+       "vi",
+       "war",
+       "cy",
+       "wo",
+       "yo",
+       "zu",
+       "doi",
+       "tl"
+      ]
+     },
+     "model": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Video lip-sync model returned by models_get."
+     },
+     "options": {
+      "type": "object",
+      "properties": {
+       "sync_mode": {
+        "type": "string",
+        "enum": [
+         "bounce",
+         "loop",
+         "cut_off",
+         "silence",
+         "remap"
+        ]
+       },
+       "temperature": {
+        "anyOf": [
+         {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+         },
+         {
+          "type": "null"
+         }
+        ]
+       },
+       "active_speaker_detection": {
+        "anyOf": [
+         {
+          "type": "boolean"
+         },
+         {
+          "type": "object",
+          "properties": {
+           "auto_detect": {
+            "type": "boolean"
+           },
+           "use_v2": {
+            "type": "boolean"
+           },
+           "v3": {
+            "type": "boolean"
+           },
+           "face_image": {
+            "type": "string"
+           },
+           "frame_number": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+           },
+           "coordinates": {
+            "type": "array",
+            "prefixItems": [
+             {
+              "type": "number"
+             },
+             {
+              "type": "number"
+             }
+            ],
+            "items": false,
+            "minItems": 2,
+            "maxItems": 2
+           }
+          },
+          "additionalProperties": false
+         }
+        ]
+       },
+       "occlusion_detection_enabled": {
+        "type": "boolean"
+       },
+       "reasoning_enabled": {
+        "description": "Only lipsync-2-pro supports reasoning; it is ignored for other models.",
+        "type": "boolean"
+       },
+       "model_mode": {
+        "type": "string",
+        "enum": [
+         "lips",
+         "face",
+         "head"
+        ]
+       }
+      },
+      "additionalProperties": false
+     },
+     "idempotencyKey": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9._~-]{1,128}$",
+      "description": "Persist one unique key per approved generation. Retry an uncertain request with this exact key and unchanged inputs; never automatically create a new key."
+     },
+     "projectIntent": {
+      "description": "Required with projectId. Set only for an explicit user project selection/update, or the new project just created for this request. Never infer intent from a matching project name, workflow name or active editor.",
+      "type": "string",
+      "const": "explicit"
+     }
+    },
+    "required": [
+     "videoAssetId",
+     "targetLang",
+     "sourceLang",
+     "model",
+     "idempotencyKey"
+    ],
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "additionalProperties": false
+   },
+   "outputSchema": {
+    "type": "object",
+    "anyOf": [
+     {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "properties": {
+       "id": {
+        "type": "string",
+        "description": "Sync generation id."
+       },
+       "projectId": {
+        "description": "Sync project containing this generation.",
+        "type": [
+         "string",
+         "null"
+        ]
+       },
+       "status": {
+        "type": "string",
+        "description": "Current generation status."
+       },
+       "model": {
+        "type": "string",
+        "description": "Model used for the generation."
+       },
+       "outputMediaUrl": {
+        "description": "Signed result URL when the generation is complete, named as in the API (GET /v2/generations/{id}). Copy this exact string verbatim; do not reconstruct, shorten, or edit it.",
+        "type": [
+         "string",
+         "null"
+        ]
+       },
+       "outputUrl": {
+        "description": "Deprecated alias of outputMediaUrl, with the same value. Read outputMediaUrl.",
+        "deprecated": true,
+        "type": [
+         "string",
+         "null"
+        ]
+       },
+       "generationEstimate": {
+        "description": "Server-provided completion estimate and server clock. Use only for approximate remaining time; do not invent an estimate when absent.",
+        "anyOf": [
+         {
+          "type": "object",
+          "propertyNames": {
+           "type": "string"
+          },
+          "additionalProperties": {}
+         },
+         {
+          "type": "null"
+         }
+        ]
+       },
+       "outputDuration": {
+        "description": "Output duration in seconds.",
+        "type": [
+         "number",
+         "null"
+        ]
+       },
+       "error": {},
+       "errorCode": {}
+      },
+      "additionalProperties": false
+     },
+     {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "properties": {
+       "error": {
+        "type": "object",
+        "properties": {
+         "message": {
+          "type": "string"
+         },
+         "status": {
+          "type": "integer",
+          "minimum": -9007199254740991,
+          "maximum": 9007199254740991
+         },
+         "code": {
+          "type": "string"
+         },
+         "retryable": {
+          "type": "boolean"
+         },
+         "retryAfterMs": {
+          "type": "number"
+         },
+         "generationId": {
+          "type": "string"
+         },
+         "importJobId": {
+          "type": "string",
+          "format": "uuid",
+          "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+         },
+         "importStatus": {
+          "type": "string",
+          "enum": [
+           "queued",
+           "downloading",
+           "processing",
+           "completed",
+           "failed"
+          ]
+         },
+         "progress": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100
+         }
+        },
+        "required": [
+         "message"
+        ],
+        "additionalProperties": false
+       }
+      },
+      "required": [
+       "error"
+      ],
+      "additionalProperties": false
+     }
+    ]
+   },
+   "annotations": {
+    "readOnlyHint": false,
+    "destructiveHint": true,
+    "idempotentHint": false,
+    "openWorldHint": true
+   },
+   "_meta": {
+    "securitySchemes": [
+     {
+      "type": "oauth2",
+      "scopes": []
+     }
+    ]
+   }
+  },
+  {
+   "name": "get-translation-options",
+   "title": "translation options",
+   "description": "Read the source and target languages supported by the current translation API. Does not create a generation or estimate pricing.",
+   "inputSchema": {
+    "type": "object",
+    "properties": {},
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "additionalProperties": false
+   },
+   "outputSchema": {
+    "type": "object",
+    "anyOf": [
+     {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "properties": {
+       "targetLanguages": {
+        "minItems": 1,
+        "type": "array",
+        "items": {
+         "type": "string",
+         "minLength": 1
+        }
+       },
+       "sourceLanguages": {
+        "minItems": 1,
+        "type": "array",
+        "items": {
+         "type": "string",
+         "minLength": 1
+        }
+       },
+       "previewAvailable": {
+        "type": "boolean"
+       }
+      },
+      "required": [
+       "targetLanguages",
+       "sourceLanguages",
+       "previewAvailable"
+      ],
+      "additionalProperties": false
+     },
+     {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "properties": {
+       "error": {
+        "type": "object",
+        "properties": {
+         "message": {
+          "type": "string"
+         },
+         "status": {
+          "type": "integer",
+          "minimum": -9007199254740991,
+          "maximum": 9007199254740991
+         },
+         "code": {
+          "type": "string"
+         },
+         "retryable": {
+          "type": "boolean"
+         },
+         "retryAfterMs": {
+          "type": "number"
+         },
+         "generationId": {
+          "type": "string"
+         },
+         "importJobId": {
+          "type": "string",
+          "format": "uuid",
+          "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+         },
+         "importStatus": {
+          "type": "string",
+          "enum": [
+           "queued",
+           "downloading",
+           "processing",
+           "completed",
+           "failed"
+          ]
+         },
+         "progress": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100
+         }
+        },
+        "required": [
+         "message"
+        ],
+        "additionalProperties": false
+       }
+      },
+      "required": [
+       "error"
+      ],
+      "additionalProperties": false
+     }
+    ]
+   },
+   "annotations": {
+    "readOnlyHint": true,
+    "destructiveHint": false,
+    "idempotentHint": true,
+    "openWorldHint": false
+   },
+   "_meta": {
+    "securitySchemes": [
+     {
+      "type": "oauth2",
+      "scopes": []
+     }
+    ]
+   }
+  },
+  {
+   "name": "estimate-translation-preview",
+   "title": "estimate translated audio preview",
+   "description": "Read the server quote for translating saved audio in an accessible project. Does not translate, create a video, modify saved audio, or incur provider charges. If preview.quotedDurationSeconds is shorter than preview.sourceDurationSeconds, explain the duration limit and offer the bounded preview. Before admission, save a new trimmed audio asset and quote that asset; this estimate never trims the original. External provider charges must be disclosed separately.",
+   "inputSchema": {
+    "type": "object",
+    "properties": {
+     "projectId": {
+      "type": "string",
+      "format": "uuid",
+      "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+     },
+     "audioAssetId": {
+      "type": "string",
+      "format": "uuid",
+      "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+     }
+    },
+    "required": [
+     "projectId",
+     "audioAssetId"
+    ],
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "additionalProperties": false
+   },
+   "outputSchema": {
+    "type": "object",
+    "anyOf": [
+     {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "properties": {
+       "billing": {
+        "type": "string",
+        "enum": [
+         "sync_credits",
+         "sync_usd",
+         "included",
+         "external"
+        ]
+       },
+       "estimatedGenerationCost": {
+        "anyOf": [
+         {
+          "type": "number",
+          "minimum": 0
+         },
+         {
+          "type": "null"
+         }
+        ]
+       },
+       "estimatedCredits": {
+        "anyOf": [
+         {
+          "type": "number",
+          "minimum": 0
+         },
+         {
+          "type": "null"
+         }
+        ]
+       },
+       "preview": {
+        "type": "object",
+        "properties": {
+         "sourceDurationSeconds": {
+          "type": "number",
+          "exclusiveMinimum": 0
+         },
+         "quotedDurationSeconds": {
+          "type": "number",
+          "exclusiveMinimum": 0
+         },
+         "limitSeconds": {
+          "anyOf": [
+           {
+            "type": "number",
+            "exclusiveMinimum": 0
+           },
+           {
+            "type": "null"
+           }
+          ]
+         }
+        },
+        "required": [
+         "sourceDurationSeconds",
+         "quotedDurationSeconds",
+         "limitSeconds"
+        ],
+        "additionalProperties": false
+       }
+      },
+      "required": [
+       "billing",
+       "estimatedGenerationCost",
+       "estimatedCredits"
+      ],
+      "additionalProperties": false
+     },
+     {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "properties": {
+       "error": {
+        "type": "object",
+        "properties": {
+         "message": {
+          "type": "string"
+         },
+         "status": {
+          "type": "integer",
+          "minimum": -9007199254740991,
+          "maximum": 9007199254740991
+         },
+         "code": {
+          "type": "string"
+         },
+         "retryable": {
+          "type": "boolean"
+         },
+         "retryAfterMs": {
+          "type": "number"
+         },
+         "generationId": {
+          "type": "string"
+         },
+         "importJobId": {
+          "type": "string",
+          "format": "uuid",
+          "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+         },
+         "importStatus": {
+          "type": "string",
+          "enum": [
+           "queued",
+           "downloading",
+           "processing",
+           "completed",
+           "failed"
+          ]
+         },
+         "progress": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100
+         }
+        },
+        "required": [
+         "message"
+        ],
+        "additionalProperties": false
+       }
+      },
+      "required": [
+       "error"
+      ],
+      "additionalProperties": false
+     }
+    ]
+   },
+   "annotations": {
+    "readOnlyHint": true,
+    "destructiveHint": false,
+    "idempotentHint": true,
+    "openWorldHint": false
+   },
+   "_meta": {
+    "securitySchemes": [
+     {
+      "type": "oauth2",
+      "scopes": []
+     }
+    ]
+   }
+  },
+  {
+   "name": "create-translation-preview",
+   "title": "translate audio for preview",
+   "description": "Create one paid translated-audio preview from a saved audio asset. Confirm language and displayed cost first. Persist one UUID idempotencyKey and reuse the same immutable request after an uncertain response. Poll the returned job; never redub because audio attachment failed. Final video generation is a separate, explicitly approved lip-sync operation using the translated audio asset. When supplying projectId, projectIntent=explicit is required: the user must explicitly ask to work in that project, select it in the interface, or this must be the project just created for this request. A matching workflow/name or an already-open editor is never permission to modify it. Default new work to a new project.",
+   "inputSchema": {
+    "type": "object",
+    "properties": {
+     "projectId": {
+      "type": "string",
+      "format": "uuid",
+      "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+     },
+     "audioAssetId": {
+      "type": "string",
+      "format": "uuid",
+      "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+     },
+     "targetLang": {
+      "type": "string",
+      "minLength": 1
+     },
+     "sourceLang": {
+      "description": "Optional; the source language is detected.",
+      "type": "string"
+     },
+     "idempotencyKey": {
+      "type": "string",
+      "format": "uuid",
+      "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+     },
+     "projectIntent": {
+      "description": "Required with projectId. Set only for an explicit user project selection/update, or the new project just created for this request. Never infer intent from a matching project name, workflow name or active editor.",
+      "type": "string",
+      "const": "explicit"
+     }
+    },
+    "required": [
+     "projectId",
+     "audioAssetId",
+     "targetLang",
+     "idempotencyKey"
+    ],
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "additionalProperties": false
+   },
+   "outputSchema": {
+    "type": "object",
+    "anyOf": [
+     {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "properties": {
+       "id": {
+        "type": "string",
+        "format": "uuid",
+        "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+       },
+       "projectId": {
+        "type": "string",
+        "format": "uuid",
+        "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+       },
+       "status": {
+        "type": "string",
+        "enum": [
+         "PENDING",
+         "PROCESSING",
+         "COMPLETING",
+         "COMPLETED",
+         "FAILED"
+        ]
+       },
+       "sourceAudioUrl": {
+        "type": "string"
+       },
+       "sourceLang": {
+        "type": "string"
+       },
+       "targetLang": {
+        "type": "string"
+       },
+       "cloningStrength": {
+        "anyOf": [
+         {
+          "type": "integer",
+          "minimum": -9007199254740991,
+          "maximum": 9007199254740991
+         },
+         {
+          "type": "null"
+         }
+        ]
+       },
+       "outputMediaUrl": {
+        "type": [
+         "string",
+         "null"
+        ]
+       },
+       "outputDurationSec": {
+        "anyOf": [
+         {
+          "type": "number",
+          "minimum": 0
+         },
+         {
+          "type": "null"
+         }
+        ]
+       },
+       "error": {
+        "anyOf": [
+         {
+          "type": "object",
+          "properties": {
+           "code": {
+            "type": "string"
+           },
+           "message": {
+            "type": "string"
+           }
+          },
+          "required": [
+           "code",
+           "message"
+          ],
+          "additionalProperties": false
+         },
+         {
+          "type": "null"
+         }
+        ]
+       },
+       "recoveryRequired": {
+        "type": "boolean"
+       },
+       "createdAt": {
+        "type": "string"
+       },
+       "startedAt": {
+        "type": [
+         "string",
+         "null"
+        ]
+       },
+       "finishedAt": {
+        "type": [
+         "string",
+         "null"
+        ]
+       }
+      },
+      "required": [
+       "id",
+       "projectId",
+       "status",
+       "sourceLang",
+       "targetLang",
+       "outputMediaUrl",
+       "outputDurationSec",
+       "error",
+       "recoveryRequired"
+      ],
+      "additionalProperties": false
+     },
+     {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "properties": {
+       "error": {
+        "type": "object",
+        "properties": {
+         "message": {
+          "type": "string"
+         },
+         "status": {
+          "type": "integer",
+          "minimum": -9007199254740991,
+          "maximum": 9007199254740991
+         },
+         "code": {
+          "type": "string"
+         },
+         "retryable": {
+          "type": "boolean"
+         },
+         "retryAfterMs": {
+          "type": "number"
+         },
+         "generationId": {
+          "type": "string"
+         },
+         "importJobId": {
+          "type": "string",
+          "format": "uuid",
+          "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+         },
+         "importStatus": {
+          "type": "string",
+          "enum": [
+           "queued",
+           "downloading",
+           "processing",
+           "completed",
+           "failed"
+          ]
+         },
+         "progress": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100
+         }
+        },
+        "required": [
+         "message"
+        ],
+        "additionalProperties": false
+       }
+      },
+      "required": [
+       "error"
+      ],
+      "additionalProperties": false
+     }
+    ]
+   },
+   "annotations": {
+    "readOnlyHint": false,
+    "destructiveHint": true,
+    "idempotentHint": false,
+    "openWorldHint": true
+   },
+   "_meta": {
+    "securitySchemes": [
+     {
+      "type": "oauth2",
+      "scopes": []
+     }
+    ]
+   }
+  },
+  {
+   "name": "get-translation-preview",
+   "title": "read translated audio preview",
+   "description": "Read the same project-authorized translation job; pass wait: true to wait for it on the server. A recoveryRequired result means provider acceptance is uncertain; do not create another job. Does not start or retry translation. When COMPLETED, outputMediaUrl can be registered with assets_create (type=AUDIO) or, when available, passed as a clip audioUrl to create-timeline-lipsync.",
+   "inputSchema": {
+    "type": "object",
+    "properties": {
+     "projectId": {
+      "type": "string",
+      "format": "uuid",
+      "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+     },
+     "id": {
+      "type": "string",
+      "format": "uuid",
+      "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+     },
+     "wait": {
+      "description": "Wait on the server until the job finishes or about 50 seconds pass, then return its latest state. If it is still running, call again with wait: true instead of sleeping.",
+      "type": "boolean"
+     }
+    },
+    "required": [
+     "projectId",
+     "id"
+    ],
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "additionalProperties": false
+   },
+   "outputSchema": {
+    "type": "object",
+    "anyOf": [
+     {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "properties": {
+       "id": {
+        "type": "string",
+        "format": "uuid",
+        "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+       },
+       "projectId": {
+        "type": "string",
+        "format": "uuid",
+        "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+       },
+       "status": {
+        "type": "string",
+        "enum": [
+         "PENDING",
+         "PROCESSING",
+         "COMPLETING",
+         "COMPLETED",
+         "FAILED"
+        ]
+       },
+       "sourceAudioUrl": {
+        "type": "string"
+       },
+       "sourceLang": {
+        "type": "string"
+       },
+       "targetLang": {
+        "type": "string"
+       },
+       "cloningStrength": {
+        "anyOf": [
+         {
+          "type": "integer",
+          "minimum": -9007199254740991,
+          "maximum": 9007199254740991
+         },
+         {
+          "type": "null"
+         }
+        ]
+       },
+       "outputMediaUrl": {
+        "type": [
+         "string",
+         "null"
+        ]
+       },
+       "outputDurationSec": {
+        "anyOf": [
+         {
+          "type": "number",
+          "minimum": 0
+         },
+         {
+          "type": "null"
+         }
+        ]
+       },
+       "error": {
+        "anyOf": [
+         {
+          "type": "object",
+          "properties": {
+           "code": {
+            "type": "string"
+           },
+           "message": {
+            "type": "string"
+           }
+          },
+          "required": [
+           "code",
+           "message"
+          ],
+          "additionalProperties": false
+         },
+         {
+          "type": "null"
+         }
+        ]
+       },
+       "recoveryRequired": {
+        "type": "boolean"
+       },
+       "createdAt": {
+        "type": "string"
+       },
+       "startedAt": {
+        "type": [
+         "string",
+         "null"
+        ]
+       },
+       "finishedAt": {
+        "type": [
+         "string",
+         "null"
+        ]
+       }
+      },
+      "required": [
+       "id",
+       "projectId",
+       "status",
+       "sourceLang",
+       "targetLang",
+       "outputMediaUrl",
+       "outputDurationSec",
+       "error",
+       "recoveryRequired"
+      ],
+      "additionalProperties": false
+     },
+     {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "properties": {
+       "error": {
+        "type": "object",
+        "properties": {
+         "message": {
+          "type": "string"
+         },
+         "status": {
+          "type": "integer",
+          "minimum": -9007199254740991,
+          "maximum": 9007199254740991
+         },
+         "code": {
+          "type": "string"
+         },
+         "retryable": {
+          "type": "boolean"
+         },
+         "retryAfterMs": {
+          "type": "number"
+         },
+         "generationId": {
+          "type": "string"
+         },
+         "importJobId": {
+          "type": "string",
+          "format": "uuid",
+          "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+         },
+         "importStatus": {
+          "type": "string",
+          "enum": [
+           "queued",
+           "downloading",
+           "processing",
+           "completed",
+           "failed"
+          ]
+         },
+         "progress": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100
+         }
+        },
+        "required": [
+         "message"
+        ],
+        "additionalProperties": false
+       }
+      },
+      "required": [
+       "error"
+      ],
+      "additionalProperties": false
+     }
+    ]
+   },
+   "annotations": {
+    "readOnlyHint": true,
+    "destructiveHint": false,
+    "idempotentHint": true,
+    "openWorldHint": false
+   },
+   "_meta": {
+    "securitySchemes": [
+     {
+      "type": "oauth2",
+      "scopes": []
+     }
+    ]
+   }
+  },
+  {
+   "name": "trim-audio",
+   "title": "prepare shorter audio",
+   "description": "Save the first durationSeconds of an authorized Sync audio asset, passed as assetId, as a new reusable asset. Explain and confirm the partial duration first. Persist one idempotencyKey and reuse it with identical inputs after an uncertain response. This prepares audio only: it never generates video, spends generation credits, or consumes a free generation. Poll get-audio-trim until completed, then use its assetId and actual duration for a fresh quote. Partial video lipsync must use cut_off; keep the original draft unchanged. Failed operations require an explicit new attempt. When supplying projectId, projectIntent=explicit is required: the user must explicitly ask to work in that project, select it in the interface, or this must be the project just created for this request. A matching workflow/name or an already-open editor is never permission to modify it. Default new work to a new project.",
+   "inputSchema": {
+    "type": "object",
+    "properties": {
+     "assetId": {
+      "description": "Saved AUDIO asset to shorten.",
+      "type": "string",
+      "format": "uuid",
+      "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+     },
+     "projectId": {
+      "type": "string",
+      "format": "uuid",
+      "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+     },
+     "durationSeconds": {
+      "type": "number",
+      "minimum": 0.01,
+      "maximum": 3600
+     },
+     "idempotencyKey": {
+      "type": "string",
+      "format": "uuid",
+      "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+     },
+     "audioAssetId": {
+      "description": "Deprecated alias of assetId.",
+      "deprecated": true,
+      "type": "string",
+      "format": "uuid",
+      "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+     },
+     "projectIntent": {
+      "description": "Required with projectId. Set only for an explicit user project selection/update, or the new project just created for this request. Never infer intent from a matching project name, workflow name or active editor.",
+      "type": "string",
+      "const": "explicit"
+     }
+    },
+    "required": [
+     "durationSeconds",
+     "idempotencyKey"
+    ],
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "additionalProperties": false
+   },
+   "outputSchema": {
+    "type": "object",
+    "anyOf": [
+     {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "properties": {
+       "id": {
+        "type": "string",
+        "format": "uuid",
+        "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+       },
+       "status": {
+        "type": "string",
+        "enum": [
+         "queued",
+         "processing",
+         "completed",
+         "failed"
+        ]
+       },
+       "assetId": {
+        "anyOf": [
+         {
+          "type": "string",
+          "format": "uuid",
+          "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+         },
+         {
+          "type": "null"
+         }
+        ]
+       },
+       "durationSeconds": {
+        "anyOf": [
+         {
+          "type": "number",
+          "exclusiveMinimum": 0
+         },
+         {
+          "type": "null"
+         }
+        ]
+       },
+       "errorCode": {
+        "type": [
+         "string",
+         "null"
+        ]
+       },
+       "retryAfterMs": {
+        "type": "integer",
+        "minimum": 0,
+        "maximum": 9007199254740991
+       }
+      },
+      "required": [
+       "id",
+       "status",
+       "assetId",
+       "durationSeconds",
+       "errorCode",
+       "retryAfterMs"
+      ],
+      "additionalProperties": false
+     },
+     {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "properties": {
+       "error": {
+        "type": "object",
+        "properties": {
+         "message": {
+          "type": "string"
+         },
+         "status": {
+          "type": "integer",
+          "minimum": -9007199254740991,
+          "maximum": 9007199254740991
+         },
+         "code": {
+          "type": "string"
+         },
+         "retryable": {
+          "type": "boolean"
+         },
+         "retryAfterMs": {
+          "type": "number"
+         },
+         "generationId": {
+          "type": "string"
+         },
+         "importJobId": {
+          "type": "string",
+          "format": "uuid",
+          "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+         },
+         "importStatus": {
+          "type": "string",
+          "enum": [
+           "queued",
+           "downloading",
+           "processing",
+           "completed",
+           "failed"
+          ]
+         },
+         "progress": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100
+         }
+        },
+        "required": [
+         "message"
+        ],
+        "additionalProperties": false
+       }
+      },
+      "required": [
+       "error"
+      ],
+      "additionalProperties": false
+     }
+    ]
+   },
+   "annotations": {
+    "readOnlyHint": false,
+    "destructiveHint": false,
+    "idempotentHint": true,
+    "openWorldHint": false
+   },
+   "_meta": {
+    "securitySchemes": [
+     {
+      "type": "oauth2",
+      "scopes": []
+     }
+    ]
+   }
+  },
+  {
+   "name": "get-audio-trim",
+   "title": "read audio preparation",
+   "description": "Read the same authorized audio preparation. Pending status is resumable; do not create another trim. This never starts video generation.",
+   "inputSchema": {
+    "type": "object",
+    "properties": {
+     "id": {
+      "type": "string",
+      "format": "uuid",
+      "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+     }
+    },
+    "required": [
+     "id"
+    ],
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "additionalProperties": false
+   },
+   "outputSchema": {
+    "type": "object",
+    "anyOf": [
+     {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "properties": {
+       "id": {
+        "type": "string",
+        "format": "uuid",
+        "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+       },
+       "status": {
+        "type": "string",
+        "enum": [
+         "queued",
+         "processing",
+         "completed",
+         "failed"
+        ]
+       },
+       "assetId": {
+        "anyOf": [
+         {
+          "type": "string",
+          "format": "uuid",
+          "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+         },
+         {
+          "type": "null"
+         }
+        ]
+       },
+       "durationSeconds": {
+        "anyOf": [
+         {
+          "type": "number",
+          "exclusiveMinimum": 0
+         },
+         {
+          "type": "null"
+         }
+        ]
+       },
+       "errorCode": {
+        "type": [
+         "string",
+         "null"
+        ]
+       },
+       "retryAfterMs": {
+        "type": "integer",
+        "minimum": 0,
+        "maximum": 9007199254740991
+       }
+      },
+      "required": [
+       "id",
+       "status",
+       "assetId",
+       "durationSeconds",
+       "errorCode",
+       "retryAfterMs"
+      ],
+      "additionalProperties": false
+     },
+     {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "properties": {
+       "error": {
+        "type": "object",
+        "properties": {
+         "message": {
+          "type": "string"
+         },
+         "status": {
+          "type": "integer",
+          "minimum": -9007199254740991,
+          "maximum": 9007199254740991
+         },
+         "code": {
+          "type": "string"
+         },
+         "retryable": {
+          "type": "boolean"
+         },
+         "retryAfterMs": {
+          "type": "number"
+         },
+         "generationId": {
+          "type": "string"
+         },
+         "importJobId": {
+          "type": "string",
+          "format": "uuid",
+          "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+         },
+         "importStatus": {
+          "type": "string",
+          "enum": [
+           "queued",
+           "downloading",
+           "processing",
+           "completed",
+           "failed"
+          ]
+         },
+         "progress": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100
+         }
+        },
+        "required": [
+         "message"
+        ],
+        "additionalProperties": false
+       }
+      },
+      "required": [
+       "error"
+      ],
+      "additionalProperties": false
+     }
+    ]
+   },
+   "annotations": {
+    "readOnlyHint": true,
+    "destructiveHint": false,
+    "idempotentHint": true,
+    "openWorldHint": false
+   },
+   "_meta": {
+    "securitySchemes": [
+     {
+      "type": "oauth2",
+      "scopes": []
+     }
+    ]
+   }
+  },
+  {
+   "name": "get-dialogue-options",
+   "title": "check edit dialogue availability",
+   "description": "Check whether the connected API supports timed-word Edit Dialogue. Does not transcribe, synthesize or generate.",
+   "inputSchema": {
+    "type": "object",
+    "properties": {},
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "additionalProperties": false
+   },
+   "annotations": {
+    "readOnlyHint": true,
+    "destructiveHint": false,
+    "openWorldHint": false
+   },
+   "_meta": {
+    "securitySchemes": [
+     {
+      "type": "oauth2",
+      "scopes": []
+     }
+    ]
+   }
+  },
+  {
+   "name": "upload-dialogue-source",
+   "title": "copy a video for edit dialogue",
+   "description": "Copy an accessible saved video into Sync storage when transcription rejects its external source URL. Returns a new asset; use its id as videoAssetId for transcription, preview, and final video generation. Does not transcribe or spend generation credits. When supplying projectId, projectIntent=explicit is required: the user must explicitly ask to work in that project, select it in the interface, or this must be the project just created for this request. A matching workflow/name or an already-open editor is never permission to modify it. Default new work to a new project.",
+   "inputSchema": {
+    "type": "object",
+    "properties": {
+     "projectId": {
+      "type": "string",
+      "format": "uuid",
+      "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+     },
+     "videoAssetId": {
+      "type": "string",
+      "format": "uuid",
+      "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+     },
+     "projectIntent": {
+      "description": "Required with projectId. Set only for an explicit user project selection/update, or the new project just created for this request. Never infer intent from a matching project name, workflow name or active editor.",
+      "type": "string",
+      "const": "explicit"
+     }
+    },
+    "required": [
+     "projectId",
+     "videoAssetId"
+    ],
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "additionalProperties": false
+   },
+   "outputSchema": {
+    "type": "object",
+    "anyOf": [
+     {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "properties": {
+       "asset": {
+        "type": "object",
+        "properties": {
+         "id": {
+          "type": "string",
+          "format": "uuid",
+          "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+         },
+         "type": {
+          "type": "string",
+          "const": "VIDEO"
+         },
+         "url": {
+          "type": "string",
+          "format": "uri"
+         }
+        },
+        "required": [
+         "id",
+         "type",
+         "url"
+        ],
+        "additionalProperties": {}
+       }
+      },
+      "required": [
+       "asset"
+      ],
+      "additionalProperties": false
+     },
+     {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "properties": {
+       "error": {
+        "type": "object",
+        "properties": {
+         "message": {
+          "type": "string"
+         },
+         "status": {
+          "type": "integer",
+          "minimum": -9007199254740991,
+          "maximum": 9007199254740991
+         },
+         "code": {
+          "type": "string"
+         },
+         "retryable": {
+          "type": "boolean"
+         },
+         "retryAfterMs": {
+          "type": "number"
+         },
+         "generationId": {
+          "type": "string"
+         },
+         "importJobId": {
+          "type": "string",
+          "format": "uuid",
+          "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+         },
+         "importStatus": {
+          "type": "string",
+          "enum": [
+           "queued",
+           "downloading",
+           "processing",
+           "completed",
+           "failed"
+          ]
+         },
+         "progress": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100
+         }
+        },
+        "required": [
+         "message"
+        ],
+        "additionalProperties": false
+       }
+      },
+      "required": [
+       "error"
+      ],
+      "additionalProperties": false
+     }
+    ]
+   },
+   "annotations": {
+    "readOnlyHint": false,
+    "destructiveHint": true,
+    "idempotentHint": false,
+    "openWorldHint": true
+   },
+   "_meta": {
+    "securitySchemes": [
+     {
+      "type": "oauth2",
+      "scopes": []
+     }
+    ]
+   }
+  },
+  {
+   "name": "create-dialogue-transcription",
+   "title": "transcribe a video for edit dialogue",
+   "description": "Use this to start correcting or removing spoken words in a saved single-speaker video while keeping the original speaker voice. Transcribes timed words for Edit Dialogue; not whole-script replacement, translation, or choosing a different voice. Transcription is unbilled and identical sources reuse their existing job. A video outside Sync storage is copied there first; the result then carries the videoAssetId of that copy, which the rest of the workflow must use. Does not replace dialogue or generate a video. When supplying projectId, projectIntent=explicit is required: the user must explicitly ask to work in that project, select it in the interface, or this must be the project just created for this request. A matching workflow/name or an already-open editor is never permission to modify it. Default new work to a new project.",
+   "inputSchema": {
+    "type": "object",
+    "properties": {
+     "projectId": {
+      "type": "string",
+      "format": "uuid",
+      "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+     },
+     "videoAssetId": {
+      "type": "string",
+      "format": "uuid",
+      "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+     },
+     "projectIntent": {
+      "description": "Required with projectId. Set only for an explicit user project selection/update, or the new project just created for this request. Never infer intent from a matching project name, workflow name or active editor.",
+      "type": "string",
+      "const": "explicit"
+     }
+    },
+    "required": [
+     "projectId",
+     "videoAssetId"
+    ],
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "additionalProperties": false
+   },
+   "annotations": {
+    "readOnlyHint": false,
+    "destructiveHint": true,
+    "idempotentHint": false,
+    "openWorldHint": true
+   },
+   "_meta": {
+    "securitySchemes": [
+     {
+      "type": "oauth2",
+      "scopes": []
+     }
+    ]
+   }
+  },
+  {
+   "name": "get-dialogue-transcription",
+   "title": "check an edit dialogue transcription",
+   "description": "Read the same transcription job until complete. Requires its original saved video and accessible project.",
+   "inputSchema": {
+    "type": "object",
+    "properties": {
+     "projectId": {
+      "type": "string",
+      "format": "uuid",
+      "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+     },
+     "videoAssetId": {
+      "type": "string",
+      "format": "uuid",
+      "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+     },
+     "id": {
+      "type": "string",
+      "format": "uuid",
+      "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+     }
+    },
+    "required": [
+     "projectId",
+     "videoAssetId",
+     "id"
+    ],
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "additionalProperties": false
+   },
+   "annotations": {
+    "readOnlyHint": true,
+    "destructiveHint": false,
+    "openWorldHint": false
+   },
+   "_meta": {
+    "securitySchemes": [
+     {
+      "type": "oauth2",
+      "scopes": []
+     }
+    ]
+   }
+  },
+  {
+   "name": "create-dialogue-preview",
+   "title": "preview dialogue edits",
+   "description": "Start an audio synthesis job for user-approved timed word changes/removals in a saved single-speaker video, preserving the original speaker voice. Requires a project, source video and completed transcription or prior preview accessible to the connected Sync account. May clone the source speaker voice and incur synthesis charges; confirm the edits and permission to use that voice before creating. Creates a saved preview without overwriting the source; does not generate the final video. Returns a preview job ID; poll get-dialogue-preview with the same project and source until completion, and disclose any failed edits on partial completion. Persist an idempotencyKey before creating when get-dialogue-options advertises keyedPreview. Recover only through an explicit retry of identical input with that same key; never retry an ambiguous creation automatically. Not for translation, choosing another voice, or arbitrary full-transcript replacement. When supplying projectId, projectIntent=explicit is required: the user must explicitly ask to work in that project, select it in the interface, or this must be the project just created for this request. A matching workflow/name or an already-open editor is never permission to modify it. Default new work to a new project.",
+   "inputSchema": {
+    "type": "object",
+    "properties": {
+     "projectId": {
+      "type": "string",
+      "format": "uuid",
+      "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$",
+      "description": "Accessible Sync project for the preview. Keep unchanged on retries."
+     },
+     "videoAssetId": {
+      "type": "string",
+      "format": "uuid",
+      "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$",
+      "description": "Saved VIDEO asset for the transcription or prior preview, accessible to the connected account."
+     },
+     "idempotencyKey": {
+      "description": "Persist a unique key before creation when get-dialogue-options reports keyedPreview. Reuse only with identical inputs for an explicitly requested retry.",
+      "type": "string",
+      "pattern": "^[A-Za-z0-9._~-]{1,128}$"
+     },
+     "transcriptionJobId": {
+      "description": "Completed transcription ID for this source. Supply exactly one of transcriptionJobId or previousPreviewId.",
+      "type": "string",
+      "format": "uuid",
+      "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+     },
+     "previousPreviewId": {
+      "description": "Completed or partially completed preview ID for this source when reopening. Supply exactly one of previousPreviewId or transcriptionJobId.",
+      "type": "string",
+      "format": "uuid",
+      "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+     },
+     "edits": {
+      "minItems": 1,
+      "maxItems": 100,
+      "type": "array",
+      "items": {
+       "oneOf": [
+        {
+         "type": "object",
+         "properties": {
+          "kind": {
+           "type": "string",
+           "const": "change"
+          },
+          "wordId": {
+           "type": "string",
+           "description": "Timed word ID from the source transcript."
+          },
+          "replacement": {
+           "type": "string",
+           "minLength": 1,
+           "maxLength": 500,
+           "description": "What the speaker says instead."
+          },
+          "pronunciation": {
+           "description": "Plain-text respelling for a name or word the voice would otherwise mispronounce.",
+           "type": "string",
+           "minLength": 1,
+           "maxLength": 100
+          }
+         },
+         "required": [
+          "kind",
+          "wordId",
+          "replacement"
+         ],
+         "additionalProperties": false
+        },
+        {
+         "type": "object",
+         "properties": {
+          "kind": {
+           "type": "string",
+           "const": "remove"
+          },
+          "wordIds": {
+           "minItems": 1,
+           "type": "array",
+           "items": {
+            "type": "string"
+           },
+           "description": "Timed word IDs to remove."
+          }
+         },
+         "required": [
+          "kind",
+          "wordIds"
+         ],
+         "additionalProperties": false
+        }
+       ]
+      },
+      "description": "User-approved changes/removals referencing timed word IDs in the source transcript."
+     },
+     "transcriptionId": {
+      "description": "Deprecated alias of transcriptionJobId.",
+      "deprecated": true,
+      "type": "string",
+      "format": "uuid",
+      "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+     },
+     "projectIntent": {
+      "description": "Required with projectId. Set only for an explicit user project selection/update, or the new project just created for this request. Never infer intent from a matching project name, workflow name or active editor.",
+      "type": "string",
+      "const": "explicit"
+     }
+    },
+    "required": [
+     "projectId",
+     "videoAssetId",
+     "edits"
+    ],
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "additionalProperties": false
+   },
+   "annotations": {
+    "readOnlyHint": false,
+    "destructiveHint": true,
+    "idempotentHint": false,
+    "openWorldHint": false
+   },
+   "_meta": {
+    "securitySchemes": [
+     {
+      "type": "oauth2",
+      "scopes": []
+     }
+    ]
+   }
+  },
+  {
+   "name": "get-dialogue-preview",
+   "title": "check a dialogue edit preview",
+   "description": "Read one existing Edit Dialogue audio preview. Partial completion must be disclosed, not described as every edit succeeding.",
+   "inputSchema": {
+    "type": "object",
+    "properties": {
+     "projectId": {
+      "type": "string",
+      "format": "uuid",
+      "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+     },
+     "videoAssetId": {
+      "type": "string",
+      "format": "uuid",
+      "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+     },
+     "id": {
+      "type": "string",
+      "format": "uuid",
+      "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+     }
+    },
+    "required": [
+     "projectId",
+     "videoAssetId",
+     "id"
+    ],
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "additionalProperties": false
+   },
+   "annotations": {
+    "readOnlyHint": true,
+    "destructiveHint": false,
+    "openWorldHint": false
+   },
+   "_meta": {
+    "securitySchemes": [
+     {
+      "type": "oauth2",
+      "scopes": []
+     }
+    ]
+   }
+  },
+  {
+   "name": "estimate-dialogue-video",
+   "title": "estimate an edited dialogue video",
+   "description": "Estimate final video cost using the completed dialogue preview and canonical server retiming. Does not generate or reserve credits.",
+   "inputSchema": {
+    "type": "object",
+    "properties": {
+     "projectId": {
+      "type": "string",
+      "format": "uuid",
+      "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+     },
+     "videoAssetId": {
+      "type": "string",
+      "format": "uuid",
+      "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+     },
+     "dialogueEditId": {
+      "type": "string",
+      "format": "uuid",
+      "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+     },
+     "model": {
+      "type": "string",
+      "minLength": 1
+     },
+     "options": {
+      "type": "object",
+      "properties": {
+       "sync_mode": {
+        "type": "string",
+        "enum": [
+         "bounce",
+         "loop",
+         "cut_off",
+         "silence",
+         "remap"
+        ]
+       },
+       "temperature": {
+        "anyOf": [
+         {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+         },
+         {
+          "type": "null"
+         }
+        ]
+       },
+       "active_speaker_detection": {
+        "anyOf": [
+         {
+          "type": "boolean"
+         },
+         {
+          "type": "object",
+          "properties": {
+           "auto_detect": {
+            "type": "boolean"
+           },
+           "use_v2": {
+            "type": "boolean"
+           },
+           "v3": {
+            "type": "boolean"
+           },
+           "face_image": {
+            "type": "string"
+           },
+           "frame_number": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+           },
+           "coordinates": {
+            "type": "array",
+            "prefixItems": [
+             {
+              "type": "number"
+             },
+             {
+              "type": "number"
+             }
+            ],
+            "items": false,
+            "minItems": 2,
+            "maxItems": 2
+           }
+          },
+          "additionalProperties": false
+         }
+        ]
+       },
+       "occlusion_detection_enabled": {
+        "type": "boolean"
+       },
+       "reasoning_enabled": {
+        "description": "Only lipsync-2-pro supports reasoning; it is ignored for other models.",
+        "type": "boolean"
+       },
+       "model_mode": {
+        "type": "string",
+        "enum": [
+         "lips",
+         "face",
+         "head"
+        ]
+       }
+      },
+      "additionalProperties": false
+     }
+    },
+    "required": [
+     "projectId",
+     "videoAssetId",
+     "dialogueEditId",
+     "model"
+    ],
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "additionalProperties": false
+   },
+   "annotations": {
+    "readOnlyHint": true,
+    "destructiveHint": false,
+    "openWorldHint": false
+   },
+   "_meta": {
+    "securitySchemes": [
+     {
+      "type": "oauth2",
+      "scopes": []
+     }
+    ]
+   }
+  },
+  {
+   "name": "create-dialogue-video",
+   "title": "create the edited dialogue video",
+   "description": "Create a new lip-synced video from a saved single-speaker video and its completed, user-approved Edit Dialogue audio preview. Use this to render targeted corrections or removals of spoken words while preserving the original speaker voice. Not for translation, whole-script replacement, or choosing a different voice. This is a paid action that starts a generation job and consumes Sync credits. First use estimate-dialogue-video with the same source, preview and model, then obtain the user's approval of the preview, configuration and estimated cost. Requires a project and source video accessible to the connected account, and a completed dialogue preview for that same source. Creates a new output without overwriting the source video. Returns a generation ID, not a finished video. Poll generate_get-generation with that ID until completion. Persist one idempotency key for the approved request; on an uncertain response, reuse that key with identical inputs instead of starting a second paid job. When supplying projectId, projectIntent=explicit is required: the user must explicitly ask to work in that project, select it in the interface, or this must be the project just created for this request. A matching workflow/name or an already-open editor is never permission to modify it. Default new work to a new project.",
+   "inputSchema": {
+    "type": "object",
+    "properties": {
+     "projectId": {
+      "type": "string",
+      "format": "uuid",
+      "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$",
+      "description": "Accessible Sync project for the new output. Keep unchanged on retries."
+     },
+     "videoAssetId": {
+      "type": "string",
+      "format": "uuid",
+      "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$",
+      "description": "Saved VIDEO asset used for the approved dialogue preview, accessible to the connected account."
+     },
+     "dialogueEditId": {
+      "type": "string",
+      "format": "uuid",
+      "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$",
+      "description": "Completed Edit Dialogue audio preview ID for this source video and the current user-approved edits. Not a transcription or generation ID."
+     },
+     "model": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Lip-sync model returned by models_get, matching the approved estimate."
+     },
+     "options": {
+      "type": "object",
+      "properties": {
+       "sync_mode": {
+        "type": "string",
+        "enum": [
+         "bounce",
+         "loop",
+         "cut_off",
+         "silence",
+         "remap"
+        ]
+       },
+       "temperature": {
+        "anyOf": [
+         {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+         },
+         {
+          "type": "null"
+         }
+        ]
+       },
+       "active_speaker_detection": {
+        "anyOf": [
+         {
+          "type": "boolean"
+         },
+         {
+          "type": "object",
+          "properties": {
+           "auto_detect": {
+            "type": "boolean"
+           },
+           "use_v2": {
+            "type": "boolean"
+           },
+           "v3": {
+            "type": "boolean"
+           },
+           "face_image": {
+            "type": "string"
+           },
+           "frame_number": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+           },
+           "coordinates": {
+            "type": "array",
+            "prefixItems": [
+             {
+              "type": "number"
+             },
+             {
+              "type": "number"
+             }
+            ],
+            "items": false,
+            "minItems": 2,
+            "maxItems": 2
+           }
+          },
+          "additionalProperties": false
+         }
+        ]
+       },
+       "occlusion_detection_enabled": {
+        "type": "boolean"
+       },
+       "reasoning_enabled": {
+        "description": "Only lipsync-2-pro supports reasoning; it is ignored for other models.",
+        "type": "boolean"
+       },
+       "model_mode": {
+        "type": "string",
+        "enum": [
+         "lips",
+         "face",
+         "head"
+        ]
+       }
+      },
+      "additionalProperties": false
+     },
+     "continuation": {
+      "description": "Only for an explicitly requested continuation of an existing generation in this project. The workflow must be edit_dialogue.",
+      "type": "object",
+      "properties": {
+       "workflow": {
+        "type": "string",
+        "enum": [
+         "lipsync",
+         "translate_and_dub",
+         "image_to_video",
+         "edit_dialogue"
+        ]
+       },
+       "parentGenerationId": {
+        "type": "string",
+        "format": "uuid",
+        "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+       }
+      },
+      "required": [
+       "workflow",
+       "parentGenerationId"
+      ],
+      "additionalProperties": false
+     },
+     "idempotencyKey": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9._~-]{1,128}$",
+      "description": "Persist one unique key per approved generation. Reuse the exact key and unchanged inputs when recovering an uncertain response; never automatically generate a replacement key."
+     },
+     "projectIntent": {
+      "description": "Required with projectId. Set only for an explicit user project selection/update, or the new project just created for this request. Never infer intent from a matching project name, workflow name or active editor.",
+      "type": "string",
+      "const": "explicit"
+     }
+    },
+    "required": [
+     "projectId",
+     "videoAssetId",
+     "dialogueEditId",
+     "model",
+     "idempotencyKey"
+    ],
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "additionalProperties": false
+   },
+   "outputSchema": {
+    "type": "object",
+    "anyOf": [
+     {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "properties": {
+       "id": {
+        "type": "string",
+        "description": "Sync generation id."
+       },
+       "projectId": {
+        "description": "Sync project containing this generation.",
+        "type": [
+         "string",
+         "null"
+        ]
+       },
+       "status": {
+        "type": "string",
+        "description": "Current generation status."
+       },
+       "model": {
+        "type": "string",
+        "description": "Model used for the generation."
+       },
+       "outputMediaUrl": {
+        "description": "Signed result URL when the generation is complete, named as in the API (GET /v2/generations/{id}). Copy this exact string verbatim; do not reconstruct, shorten, or edit it.",
+        "type": [
+         "string",
+         "null"
+        ]
+       },
+       "outputUrl": {
+        "description": "Deprecated alias of outputMediaUrl, with the same value. Read outputMediaUrl.",
+        "deprecated": true,
+        "type": [
+         "string",
+         "null"
+        ]
+       },
+       "generationEstimate": {
+        "description": "Server-provided completion estimate and server clock. Use only for approximate remaining time; do not invent an estimate when absent.",
+        "anyOf": [
+         {
+          "type": "object",
+          "propertyNames": {
+           "type": "string"
+          },
+          "additionalProperties": {}
+         },
+         {
+          "type": "null"
+         }
+        ]
+       },
+       "outputDuration": {
+        "description": "Output duration in seconds.",
+        "type": [
+         "number",
+         "null"
+        ]
+       },
+       "error": {},
+       "errorCode": {}
+      },
+      "additionalProperties": false
+     },
+     {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "properties": {
+       "error": {
+        "type": "object",
+        "properties": {
+         "message": {
+          "type": "string"
+         },
+         "status": {
+          "type": "integer",
+          "minimum": -9007199254740991,
+          "maximum": 9007199254740991
+         },
+         "code": {
+          "type": "string"
+         },
+         "retryable": {
+          "type": "boolean"
+         },
+         "retryAfterMs": {
+          "type": "number"
+         },
+         "generationId": {
+          "type": "string"
+         },
+         "importJobId": {
+          "type": "string",
+          "format": "uuid",
+          "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+         },
+         "importStatus": {
+          "type": "string",
+          "enum": [
+           "queued",
+           "downloading",
+           "processing",
+           "completed",
+           "failed"
+          ]
+         },
+         "progress": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100
+         }
+        },
+        "required": [
+         "message"
+        ],
+        "additionalProperties": false
+       }
+      },
+      "required": [
+       "error"
+      ],
+      "additionalProperties": false
+     }
+    ]
+   },
+   "annotations": {
+    "readOnlyHint": false,
+    "destructiveHint": true,
+    "idempotentHint": false,
+    "openWorldHint": false
+   },
+   "_meta": {
+    "securitySchemes": [
+     {
+      "type": "oauth2",
+      "scopes": []
+     }
+    ]
+   }
+  },
+  {
+   "name": "get-speech-options",
+   "title": "check speech preview availability",
+   "description": "Read speech-preview availability and the connected organization’s billing mode/free allowance for a Studio quote. Does not synthesize or change billing.",
+   "inputSchema": {
+    "type": "object",
+    "properties": {
+     "projectId": {
+      "type": "string",
+      "format": "uuid",
+      "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+     }
+    },
+    "required": [
+     "projectId"
+    ],
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "additionalProperties": false
+   },
+   "outputSchema": {
+    "type": "object",
+    "anyOf": [
+     {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "properties": {
+       "plan": {
+        "type": [
+         "string",
+         "null"
+        ]
+       },
+       "billingVersion": {
+        "type": "string",
+        "enum": [
+         "v2",
+         "v3"
+        ]
+       },
+       "hasActiveCredits": {
+        "type": "boolean"
+       },
+       "freeTtsExhausted": {
+        "type": "boolean"
+       },
+       "freeGenerationsExhausted": {
+        "type": "boolean"
+       },
+       "paymentFailureCountExceededLimit": {
+        "type": "boolean"
+       },
+       "freeMonthlyLimits": {
+        "anyOf": [
+         {
+          "type": "object",
+          "properties": {
+           "tts": {
+            "type": "object",
+            "properties": {
+             "used": {
+              "type": "number",
+              "minimum": 0
+             },
+             "max": {
+              "type": "number",
+              "minimum": 0
+             }
+            },
+            "required": [
+             "used",
+             "max"
+            ],
+            "additionalProperties": false
+           },
+           "generations": {
+            "type": "object",
+            "properties": {
+             "used": {
+              "type": "number",
+              "minimum": 0
+             },
+             "max": {
+              "type": "number",
+              "minimum": 0
+             }
+            },
+            "required": [
+             "used",
+             "max"
+            ],
+            "additionalProperties": false
+           },
+           "sync3": {
+            "type": "object",
+            "properties": {
+             "used": {
+              "type": "number",
+              "minimum": 0
+             },
+             "max": {
+              "type": "number",
+              "minimum": 0
+             }
+            },
+            "required": [
+             "used",
+             "max"
+            ],
+            "additionalProperties": false
+           }
+          },
+          "required": [
+           "tts"
+          ],
+          "additionalProperties": false
+         },
+         {
+          "type": "null"
+         }
+        ]
+       },
+       "available": {
+        "type": "boolean",
+        "const": true
+       }
+      },
+      "required": [
+       "plan",
+       "hasActiveCredits",
+       "freeTtsExhausted",
+       "paymentFailureCountExceededLimit",
+       "freeMonthlyLimits",
+       "available"
+      ],
+      "additionalProperties": false
+     },
+     {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "properties": {
+       "error": {
+        "type": "object",
+        "properties": {
+         "message": {
+          "type": "string"
+         },
+         "status": {
+          "type": "integer",
+          "minimum": -9007199254740991,
+          "maximum": 9007199254740991
+         },
+         "code": {
+          "type": "string"
+         },
+         "retryable": {
+          "type": "boolean"
+         },
+         "retryAfterMs": {
+          "type": "number"
+         },
+         "generationId": {
+          "type": "string"
+         },
+         "importJobId": {
+          "type": "string",
+          "format": "uuid",
+          "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+         },
+         "importStatus": {
+          "type": "string",
+          "enum": [
+           "queued",
+           "downloading",
+           "processing",
+           "completed",
+           "failed"
+          ]
+         },
+         "progress": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100
+         }
+        },
+        "required": [
+         "message"
+        ],
+        "additionalProperties": false
+       }
+      },
+      "required": [
+       "error"
+      ],
+      "additionalProperties": false
+     }
+    ]
+   },
+   "annotations": {
+    "readOnlyHint": true,
+    "destructiveHint": false,
+    "openWorldHint": false
+   },
+   "_meta": {
+    "securitySchemes": [
+     {
+      "type": "oauth2",
+      "scopes": []
+     }
+    ]
+   }
+  },
+  {
+   "name": "create-speech-preview",
+   "title": "generate a speech preview",
+   "description": "Synthesize the confirmed script and selected available voice into a durable audio job for the project. This is a potentially paid action. Persist idempotencyKey before calling, reuse that same key and identical input after uncertain admission, and poll get-speech-preview by returned id. Never create again merely because attaching the resulting audio failed. When supplying projectId, projectIntent=explicit is required: the user must explicitly ask to work in that project, select it in the interface, or this must be the project just created for this request. A matching workflow/name or an already-open editor is never permission to modify it. Default new work to a new project.",
+   "inputSchema": {
+    "type": "object",
+    "properties": {
+     "projectId": {
+      "type": "string",
+      "format": "uuid",
+      "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+     },
+     "idempotencyKey": {
+      "type": "string",
+      "format": "uuid",
+      "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$",
+      "description": "Persist this request identity before synthesis. Reuse it with the identical script and voice after an uncertain response."
+     },
+     "script": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 5000
+     },
+     "voiceId": {
+      "type": "string",
+      "minLength": 1,
+      "description": "An id returned by voices_get-voices. Restricted voices cannot synthesize."
+     },
+     "stability": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1
+     },
+     "similarityBoost": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1
+     },
+     "projectIntent": {
+      "description": "Required with projectId. Set only for an explicit user project selection/update, or the new project just created for this request. Never infer intent from a matching project name, workflow name or active editor.",
+      "type": "string",
+      "const": "explicit"
+     }
+    },
+    "required": [
+     "projectId",
+     "idempotencyKey",
+     "script",
+     "voiceId"
+    ],
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "additionalProperties": false
+   },
+   "outputSchema": {
+    "type": "object",
+    "anyOf": [
+     {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "properties": {
+       "id": {
+        "type": "string",
+        "format": "uuid",
+        "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+       },
+       "status": {
+        "type": "string",
+        "enum": [
+         "PENDING",
+         "PROCESSING",
+         "SUCCESS",
+         "FAILED"
+        ]
+       },
+       "url": {
+        "anyOf": [
+         {
+          "type": "string",
+          "format": "uri"
+         },
+         {
+          "type": "null"
+         }
+        ]
+       },
+       "duration": {
+        "anyOf": [
+         {
+          "type": "number",
+          "minimum": 0
+         },
+         {
+          "type": "null"
+         }
+        ]
+       },
+       "error": {
+        "anyOf": [
+         {
+          "type": "object",
+          "properties": {
+           "code": {
+            "type": "string"
+           },
+           "message": {
+            "type": "string"
+           }
+          },
+          "required": [
+           "code",
+           "message"
+          ],
+          "additionalProperties": false
+         },
+         {
+          "type": "null"
+         }
+        ]
+       },
+       "createdAt": {
+        "type": "string"
+       },
+       "startedAt": {
+        "type": [
+         "string",
+         "null"
+        ]
+       },
+       "finishedAt": {
+        "type": [
+         "string",
+         "null"
+        ]
+       }
+      },
+      "required": [
+       "id",
+       "status",
+       "url",
+       "duration",
+       "error",
+       "createdAt",
+       "startedAt",
+       "finishedAt"
+      ],
+      "additionalProperties": false
+     },
+     {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "properties": {
+       "error": {
+        "type": "object",
+        "properties": {
+         "message": {
+          "type": "string"
+         },
+         "status": {
+          "type": "integer",
+          "minimum": -9007199254740991,
+          "maximum": 9007199254740991
+         },
+         "code": {
+          "type": "string"
+         },
+         "retryable": {
+          "type": "boolean"
+         },
+         "retryAfterMs": {
+          "type": "number"
+         },
+         "generationId": {
+          "type": "string"
+         },
+         "importJobId": {
+          "type": "string",
+          "format": "uuid",
+          "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+         },
+         "importStatus": {
+          "type": "string",
+          "enum": [
+           "queued",
+           "downloading",
+           "processing",
+           "completed",
+           "failed"
+          ]
+         },
+         "progress": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100
+         }
+        },
+        "required": [
+         "message"
+        ],
+        "additionalProperties": false
+       }
+      },
+      "required": [
+       "error"
+      ],
+      "additionalProperties": false
+     }
+    ]
+   },
+   "annotations": {
+    "readOnlyHint": false,
+    "destructiveHint": true,
+    "idempotentHint": false,
+    "openWorldHint": true
+   },
+   "_meta": {
+    "securitySchemes": [
+     {
+      "type": "oauth2",
+      "scopes": []
+     }
+    ]
+   }
+  },
+  {
+   "name": "get-speech-preview",
+   "title": "check a speech preview",
+   "description": "Read the same durable speech job until SUCCESS or FAILED. Reads do not synthesize. Requires an accessible project in the connected organization; the audio is attached separately by the app.",
+   "inputSchema": {
+    "type": "object",
+    "properties": {
+     "projectId": {
+      "type": "string",
+      "format": "uuid",
+      "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+     },
+     "id": {
+      "type": "string",
+      "format": "uuid",
+      "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+     }
+    },
+    "required": [
+     "projectId",
+     "id"
+    ],
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "additionalProperties": false
+   },
+   "outputSchema": {
+    "type": "object",
+    "anyOf": [
+     {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "properties": {
+       "id": {
+        "type": "string",
+        "format": "uuid",
+        "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+       },
+       "status": {
+        "type": "string",
+        "enum": [
+         "PENDING",
+         "PROCESSING",
+         "SUCCESS",
+         "FAILED"
+        ]
+       },
+       "url": {
+        "anyOf": [
+         {
+          "type": "string",
+          "format": "uri"
+         },
+         {
+          "type": "null"
+         }
+        ]
+       },
+       "duration": {
+        "anyOf": [
+         {
+          "type": "number",
+          "minimum": 0
+         },
+         {
+          "type": "null"
+         }
+        ]
+       },
+       "error": {
+        "anyOf": [
+         {
+          "type": "object",
+          "properties": {
+           "code": {
+            "type": "string"
+           },
+           "message": {
+            "type": "string"
+           }
+          },
+          "required": [
+           "code",
+           "message"
+          ],
+          "additionalProperties": false
+         },
+         {
+          "type": "null"
+         }
+        ]
+       },
+       "createdAt": {
+        "type": "string"
+       },
+       "startedAt": {
+        "type": [
+         "string",
+         "null"
+        ]
+       },
+       "finishedAt": {
+        "type": [
+         "string",
+         "null"
+        ]
+       }
+      },
+      "required": [
+       "id",
+       "status",
+       "url",
+       "duration",
+       "error",
+       "createdAt",
+       "startedAt",
+       "finishedAt"
+      ],
+      "additionalProperties": false
+     },
+     {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "properties": {
+       "error": {
+        "type": "object",
+        "properties": {
+         "message": {
+          "type": "string"
+         },
+         "status": {
+          "type": "integer",
+          "minimum": -9007199254740991,
+          "maximum": 9007199254740991
+         },
+         "code": {
+          "type": "string"
+         },
+         "retryable": {
+          "type": "boolean"
+         },
+         "retryAfterMs": {
+          "type": "number"
+         },
+         "generationId": {
+          "type": "string"
+         },
+         "importJobId": {
+          "type": "string",
+          "format": "uuid",
+          "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+         },
+         "importStatus": {
+          "type": "string",
+          "enum": [
+           "queued",
+           "downloading",
+           "processing",
+           "completed",
+           "failed"
+          ]
+         },
+         "progress": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100
+         }
+        },
+        "required": [
+         "message"
+        ],
+        "additionalProperties": false
+       }
+      },
+      "required": [
+       "error"
+      ],
+      "additionalProperties": false
+     }
+    ]
+   },
+   "annotations": {
+    "readOnlyHint": true,
+    "destructiveHint": false,
+    "openWorldHint": false
+   },
+   "_meta": {
+    "securitySchemes": [
+     {
+      "type": "oauth2",
+      "scopes": []
+     }
+    ]
+   }
+  },
+  {
+   "name": "assets_get-all",
+   "title": "list assets",
+   "description": "List assets (video/audio/image) in your organization. Use to find an existing assetId. Pass a small `limit` and narrow with `searchQuery`, `types` or `projectId`. For asset previews, use only the exact thumbnailUrl returned by Sync for that same asset, preserving its URL and query string. Never search the web, generate an image, guess a URL, or substitute another asset, a stock image, a voice portrait, url or proxyPath as its thumbnail. If thumbnailUrl is missing or fails to load, use the black Sync-logo placeholder at https://mcp.sync.so/asset-placeholder.svg and label it \"Thumbnail unavailable\"; it is a placeholder, not a frame from the asset. If the host cannot display the placeholder, say \"Thumbnail unavailable\" without substituting an image. Actual playback still uses the asset media URL. ",
+   "inputSchema": {
+    "type": "object",
+    "properties": {
+     "projectId": {
+      "type": "string"
+     },
+     "userId": {
+      "type": "string"
+     },
+     "limit": {
+      "type": "number"
+     },
+     "cursor": {
+      "type": "string"
+     },
+     "searchQuery": {
+      "type": "string"
+     },
+     "sortBy": {
+      "type": "string",
+      "enum": [
+       "nameAsc",
+       "nameDesc",
+       "dateAsc",
+       "dateDesc",
+       "durationAsc",
+       "durationDesc",
+       "sizeAsc",
+       "sizeDesc",
+       "kindAsc",
+       "kindDesc"
+      ]
+     },
+     "types": {}
+    },
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "additionalProperties": false
+   },
+   "annotations": {
+    "readOnlyHint": true,
+    "destructiveHint": false,
+    "openWorldHint": false
+   },
+   "_meta": {
+    "securitySchemes": [
+     {
+      "type": "oauth2",
+      "scopes": []
+     }
+    ]
+   }
+  },
+  {
+   "name": "assets_create",
+   "title": "register a media asset",
+   "description": "Register a direct media URL or import a YouTube, TikTok, Instagram or Facebook video link as a reusable asset. For a social link, pass url, type=VIDEO and the selected projectId. A 409 import_in_progress means the download is running: wait retryAfterMs (15 seconds if absent), then repeat this exact request with the same URL and project. The API reuses the import and returns its saved VIDEO asset when ready. Never use importJobId as an asset ID. Stop on import_failed, import_not_enabled, import_unavailable or import limits and explain the error; do not automatically restart. Returns an asset id for generation inputs or videoAssetId in create-translate-and-dub when available. Import first, then estimate and confirm translation. Link imports have daily limits. For a social link, pass wait: true to wait for the import on the server; a 409 import_in_progress then only means it is still downloading after about 50 seconds, so call again with the same input. When supplying projectId, projectIntent=explicit is required: the user must explicitly ask to work in that project, select it in the interface, or this must be the project just created for this request. A matching workflow/name or an already-open editor is never permission to modify it. Default new work to a new project.",
+   "inputSchema": {
+    "type": "object",
+    "properties": {
+     "name": {
+      "type": "string"
+     },
+     "visibility": {
+      "type": "string",
+      "enum": [
+       "USER",
+       "ORGANIZATION"
+      ]
+     },
+     "projectId": {
+      "type": "string"
+     },
+     "url": {
+      "type": "string"
+     },
+     "type": {
+      "type": "string",
+      "enum": [
+       "AUDIO",
+       "VIDEO",
+       "IMAGE"
+      ]
+     },
+     "inputType": {
+      "type": "string",
+      "enum": [
+       "UPLOAD",
+       "URL",
+       "RECORD",
+       "TTS",
+       "EXTRACT",
+       "DUB",
+       "DUB_SOURCE",
+       "PLATFORM_IMPORT",
+       "DIALOGUE_EDIT",
+       "PLUGIN_PREMIERE_FILE",
+       "PLUGIN_PREMIERE_TIMELINE_SELECTION",
+       "PLUGIN_RESOLVE_FILE",
+       "PLUGIN_RESOLVE_TIMELINE_SELECTION"
+      ]
+     },
+     "thumbnailUrl": {},
+     "size": {
+      "type": "number"
+     },
+     "format": {
+      "type": "string"
+     },
+     "durationSeconds": {
+      "type": "number"
+     },
+     "width": {
+      "type": "number"
+     },
+     "height": {
+      "type": "number"
+     },
+     "contentSha256": {
+      "type": "string"
+     },
+     "wait": {
+      "description": "Wait on the server until the job finishes or about 50 seconds pass, then return its latest state. If it is still running, call again with wait: true instead of sleeping.",
+      "type": "boolean"
+     },
+     "projectIntent": {
+      "description": "Required with projectId. Set only for an explicit user project selection/update, or the new project just created for this request. Never infer intent from a matching project name, workflow name or active editor.",
+      "type": "string",
+      "const": "explicit"
+     }
+    },
+    "required": [
+     "url",
+     "type"
+    ],
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "additionalProperties": false
+   },
+   "annotations": {
+    "readOnlyHint": false,
+    "destructiveHint": true,
+    "idempotentHint": false,
+    "openWorldHint": true
+   },
+   "_meta": {
+    "securitySchemes": [
+     {
+      "type": "oauth2",
+      "scopes": []
+     }
+    ]
+   }
+  },
+  {
+   "name": "assets_count",
+   "title": "count assets",
+   "description": "Count assets matching the same filters as assets_get-all (project, creator, search text, type). Returns a number, not the assets.",
+   "inputSchema": {
+    "type": "object",
+    "properties": {
+     "projectId": {
+      "type": "string"
+     },
+     "userId": {
+      "type": "string"
+     },
+     "limit": {
+      "type": "number"
+     },
+     "cursor": {
+      "type": "string"
+     },
+     "searchQuery": {
+      "type": "string"
+     },
+     "sortBy": {
+      "type": "string",
+      "enum": [
+       "nameAsc",
+       "nameDesc",
+       "dateAsc",
+       "dateDesc",
+       "durationAsc",
+       "durationDesc",
+       "sizeAsc",
+       "sizeDesc",
+       "kindAsc",
+       "kindDesc"
+      ]
+     },
+     "types": {}
+    },
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "additionalProperties": false
+   },
+   "annotations": {
+    "readOnlyHint": true,
+    "destructiveHint": false,
+    "openWorldHint": false
+   },
+   "_meta": {
+    "securitySchemes": [
+     {
+      "type": "oauth2",
+      "scopes": []
+     }
+    ]
+   }
+  },
+  {
+   "name": "assets_create-upload-url",
+   "title": "get a media upload url",
+   "description": "Upload step 1: get a presigned URL for a local file. PUT the raw bytes to the returned `uploadUrl` (same Content-Type), then register it with assets_create using the returned `url`. Use this when your media is not already at a public URL. Max 5GB.",
+   "inputSchema": {
+    "type": "object",
+    "properties": {
+     "fileName": {
+      "type": "string"
+     },
+     "contentType": {
+      "type": "string"
+     },
+     "size": {
+      "type": "number"
+     }
+    },
+    "required": [
+     "fileName",
+     "contentType",
+     "size"
+    ],
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "additionalProperties": false
+   },
+   "annotations": {
+    "readOnlyHint": false,
+    "destructiveHint": true,
+    "idempotentHint": false,
+    "openWorldHint": true
+   },
+   "_meta": {
+    "securitySchemes": [
+     {
+      "type": "oauth2",
+      "scopes": []
+     }
+    ]
+   }
+  },
+  {
+   "name": "assets_get-download-url",
+   "title": "get an asset download url",
+   "description": "Get a download URL for an accessible asset. Return the URL exactly as given; signed URLs must not be edited.",
+   "inputSchema": {
+    "type": "object",
+    "properties": {
+     "id": {
+      "type": "string",
+      "description": "Asset ID"
+     }
+    },
+    "required": [
+     "id"
+    ],
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "additionalProperties": false
+   },
+   "annotations": {
+    "readOnlyHint": true,
+    "destructiveHint": false,
+    "openWorldHint": false
+   },
+   "_meta": {
+    "securitySchemes": [
+     {
+      "type": "oauth2",
+      "scopes": []
+     }
+    ]
+   }
+  },
+  {
+   "name": "assets_get",
+   "title": "get an asset",
+   "description": "Get one asset by id (details + URL). For asset previews, use only the exact thumbnailUrl returned by Sync for that same asset, preserving its URL and query string. Never search the web, generate an image, guess a URL, or substitute another asset, a stock image, a voice portrait, url or proxyPath as its thumbnail. If thumbnailUrl is missing or fails to load, use the black Sync-logo placeholder at https://mcp.sync.so/asset-placeholder.svg and label it \"Thumbnail unavailable\"; it is a placeholder, not a frame from the asset. If the host cannot display the placeholder, say \"Thumbnail unavailable\" without substituting an image. Actual playback still uses the asset media URL. ",
+   "inputSchema": {
+    "type": "object",
+    "properties": {
+     "id": {
+      "type": "string",
+      "description": "Asset ID"
+     }
+    },
+    "required": [
+     "id"
+    ],
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "additionalProperties": false
+   },
+   "annotations": {
+    "readOnlyHint": true,
+    "destructiveHint": false,
+    "openWorldHint": false
+   },
+   "_meta": {
+    "securitySchemes": [
+     {
+      "type": "oauth2",
+      "scopes": []
+     }
+    ]
+   }
+  },
+  {
+   "name": "assets_update",
+   "title": "update an asset",
+   "description": "Rename an asset or change its visibility by id. Change only what the user asked for.",
+   "inputSchema": {
+    "type": "object",
+    "properties": {
+     "id": {
+      "type": "string",
+      "description": "Asset ID"
+     },
+     "name": {
+      "type": "string"
+     },
+     "visibility": {
+      "type": "string",
+      "enum": [
+       "USER",
+       "ORGANIZATION"
+      ]
+     },
+     "durationSeconds": {
+      "type": "number"
+     },
+     "size": {
+      "type": "number"
+     },
+     "format": {
+      "type": "string"
+     },
+     "width": {
+      "type": "number"
+     },
+     "height": {
+      "type": "number"
+     }
+    },
+    "required": [
+     "id"
+    ],
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "additionalProperties": false
+   },
+   "annotations": {
+    "readOnlyHint": false,
+    "destructiveHint": true,
+    "idempotentHint": false,
+    "openWorldHint": true
+   },
+   "_meta": {
+    "securitySchemes": [
+     {
+      "type": "oauth2",
+      "scopes": []
+     }
+    ]
+   }
+  },
+  {
+   "name": "assets_delete",
+   "title": "delete an asset",
+   "description": "Delete an asset by id. Use only on an explicit user request, after confirming which asset.",
+   "inputSchema": {
+    "type": "object",
+    "properties": {
+     "id": {
+      "type": "string",
+      "description": "Asset ID"
+     }
+    },
+    "required": [
+     "id"
+    ],
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "additionalProperties": false
+   },
+   "annotations": {
+    "readOnlyHint": false,
+    "destructiveHint": true,
+    "openWorldHint": true
+   },
+   "_meta": {
+    "securitySchemes": [
+     {
+      "type": "oauth2",
+      "scopes": []
+     }
+    ]
+   }
+  },
+  {
+   "name": "generate_get-generation",
+   "title": "get a generation",
+   "description": "Get a generation by id. Pass `wait: true` and omit `timeout` to use the API default. If still pending, poll the same generation id again; never resubmit the generation. When status is COMPLETED, copy the exact `structuredContent.outputMediaUrl` string verbatim; signed URLs must not be reconstructed, shortened, or edited. `outputUrl` is a deprecated alias with the same value.",
+   "inputSchema": {
+    "type": "object",
+    "properties": {
+     "id": {
+      "type": "string",
+      "description": "Job ID"
+     },
+     "include": {
+      "type": "string",
+      "enum": [
+       "progress"
+      ],
+      "description": "Additional information to include in the response"
+     },
+     "wait": {
+      "type": "boolean",
+      "description": "Explicitly long-poll until the generation reaches a terminal state (COMPLETED, FAILED, REJECTED) or the timeout elapses. On timeout the current state is returned with HTTP 200 - check `status` and retry. Cannot be combined with include=progress."
+     },
+     "timeout": {
+      "type": "number",
+      "description": "Maximum seconds to block when wait=true (1-10). Default 5."
+     }
+    },
+    "required": [
+     "id"
+    ],
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "additionalProperties": false
+   },
+   "outputSchema": {
+    "type": "object",
+    "anyOf": [
+     {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "properties": {
+       "id": {
+        "type": "string",
+        "description": "Sync generation id."
+       },
+       "projectId": {
+        "description": "Sync project containing this generation.",
+        "type": [
+         "string",
+         "null"
+        ]
+       },
+       "status": {
+        "type": "string",
+        "description": "Current generation status."
+       },
+       "model": {
+        "type": "string",
+        "description": "Model used for the generation."
+       },
+       "outputMediaUrl": {
+        "description": "Signed result URL when the generation is complete, named as in the API (GET /v2/generations/{id}). Copy this exact string verbatim; do not reconstruct, shorten, or edit it.",
+        "type": [
+         "string",
+         "null"
+        ]
+       },
+       "outputUrl": {
+        "description": "Deprecated alias of outputMediaUrl, with the same value. Read outputMediaUrl.",
+        "deprecated": true,
+        "type": [
+         "string",
+         "null"
+        ]
+       },
+       "generationEstimate": {
+        "description": "Server-provided completion estimate and server clock. Use only for approximate remaining time; do not invent an estimate when absent.",
+        "anyOf": [
+         {
+          "type": "object",
+          "propertyNames": {
+           "type": "string"
+          },
+          "additionalProperties": {}
+         },
+         {
+          "type": "null"
+         }
+        ]
+       },
+       "outputDuration": {
+        "description": "Output duration in seconds.",
+        "type": [
+         "number",
+         "null"
+        ]
+       },
+       "error": {},
+       "errorCode": {}
+      },
+      "additionalProperties": false
+     },
+     {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "properties": {
+       "error": {
+        "type": "object",
+        "properties": {
+         "message": {
+          "type": "string"
+         },
+         "status": {
+          "type": "integer",
+          "minimum": -9007199254740991,
+          "maximum": 9007199254740991
+         },
+         "code": {
+          "type": "string"
+         },
+         "retryable": {
+          "type": "boolean"
+         },
+         "retryAfterMs": {
+          "type": "number"
+         },
+         "generationId": {
+          "type": "string"
+         },
+         "importJobId": {
+          "type": "string",
+          "format": "uuid",
+          "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+         },
+         "importStatus": {
+          "type": "string",
+          "enum": [
+           "queued",
+           "downloading",
+           "processing",
+           "completed",
+           "failed"
+          ]
+         },
+         "progress": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100
+         }
+        },
+        "required": [
+         "message"
+        ],
+        "additionalProperties": false
+       }
+      },
+      "required": [
+       "error"
+      ],
+      "additionalProperties": false
+     }
+    ]
+   },
+   "annotations": {
+    "readOnlyHint": true,
+    "destructiveHint": false,
+    "openWorldHint": false
+   },
+   "_meta": {
+    "securitySchemes": [
+     {
+      "type": "oauth2",
+      "scopes": []
+     }
+    ]
+   }
+  },
+  {
+   "name": "generate_estimate-cost",
+   "title": "estimate generation cost",
+   "description": "Estimate Sync cost before generating. For replacement speech, supply model and script (approximate spoken duration), or audioDuration (measured seconds once audio exists). These override duration; do not quote the full source video length for a shorter replacement script. For video cut_off or silence supply videoDuration and the selected syncMode; for images set visualType=image and omit videoDuration. Otherwise supply billable output duration in seconds, optional fps and reasoningEnabled. Explain returned durationEstimate, label script estimates approximate, and disclose that speech synthesis is excluded. If the schema supports workflow=translate-and-dub, use it for both stages and show the returned breakdown; disclose excluded external provider charges. Otherwise this prices lip-sync only. Does not create jobs or reserve credits.",
+   "inputSchema": {
+    "type": "object",
+    "properties": {
+     "model": {
+      "type": "string"
+     },
+     "duration": {
+      "description": "Billable output seconds, or source seconds for translate-and-dub. For replacement speech, supply script or measured audioDuration instead. Never use the source video length for a shorter replacement script.",
+      "type": "number"
+     },
+     "fps": {
+      "type": "number",
+      "description": "Source video frame rate. When omitted, credit-billed organizations are quoted at 25, the rate generation admission holds credits at when the source frame rate cannot be read; other organizations at 30."
+     },
+     "workflow": {
+      "type": "string",
+      "enum": [
+       "lipsync",
+       "translate-and-dub"
+      ],
+      "description": "Omit for lip-sync only. translate-and-dub includes dubbing and lip-sync, estimated using the source duration. Actual output duration may differ."
+     },
+     "reasoningEnabled": {},
+     "script": {
+      "description": "Replacement speech text. Estimates spoken duration without synthesizing audio. Use for script-driven lipsync instead of pricing the full source video. An approximate quote; final speech length may differ.",
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 5000
+     },
+     "audioDuration": {
+      "description": "Measured replacement audio duration in seconds. Prefer this over a script estimate once speech audio exists.",
+      "type": "number",
+      "exclusiveMinimum": 0
+     },
+     "visualType": {
+      "description": "Visual input type. Set image for image-to-video quotes; images always follow speech duration, including with cut_off or silence. Videos require videoDuration for those modes.",
+      "type": "string",
+      "enum": [
+       "image",
+       "video"
+      ]
+     },
+     "videoDuration": {
+      "description": "Source video duration in seconds, used with syncMode to account for cut_off or silence. Omit for an image.",
+      "type": "number",
+      "exclusiveMinimum": 0
+     },
+     "syncMode": {
+      "description": "The same sync_mode selected for generation. For videos, cut_off uses the shorter input and silence the longer input. Images and other modes follow replacement audio duration.",
+      "type": "string",
+      "enum": [
+       "bounce",
+       "loop",
+       "cut_off",
+       "silence",
+       "remap"
+      ]
+     }
+    },
+    "required": [
+     "model"
+    ],
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "additionalProperties": false
+   },
+   "annotations": {
+    "readOnlyHint": true,
+    "destructiveHint": false,
+    "openWorldHint": false
+   },
+   "_meta": {
+    "securitySchemes": [
+     {
+      "type": "oauth2",
+      "scopes": []
+     }
+    ]
+   }
+  },
+  {
+   "name": "generate_get-generations",
+   "title": "list generations",
+   "description": "List recent generations for your organization to find generation ids or check status. Pass a small `limit`, or narrow with its filters; for the history of one project, prefer projects_get-generations when available.",
+   "inputSchema": {
+    "type": "object",
+    "properties": {
+     "status": {
+      "type": "string",
+      "description": "Filter generations by status"
+     },
+     "limit": {
+      "type": "number",
+      "description": "Maximum number of generations to return (1-100). When set, results are ordered newest-first and can be paged with `cursor`."
+     },
+     "cursor": {
+      "type": "string",
+      "description": "Generation id to page after - pass the last id of the previous page. Only used together with `limit`."
+     },
+     "projectId": {
+      "type": "string",
+      "description": "Filter to a live project accessible to the session user or API-key owner. Inaccessible projects return an empty list."
+     }
+    },
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "additionalProperties": false
+   },
+   "annotations": {
+    "readOnlyHint": true,
+    "destructiveHint": false,
+    "openWorldHint": false
+   },
+   "_meta": {
+    "securitySchemes": [
+     {
+      "type": "oauth2",
+      "scopes": []
+     }
+    ]
+   }
+  },
+  {
+   "name": "models_get",
+   "title": "list sync models",
+   "description": "List Sync models with their type, features and deprecation status. Some listed models serve other workflows, such as appearance editing; use only a non-deprecated lipsync model in create-lipsync. Use a returned model name as-is; do not invent model names.",
+   "inputSchema": {
+    "type": "object",
+    "properties": {},
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "additionalProperties": false
+   },
+   "annotations": {
+    "readOnlyHint": true,
+    "destructiveHint": false,
+    "openWorldHint": false
+   },
+   "_meta": {
+    "securitySchemes": [
+     {
+      "type": "oauth2",
+      "scopes": []
+     }
+    ]
+   }
+  },
+  {
+   "name": "projects_get-all",
+   "title": "list projects",
+   "description": "Search and paginate your accessible Sync projects. Each result includes recent generations and assets, so pass a small `limit` and use `searchQuery` only when the user explicitly refers to an existing project. Workflow names are not project references. Never choose the first match when names are ambiguous. Use the returned id as projectId in create-lipsync to work in the same project as the Sync web app.",
+   "inputSchema": {
+    "type": "object",
+    "properties": {
+     "limit": {
+      "type": "number"
+     },
+     "cursor": {
+      "type": "string"
+     },
+     "searchQuery": {
+      "type": "string"
+     },
+     "sortBy": {
+      "type": "string",
+      "enum": [
+       "updatedAt",
+       "name"
+      ]
+     }
+    },
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "additionalProperties": false
+   },
+   "annotations": {
+    "readOnlyHint": true,
+    "destructiveHint": false,
+    "openWorldHint": false
+   },
+   "_meta": {
+    "securitySchemes": [
+     {
+      "type": "oauth2",
+      "scopes": []
+     }
+    ]
+   }
+  },
+  {
+   "name": "projects_create",
+   "title": "create a project",
+   "description": "Create a project to group related generations and assets. Pass the returned `id` as `projectId` to create-lipsync or assets_create so they show up together in Studio. Use by default for a new workflow request, even if an existing project has the same name. Supply a fresh UUID id and preserve it on retries. Project names never select existing work.",
+   "inputSchema": {
+    "type": "object",
+    "properties": {
+     "id": {
+      "type": "string",
+      "description": "Optional client-supplied project id (UUID) for idempotent creation. Re-sending the same id returns the existing project instead of creating a duplicate; the other request fields are ignored on such a replay. If the id is already used by a different user or organization, or by a deleted project, the request fails with 409."
+     },
+     "name": {
+      "type": "string"
+     },
+     "description": {
+      "type": "string"
+     },
+     "visibility": {
+      "type": "string",
+      "enum": [
+       "USER",
+       "ORGANIZATION"
+      ],
+      "description": "Who can see the project. Defaults to USER (visible only to the owner)."
+     },
+     "mode": {
+      "type": "string",
+      "enum": [
+       "CREATOR",
+       "DEVELOPER"
+      ],
+      "description": "Project mode. Defaults to CREATOR."
+     },
+     "defaultWorkflow": {
+      "type": "string",
+      "enum": [
+       "lipsync",
+       "translate_and_dub",
+       "change_appearance",
+       "image_to_video",
+       "edit_dialogue",
+       "assistant",
+       "timeline"
+      ],
+      "description": "Default top-level creator workflow for this project."
+     }
+    },
+    "required": [
+     "name"
+    ],
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "additionalProperties": false
+   },
+   "annotations": {
+    "readOnlyHint": false,
+    "destructiveHint": true,
+    "idempotentHint": false,
+    "openWorldHint": true
+   },
+   "_meta": {
+    "securitySchemes": [
+     {
+      "type": "oauth2",
+      "scopes": []
+     }
+    ]
+   }
+  },
+  {
+   "name": "projects_get",
+   "title": "get a project",
+   "description": "Get one accessible project by id. For its generation history, use projects_get-generations when available.",
+   "inputSchema": {
+    "type": "object",
+    "properties": {
+     "projectId": {
+      "description": "Project ID (UUID).",
+      "type": "string"
+     },
+     "id": {
+      "description": "Deprecated alias of projectId.",
+      "type": "string"
+     }
+    },
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "additionalProperties": false
+   },
+   "annotations": {
+    "readOnlyHint": true,
+    "destructiveHint": false,
+    "openWorldHint": false
+   },
+   "_meta": {
+    "securitySchemes": [
+     {
+      "type": "oauth2",
+      "scopes": []
+     }
+    ]
+   }
+  },
+  {
+   "name": "voices_get-voices",
+   "title": "list voices",
+   "description": "List available voices: premade ElevenLabs voices plus voices your org has cloned. For \"make this image/video say X\", use an available returned voice `id` as `voiceId` in create-lipsync with `script` directly. Respect any returned restriction. Use this to find an existing clone before creating another.",
+   "inputSchema": {
+    "type": "object",
+    "properties": {
+     "provider": {
+      "type": "string",
+      "enum": [
+       "elevenlabs"
+      ]
+     }
+    },
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "additionalProperties": false
+   },
+   "annotations": {
+    "readOnlyHint": true,
+    "destructiveHint": false,
+    "openWorldHint": false
+   },
+   "_meta": {
+    "securitySchemes": [
+     {
+      "type": "oauth2",
+      "scopes": []
+     }
+    ]
+   }
+  },
+  {
+   "name": "voices_clone-voice",
+   "title": "clone a voice",
+   "description": "Use this when the user explicitly wants to save a reusable clone of their own voice or a voice they have permission to clone. Confirm the sample and name first; plan limits and provider requirements apply, so do not claim this is free. Pass exactly one of a Sync-hosted `url`, accessible `assetId`, or `sampleUrls` (up to 10 Sync-hosted samples), plus `provider` (elevenlabs) and `name`. Upload/register local samples first. Video samples have audio extracted by the API. Returns a Sync `id`: use that id as `voiceId` in create-lipsync with script, not the provider-specific `voiceId` field. Do not use for Edit Dialogue previews, selecting an existing voice, or designing a voice from a text description. This creates a persistent voice and is not idempotent. On timeout or uncertain failure, list voices and reconcile; never automatically retry. Surface API plan limits, sample errors and duplicate-name errors without retrying or changing accounts.",
+   "inputSchema": {
+    "type": "object",
+    "properties": {
+     "name": {
+      "type": "string"
+     },
+     "provider": {
+      "type": "string",
+      "enum": [
+       "elevenlabs"
+      ]
+     },
+     "url": {
+      "description": "Sync-hosted audio/video sample URL. Supply url or assetId, not both.",
+      "type": "string",
+      "format": "uri"
+     },
+     "assetId": {
+      "description": "Accessible audio/video sample asset ID. Supply assetId or url, not both.",
+      "type": "string",
+      "format": "uuid",
+      "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+     },
+     "sampleUrls": {
+      "description": "Sync-hosted samples for one reusable voice; use instead of url or assetId.",
+      "minItems": 1,
+      "maxItems": 10,
+      "type": "array",
+      "items": {
+       "type": "string",
+       "format": "uri"
+      }
+     }
+    },
+    "required": [
+     "name",
+     "provider"
+    ],
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "additionalProperties": false
+   },
+   "annotations": {
+    "readOnlyHint": false,
+    "destructiveHint": true,
+    "idempotentHint": false,
+    "openWorldHint": true
+   },
+   "_meta": {
+    "securitySchemes": [
+     {
+      "type": "oauth2",
+      "scopes": []
+     }
+    ]
+   }
+  }
+ ]
+}

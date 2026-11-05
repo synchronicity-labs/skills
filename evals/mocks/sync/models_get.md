@@ -1,0 +1,1 @@
+[{"id":"sync-3","name":"sync-3","type":"lipsync","description":"Most capable lipsync model; images, profiles, occlusion"},{"id":"lipsync-2-pro","name":"lipsync-2-pro","type":"lipsync"},{"id":"lipsync-2","name":"lipsync-2","type":"lipsync"}]

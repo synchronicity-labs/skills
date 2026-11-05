@@ -1,0 +1,1 @@
+{"voices":[{"id":"voice_rachel","name":"Rachel","description":"warm, friendly American female, 30s"},{"id":"voice_adam","name":"Adam","description":"calm, deep male narrator"},{"id":"voice_bella","name":"Bella","description":"bright, upbeat young female"},{"id":"voice_hiro","name":"Hiro","description":"energetic male, 20s, casual"}]}

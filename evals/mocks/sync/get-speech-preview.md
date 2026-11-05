@@ -1,0 +1,1 @@
+{"id":"{{input.id}}","status":"SUCCESS","url":"https://assets.sync.so/tts/{{input.id}}.mp3","duration":3.2,"error":null,"createdAt":"2026-11-05T00:00:00Z","startedAt":"2026-11-05T00:00:01Z","finishedAt":"2026-11-05T00:00:04Z"}

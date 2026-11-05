@@ -1,0 +1,5 @@
+---
+type: "tool_used"
+tool: "mcp__plugin_sync_sync__create-translate-and-dub"
+input_match: "\"targetLang\"\\s*:\\s*\"ja\""
+---

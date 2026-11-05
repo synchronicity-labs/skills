@@ -1,0 +1,41 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
+        with:
+          python-version: "3.12"
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: "22"
+
+      - name: Shared reference copies are current
+        run: python3 scripts/sync_shared.py --check
+      - name: Validate skills, manifests, docs and tool names
+        run: python3 scripts/validate.py
+
+      - name: Install the published SDKs for the sample tests
+        run: |
+          python3 -m venv /tmp/sdk-venv
+          /tmp/sdk-venv/bin/pip install --quiet syncsdk
+          mkdir -p /tmp/sdk-node && cd /tmp/sdk-node
+          npm init -y >/dev/null
+          npm install --silent @sync.so/sdk typescript@5 @types/node
+      - name: Tests
+        env:
+          SYNC_TEST_REQUIRE_SDKS: "1"
+          SYNC_TEST_PYTHON: /tmp/sdk-venv/bin/python
+          SYNC_TEST_NODE_MODULES: /tmp/sdk-node/node_modules
+        run: python3 -m unittest discover -s tests -v

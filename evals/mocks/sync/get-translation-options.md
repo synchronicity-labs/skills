@@ -1,0 +1,1 @@
+{"targetLanguages":[{"code":"es","name":"Spanish"},{"code":"pt","name":"Portuguese"},{"code":"de","name":"German"},{"code":"ja","name":"Japanese"},{"code":"fr","name":"French"},{"code":"it","name":"Italian"}],"sourceLanguages":[{"code":"auto","name":"Detect"},{"code":"en","name":"English"}],"previewAvailable":true}
