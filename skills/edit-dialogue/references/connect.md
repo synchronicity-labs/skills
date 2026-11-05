@@ -28,7 +28,7 @@ Most clients only load new MCP servers after a restart or reload. Say so, and te
 For scripts, CI, or clients without remote MCP support:
 
 - Create a key at https://sync.so/settings/api-keys and put it in the environment as `SYNC_API_KEY`, in a `.env` file the project already ignores, or in the shell profile. Don't commit it.
-- **The same MCP tools, locally:** `claude mcp add sync -e SYNC_API_KEY=$SYNC_API_KEY -- npx -y @sync.so/mcp-server@latest`. Other clients use `{"command": "npx", "args": ["-y", "@sync.so/mcp-server@latest"], "env": {"SYNC_API_KEY": "..."}}`. Keep `@latest` so npx doesn't run an old cached copy. Without a key, the local server starts a device login on first run.
+- **The same MCP tools, run locally:** sync. also publishes the MCP server as a package the user can run on their own machine with an API key. Point them to the setup steps at https://sync.so/docs/plugins-and-extensions/mcp-server and let them add it to their client themselves; don't install or run it for them.
 - **No MCP at all:** the REST API and the official SDKs read `SYNC_API_KEY`: Python `pip install syncsdk`, TypeScript `npm i @sync.so/sdk`.
 
 ## Accounts and plans
