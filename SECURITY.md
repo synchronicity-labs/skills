@@ -2,7 +2,7 @@
 
 ## Report a vulnerability
 
-Email **nacho@sync.so** with what you found, the steps to reproduce it, and what an attacker could do with it. Please don't open a public GitHub issue for a vulnerability, and don't include real user data in the report.
+Email **security@sync.so** with what you found, the steps to reproduce it, and what an attacker could do with it. Please don't open a public GitHub issue for a vulnerability, and don't include real user data in the report.
 
 We acknowledge every report and keep you updated until it's resolved. Please give us a reasonable time to fix the issue before you disclose it publicly.
 

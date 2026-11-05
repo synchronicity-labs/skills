@@ -85,7 +85,8 @@ When the MCP server's tools change, refresh `evals/mocks/sync/_tools.json` (see 
 
 ## Support, privacy and security
 
-- Support: https://support.sync.so
+- Support: https://support.sync.so or support@sync.so
+- Contact: hello@sync.so
 - Privacy policy: https://sync.so/privacy
 - Terms of service: https://sync.so/terms
 - Security: report vulnerabilities as described in [SECURITY.md](SECURITY.md).
