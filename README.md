@@ -56,7 +56,8 @@ shared/                      reference files copied into the skills that use the
 .codex-plugin/, .cursor-plugin/
 .mcp.json                    the hosted sync. MCP server
 evals/                       `claude plugin eval` suite with MCP mocks
-scripts/                     validate.py, sync_shared.py
+catalog.json                 generated list of skills that Studio and the docs read
+scripts/                     validate.py, sync_shared.py, build_catalog.py
 tests/                       tests for bundled scripts
 ```
 

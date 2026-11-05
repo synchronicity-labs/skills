@@ -23,6 +23,8 @@ jobs:
 
       - name: Shared reference copies are current
         run: python3 scripts/sync_shared.py --check
+      - name: catalog.json is current
+        run: python3 scripts/build_catalog.py --check
       - name: Validate skills, manifests, docs and tool names
         run: python3 scripts/validate.py
 

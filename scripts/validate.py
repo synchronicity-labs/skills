@@ -99,6 +99,10 @@ def main() -> int:
                         ("create-", "get-", "estimate-", "upload-", "trim-", "rename-")):
                     errors.append(f"{md.relative_to(ROOT)}: `{token}` is not a tool on the hosted sync. MCP server")
 
+    catalog = subprocess.run([sys.executable, str(ROOT / "scripts/build_catalog.py"), "--check"], capture_output=True, text=True)
+    if catalog.returncode:
+        errors.append(catalog.stdout.strip() or catalog.stderr.strip())
+
     shared = subprocess.run([sys.executable, str(ROOT / "scripts/sync_shared.py"), "--check"], capture_output=True, text=True)
     if shared.returncode:
         errors.append(shared.stdout.strip())

@@ -79,7 +79,7 @@ def main() -> int:
             return 1
         return 0
     out.write_text(text)
-    print(f"wrote catalog.json with {text.count('\"guideUrl\"')} skills")
+    print(f"wrote catalog.json with {len(json.loads(text)['skills'])} skills")
     return 0
 
 
