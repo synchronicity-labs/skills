@@ -1,4 +1,4 @@
 ---
 type: "tool_used"
-tool: "mcp__plugin_sync_sync__voices_get-voices"
+tool: "mcp__plugin_sync_sync__voices_list"
 ---

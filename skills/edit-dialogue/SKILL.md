@@ -20,30 +20,30 @@ If no sync. tools are available, follow [references/connect.md](references/conne
 
 | Step | Tool |
 | --- | --- |
-| Check support | `get-dialogue-options` |
+| Check support | `dialogue_get-options` |
 | Create the project | `projects_create` |
-| Save the video | `upload-media`, `assets_create-upload-url` + `assets_create` (local files), or `assets_create` (URLs) |
-| Transcribe | `create-dialogue-transcription`, `get-dialogue-transcription` |
-| Preview the new audio | `create-dialogue-preview`, `get-dialogue-preview` |
-| Quote | `estimate-dialogue-video` |
-| Create | `create-dialogue-video` |
-| Wait | `generate_get-generation` |
+| Save the video | `assets_upload`, `assets_create-upload-url` + `assets_create` (local files), or `assets_create` (URLs) |
+| Transcribe | `dialogue-transcriptions_create`, `dialogue-transcriptions_get` |
+| Preview the new audio | `dialogue-previews_create`, `dialogue-previews_get` |
+| Quote | `dialogue-videos_estimate` |
+| Create | `dialogue-videos_create` |
+| Wait | `generations_get` |
 
 ## Steps
 
-1. **Support.** Call `get-dialogue-options`. If Edit Dialogue isn't available for this account, say so and stop. Note whether it reports `keyedPreview`.
+1. **Support.** Call `dialogue_get-options`. If Edit Dialogue isn't available for this account, say so and stop. Note whether it reports `keyedPreview`.
 2. **Project.** Call `projects_create` with a new random UUID as `id`, a short `name` and `defaultWorkflow: "edit_dialogue"`. Save the returned `id` as `projectId`. Pass it wherever a tool asks for `projectId`, and add `projectIntent: "explicit"` only on tools that take that field.
 3. **Save the video** into that project. Follow [references/media-input.md](references/media-input.md).
-4. **Transcribe.** Call `create-dialogue-transcription` with the `projectId` and `videoAssetId`, then `get-dialogue-transcription` with the returned `id` until it completes. If the result includes a new `videoAssetId`, the video was copied into sync. storage: use that ID from here on. If more than one speaker is detected, explain that this workflow handles one speaker, and stop.
+4. **Transcribe.** Call `dialogue-transcriptions_create` with the `projectId` and `videoAssetId`, then `dialogue-transcriptions_get` with the returned `id` until it completes. If the result includes a new `videoAssetId`, the video was copied into sync. storage: use that ID from here on. If more than one speaker is detected, explain that this workflow handles one speaker, and stop.
 5. **Agree the edits.** Show the transcript lines around the fix. Turn the request into edits that use the transcript's word IDs:
    - `{"kind": "change", "wordId": "w35", "replacement": "Mia"}`, adding `"pronunciation": "meeah"` only for a name the voice might say wrong. Write respellings as plain words, without hyphens or capitals, which the voice may spell out.
    - `{"kind": "remove", "wordIds": ["w12", "w13"]}` for consecutive words.
 
    Confirm the edits with the user.
-6. **Preview.** The preview clones the speaker's voice and can incur synthesis charges, so mention that when you confirm the edits. Call `create-dialogue-preview` with the edits and the `transcriptionJobId`, plus a new `idempotencyKey` saved before the call when `keyedPreview` is reported. If that call's outcome is unclear, retry only the identical request with the same key. Poll `get-dialogue-preview` until it completes, and share the preview audio. If some edits failed (a partial completion), for example because a replacement is too long for the gap it fills, say which, suggest shorter wording, confirm the revised edits, and make a new preview with `previousPreviewId`.
-7. **Quote.** Call `estimate-dialogue-video` with the completed preview's ID as `dialogueEditId` and `model: "sync-3"`. Show the estimate and wait for approval of both the preview and the cost.
-8. **Create.** Call `create-dialogue-video` once with the same `dialogueEditId`, the model, the project and a new `idempotencyKey`. If the response is lost, retry once with the same key and inputs.
-9. **Wait and deliver.** Poll `generate_get-generation` with the returned `id` and `wait: true` until it's final. Give the exact `outputMediaUrl` unchanged.
+6. **Preview.** The preview clones the speaker's voice and can incur synthesis charges, so mention that when you confirm the edits. Call `dialogue-previews_create` with the edits and the `transcriptionJobId`, plus a new `idempotencyKey` saved before the call when `keyedPreview` is reported. If that call's outcome is unclear, retry only the identical request with the same key. Poll `dialogue-previews_get` until it completes, and share the preview audio. If some edits failed (a partial completion), for example because a replacement is too long for the gap it fills, say which, suggest shorter wording, confirm the revised edits, and make a new preview with `previousPreviewId`.
+7. **Quote.** Call `dialogue-videos_estimate` with the completed preview's ID as `dialogueEditId` and `model: "sync-3"`. Show the estimate and wait for approval of both the preview and the cost.
+8. **Create.** Call `dialogue-videos_create` once with the same `dialogueEditId`, the model, the project and a new `idempotencyKey`. If the response is lost, retry once with the same key and inputs.
+9. **Wait and deliver.** Poll `generations_get` with the returned `id` and `wait: true` until it's final. Give the exact `outputMediaUrl` unchanged.
 
 ## Limits
 

@@ -14,7 +14,7 @@ If no sync. tools are available, follow [references/connect.md](references/conne
 ## 1. Plan the matrix
 
 1. **Videos.** List each source video with its name, length and where it comes from (a file, URL or social link).
-2. **Markets to languages.** Turn markets into languages and confirm them with the user. Germany, Austria and Switzerland are all German; Brazil is Portuguese; most of LATAM is Spanish. Call `get-translation-options` and check that every language is supported, naming the closest option for any that isn't. Don't guess regional variants the options don't list.
+2. **Markets to languages.** Turn markets into languages and confirm them with the user. Germany, Austria and Switzerland are all German; Brazil is Portuguese; most of LATAM is Spanish. Call `dubbing_get-options` and check that every language is supported, naming the closest option for any that isn't. Don't guess regional variants the options don't list.
 3. **The matrix.** Show it as a table: one row per video, one column per language, and the total number of versions.
 4. **Files.** Agree a naming pattern up front, by default `<campaign>_<video>_<lang>.mp4`, for example `spring24_hero-30s_de.mp4`.
 
@@ -30,12 +30,12 @@ Before spending anything, tell the user what stays the same, so nobody is surpri
 ## 3. Quote, then pilot
 
 1. **Project and inputs.** Call `projects_create` once for the campaign, with a new UUID `id`, the campaign name and `defaultWorkflow: "translate_and_dub"`. Save the returned `id` as `projectId`. Pass it wherever a tool asks for `projectId`, and add `projectIntent: "explicit"` only on tools that take that field. Save each source video into it once, as in [references/media-input.md](references/media-input.md).
-2. **Quote.** Call `generate_estimate-cost` with `workflow: "translate-and-dub"`, `model: "sync-3"` and each video's length as `duration`. Multiply by the number of languages, and show the per-video, per-language and total cost, using the returned breakdown. If it reports external provider charges as excluded, say they're extra. Wait for approval of the total.
-3. **Pilot.** Run one version first, usually the most important video in the most important language. Use `create-translate-and-dub` with `videoAssetId`, `targetLang`, `sourceLang: "auto"`, `model: "sync-3"`, the `projectId` with `projectIntent: "explicit"`, and a new `idempotencyKey`. Wait for it with `generate_get-generation` and `wait: true`. Ask the user, or a speaker of that language, to check names, terms and tone. Fix anything you can before the rest.
+2. **Quote.** Call `generations_estimate-cost` with `workflow: "translate-and-dub"`, `model: "sync-3"` and each video's length as `duration`. Multiply by the number of languages, and show the per-video, per-language and total cost, using the returned breakdown. If it reports external provider charges as excluded, say they're extra. Wait for approval of the total.
+3. **Pilot.** Run one version first, usually the most important video in the most important language. Use `dubbing_create` with `videoAssetId`, `targetLang`, `sourceLang: "auto"`, `model: "sync-3"`, the `projectId` with `projectIntent: "explicit"`, and a new `idempotencyKey`. Wait for it with `generations_get` and `wait: true`. Ask the user, or a speaker of that language, to check names, terms and tone. Fix anything you can before the rest.
 
 ## 4. Run the rest
 
-- Read `generationLimits.concurrency` from `get-account-context`, and keep that many versions in flight at most. On `concurrency_limit_reached`, wait `error.retryAfterMs` milliseconds and retry the identical request with the same key.
+- Read `generationLimits.concurrency` from `account_get-context`, and keep that many versions in flight at most. On `concurrency_limit_reached`, wait `error.retryAfterMs` milliseconds and retry the identical request with the same key.
 - Give every version its own `idempotencyKey`, written into the matrix before the call, such as `<campaign>-<video>-<lang>`, and reuse it on every retry. Track each version's generation `id` and status in the matrix as you go, so an interrupted run resumes instead of paying twice.
 - If one version fails, record why and carry on with the others.
 - On Scale plans and above, 20 or more versions can go in one `batches_create` call instead, each item a generate body with the video and `dubParams` (`{"providerName": "elevenlabs", "targetLang": "<lang>"}`). Validate with `dryRun: true` first, and follow it with `batches_get`.

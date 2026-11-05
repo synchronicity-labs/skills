@@ -1,4 +1,4 @@
 ---
 type: "tool_used"
-tool: "mcp__plugin_sync_sync__get-account-context"
+tool: "mcp__plugin_sync_sync__account_get-context"
 ---
