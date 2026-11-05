@@ -2140,7 +2140,7 @@
   {
    "name": "create-timeline-lipsync",
    "title": "create timeline lipsync",
-   "description": "Lipsync one video with several audio clips placed at given times, like a Studio timeline. Each clip names a Sync audio asset or audio URL, the seconds (or frames) of the video it covers, and optionally the part of the audio file it plays, its sync mode and the face it lipsyncs. Parts of the video no clip covers keep their original picture and sound, so leave a gap wherever the user wants no lipsync. For one audio across the whole video, use create-lipsync. Defaults to sync-3 and, unless projectId names a project the user picked, a new project; a keyed request without projectId needs a fresh projectCreationKey. Estimate and confirm before creating; this starts an asynchronous generation and returns its id. Poll it with generate_get-generation and wait: true. Clips are checked before anything is created, and errors name the clip index. When supplying projectId, projectIntent=explicit is required: the user must explicitly ask to work in that project, select it in the interface, or this must be the project just created for this request. A matching workflow/name or an already-open editor is never permission to modify it. Default new work to a new project.",
+   "description": "Lipsync one video with several audio clips placed at given times, like a Studio timeline. Each clip names a Sync audio asset or audio URL, the seconds (or frames) of the video it covers, and optionally the part of the audio file it plays, its sync mode and the face it lipsyncs. Parts of the video no clip covers keep their original picture and sound, so leave a gap wherever the user wants no lipsync. For one audio across the whole video, use create-lipsync. Defaults to sync-3 and, unless projectId names a project the user picked, a new project; a keyed request without projectId needs a fresh projectCreationKey. Estimate and confirm before creating; this starts an asynchronous generation and returns its id. Poll it with generate_get-generation and wait: true. Clips are checked before anything is created, and errors name the clip index. To dub a whole video while lipsyncing only some shots, pass the full dubbed track as outputAudio, lipsync the speaking shots with clips that play their part of it, and add clips with lipsync: false for the rest; the result plays the dub continuously with no cuts. When supplying projectId, projectIntent=explicit is required: the user must explicitly ask to work in that project, select it in the interface, or this must be the project just created for this request. A matching workflow/name or an already-open editor is never permission to modify it. Default new work to a new project.",
    "inputSchema": {
     "type": "object",
     "properties": {
@@ -2268,11 +2268,16 @@
            "additionalProperties": false
           }
          ]
+        },
+        "lipsync": {
+         "description": "false keeps this part of the video exactly as it is: not lipsynced and not billed, while outputAudio still plays over it. Give no audio, syncMode or speaker. Use it for shots that should hear the dub without moving lips (listeners, people off camera or facing away).",
+         "type": "boolean",
+         "const": false
         }
        },
        "additionalProperties": false
       },
-      "description": "Audio clips placed on the video, in any order, without overlapping. Parts of the video no clip covers keep their original picture and sound."
+      "description": "Clips placed on the video, in any order, without overlapping. Parts no clip covers keep their original picture and sound; clips with lipsync: false keep their picture but play outputAudio."
      },
      "model": {
       "description": "Model to use. Defaults to sync-3.",
@@ -2386,6 +2391,24 @@
       "description": "Name for a NEW project only. Never search or reuse a matching name. Cannot be combined with projectId.",
       "type": "string",
       "minLength": 1
+     },
+     "outputAudio": {
+      "type": "object",
+      "properties": {
+       "audioAssetId": {
+        "description": "Sync asset id of the audio.",
+        "type": "string",
+        "format": "uuid",
+        "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+       },
+       "audioUrl": {
+        "description": "HTTPS URL of the audio.",
+        "type": "string",
+        "format": "uri"
+       }
+      },
+      "additionalProperties": false,
+      "description": "One audio that plays over the whole finished output from its first second, replacing the sound of every part, such as the full dubbed track. Defaults, when a clip sets lipsync: false, to the only audio the clips use."
      },
      "projectIntent": {
       "description": "Required with projectId. Set only for an explicit user project selection/update, or the new project just created for this request. Never infer intent from a matching project name, workflow name or active editor.",
@@ -4247,6 +4270,574 @@
    }
   },
   {
+   "name": "batches_create",
+   "title": "create a batch of generations",
+   "description": "Submit many independent lipsync generations at once as one Sync batch, such as localizing one campaign video into many languages or syncing many videos to their own audio. Each item is one /v2/generate body; Sync queues them, so they skip the per-generation concurrency limit, and results can take up to a day. Use it for 20 or more generations that do not depend on each other; for fewer, or when one result feeds the next, use create-lipsync or create-translate-and-dub per video. Call with dryRun: true first to have the API check every item without creating anything. This is a paid action: every item is billed as its own generation. Before creating, estimate a representative item with generate_estimate-cost, tell the user the item count and the estimated total, and wait for their confirmation. Not idempotent: each call creates a new batch, so after an uncertain response check batches_list before creating again. Leave payload.projectId out for new work; a payload with projectId needs projectIntent=explicit, which only an explicit user selection or a project just created for this request allows. Batch may not be on every plan: a 402 names requiredPlan and billingUrl. Returns the batch id and each item's requestId; then call batches_get with wait: true.",
+   "inputSchema": {
+    "type": "object",
+    "properties": {
+     "items": {
+      "minItems": 20,
+      "type": "array",
+      "items": {
+       "type": "object",
+       "properties": {
+        "requestId": {
+         "description": "Your id for this item, unique in the batch. Omit it to get item-<n> (n counts from 1). Each result row carries it.",
+         "type": "string",
+         "minLength": 1
+        },
+        "payload": {
+         "type": "object",
+         "propertyNames": {
+          "type": "string"
+         },
+         "additionalProperties": {},
+         "description": "One POST /v2/generate body, the same as a single generation: {model, input: [{type: \"video\", url}, {type: \"audio\", url}], options?}. Input items take a public URL or a Sync assetId; a text input takes {type: \"text\", provider: {...}} with a voice from voices_get-voices."
+        }
+       },
+       "required": [
+        "payload"
+       ],
+       "additionalProperties": false
+      },
+      "description": "The generations, in order; at least 20. Plans allow up to 500 per batch by default, and the whole batch must fit in 5 MB as JSONL."
+     },
+     "dryRun": {
+      "description": "Validate every item with the API without creating the batch or spending anything; answers status VALIDATED.",
+      "type": "boolean"
+     },
+     "webhookUrl": {
+      "description": "URL Sync POSTs the batch to when it finishes, signed with the organization webhook secret.",
+      "type": "string",
+      "format": "uri"
+     },
+     "projectIntent": {
+      "description": "Required when any payload sets projectId. Set only when the user explicitly chose that project, or it is the project just created for this request; never infer it from a matching name or an open editor.",
+      "type": "string",
+      "const": "explicit"
+     }
+    },
+    "required": [
+     "items"
+    ],
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "additionalProperties": false
+   },
+   "outputSchema": {
+    "type": "object",
+    "anyOf": [
+     {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "properties": {
+       "id": {
+        "type": "string",
+        "description": "The batch id; pass it to batches_get."
+       },
+       "status": {
+        "type": "string",
+        "description": "PENDING, JOBS_CREATED or PROCESSING while running (internal states also mean running); COMPLETED or FAILED when done."
+       },
+       "created_at": {
+        "type": "string"
+       },
+       "metrics": {
+        "type": "object",
+        "properties": {
+         "total_generations": {
+          "type": "number"
+         },
+         "success_count": {
+          "type": "number"
+         },
+         "failed_count": {
+          "type": "number"
+         },
+         "pending_count": {
+          "type": "number"
+         }
+        },
+        "additionalProperties": {},
+        "description": "Generation counts: total, succeeded, failed and still pending."
+       },
+       "webhookUrl": {
+        "type": [
+         "string",
+         "null"
+        ]
+       },
+       "outputUrl": {
+        "description": "The JSONL result file once the batch finishes; empty while it runs.",
+        "type": [
+         "string",
+         "null"
+        ]
+       },
+       "requestIds": {
+        "type": "array",
+        "items": {
+         "type": "string"
+        },
+        "description": "Each item’s requestId, in item order, including generated ones."
+       }
+      },
+      "required": [
+       "status",
+       "requestIds"
+      ],
+      "additionalProperties": false
+     },
+     {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "properties": {
+       "error": {
+        "type": "object",
+        "properties": {
+         "message": {
+          "type": "string"
+         },
+         "status": {
+          "type": "integer",
+          "minimum": -9007199254740991,
+          "maximum": 9007199254740991
+         },
+         "code": {
+          "type": "string"
+         },
+         "retryable": {
+          "type": "boolean"
+         },
+         "retryAfterMs": {
+          "type": "number"
+         },
+         "generationId": {
+          "type": "string"
+         },
+         "importJobId": {
+          "type": "string",
+          "format": "uuid",
+          "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+         },
+         "importStatus": {
+          "type": "string",
+          "enum": [
+           "queued",
+           "downloading",
+           "processing",
+           "completed",
+           "failed"
+          ]
+         },
+         "progress": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100
+         }
+        },
+        "required": [
+         "message"
+        ],
+        "additionalProperties": false
+       }
+      },
+      "required": [
+       "error"
+      ],
+      "additionalProperties": false
+     }
+    ]
+   },
+   "annotations": {
+    "readOnlyHint": false,
+    "destructiveHint": false,
+    "idempotentHint": false,
+    "openWorldHint": true
+   },
+   "_meta": {
+    "securitySchemes": [
+     {
+      "type": "oauth2",
+      "scopes": []
+     }
+    ]
+   }
+  },
+  {
+   "name": "batches_get",
+   "title": "read a batch",
+   "description": "Read a Sync batch: status, metrics (total, succeeded, failed, pending) and outputUrl. Once it is COMPLETED or FAILED, results lists each item by requestId with its generation status, generationId, outputMediaUrl or error. With wait: true it waits on the server for up to about 50 seconds and sends progress notifications; batches can take hours, so call again while it runs and never create the batch again.",
+   "inputSchema": {
+    "type": "object",
+    "properties": {
+     "id": {
+      "type": "string",
+      "minLength": 1,
+      "description": "The batch id batches_create or batches_list returned."
+     },
+     "wait": {
+      "description": "Wait on the server until the job finishes or about 50 seconds pass, then return its latest state. If it is still running, call again with wait: true instead of sleeping.",
+      "type": "boolean"
+     },
+     "results": {
+      "description": "Once the batch finishes, which result rows to return: all (default), failed (FAILED or REJECTED only) or none.",
+      "type": "string",
+      "enum": [
+       "all",
+       "failed",
+       "none"
+      ]
+     }
+    },
+    "required": [
+     "id"
+    ],
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "additionalProperties": false
+   },
+   "outputSchema": {
+    "type": "object",
+    "anyOf": [
+     {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "properties": {
+       "id": {
+        "type": "string",
+        "description": "The batch id; pass it to batches_get."
+       },
+       "status": {
+        "type": "string",
+        "description": "PENDING, JOBS_CREATED or PROCESSING while running (internal states also mean running); COMPLETED or FAILED when done."
+       },
+       "created_at": {
+        "type": "string"
+       },
+       "metrics": {
+        "type": "object",
+        "properties": {
+         "total_generations": {
+          "type": "number"
+         },
+         "success_count": {
+          "type": "number"
+         },
+         "failed_count": {
+          "type": "number"
+         },
+         "pending_count": {
+          "type": "number"
+         }
+        },
+        "additionalProperties": {},
+        "description": "Generation counts: total, succeeded, failed and still pending."
+       },
+       "webhookUrl": {
+        "type": [
+         "string",
+         "null"
+        ]
+       },
+       "outputUrl": {
+        "description": "The JSONL result file once the batch finishes; empty while it runs.",
+        "type": [
+         "string",
+         "null"
+        ]
+       },
+       "results": {
+        "description": "One row per item from the result file, once the batch finishes.",
+        "type": "array",
+        "items": {
+         "type": "object",
+         "properties": {
+          "requestId": {
+           "type": "string"
+          },
+          "status": {
+           "type": "string",
+           "description": "The generation status: COMPLETED, FAILED or REJECTED."
+          },
+          "generationId": {
+           "description": "Read it with generate_get-generation.",
+           "type": "string"
+          },
+          "outputMediaUrl": {
+           "description": "The finished video; return it verbatim.",
+           "type": "string"
+          },
+          "error": {}
+         },
+         "required": [
+          "requestId",
+          "status"
+         ],
+         "additionalProperties": false
+        }
+       },
+       "resultsError": {
+        "description": "Why the result file could not be read; the batch fields are still current.",
+        "type": "string"
+       }
+      },
+      "required": [
+       "id",
+       "status"
+      ],
+      "additionalProperties": false
+     },
+     {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "properties": {
+       "error": {
+        "type": "object",
+        "properties": {
+         "message": {
+          "type": "string"
+         },
+         "status": {
+          "type": "integer",
+          "minimum": -9007199254740991,
+          "maximum": 9007199254740991
+         },
+         "code": {
+          "type": "string"
+         },
+         "retryable": {
+          "type": "boolean"
+         },
+         "retryAfterMs": {
+          "type": "number"
+         },
+         "generationId": {
+          "type": "string"
+         },
+         "importJobId": {
+          "type": "string",
+          "format": "uuid",
+          "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+         },
+         "importStatus": {
+          "type": "string",
+          "enum": [
+           "queued",
+           "downloading",
+           "processing",
+           "completed",
+           "failed"
+          ]
+         },
+         "progress": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100
+         }
+        },
+        "required": [
+         "message"
+        ],
+        "additionalProperties": false
+       }
+      },
+      "required": [
+       "error"
+      ],
+      "additionalProperties": false
+     }
+    ]
+   },
+   "annotations": {
+    "readOnlyHint": true,
+    "destructiveHint": false,
+    "idempotentHint": true,
+    "openWorldHint": false
+   },
+   "_meta": {
+    "securitySchemes": [
+     {
+      "type": "oauth2",
+      "scopes": []
+     }
+    ]
+   }
+  },
+  {
+   "name": "batches_list",
+   "title": "list batches",
+   "description": "List this account’s Sync batches with their status and metrics, optionally by status or creation time. Use it to find a batch id, to check for a batch just created after an uncertain batches_create response, or to see which batches are still running.",
+   "inputSchema": {
+    "type": "object",
+    "properties": {
+     "status": {
+      "type": "string",
+      "enum": [
+       "PENDING",
+       "JOBS_CREATED",
+       "PROCESSING",
+       "COMPLETED",
+       "FAILED"
+      ]
+     },
+     "createdAfter": {
+      "description": "ISO 8601 date-time.",
+      "type": "string"
+     },
+     "createdBefore": {
+      "description": "ISO 8601 date-time.",
+      "type": "string"
+     }
+    },
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "additionalProperties": false
+   },
+   "outputSchema": {
+    "type": "object",
+    "anyOf": [
+     {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "properties": {
+       "batches": {
+        "type": "array",
+        "items": {
+         "type": "object",
+         "properties": {
+          "id": {
+           "type": "string",
+           "description": "The batch id; pass it to batches_get."
+          },
+          "status": {
+           "type": "string",
+           "description": "PENDING, JOBS_CREATED or PROCESSING while running (internal states also mean running); COMPLETED or FAILED when done."
+          },
+          "created_at": {
+           "type": "string"
+          },
+          "metrics": {
+           "type": "object",
+           "properties": {
+            "total_generations": {
+             "type": "number"
+            },
+            "success_count": {
+             "type": "number"
+            },
+            "failed_count": {
+             "type": "number"
+            },
+            "pending_count": {
+             "type": "number"
+            }
+           },
+           "additionalProperties": {},
+           "description": "Generation counts: total, succeeded, failed and still pending."
+          },
+          "webhookUrl": {
+           "type": [
+            "string",
+            "null"
+           ]
+          },
+          "outputUrl": {
+           "description": "The JSONL result file once the batch finishes; empty while it runs.",
+           "type": [
+            "string",
+            "null"
+           ]
+          }
+         },
+         "required": [
+          "id",
+          "status"
+         ],
+         "additionalProperties": {}
+        }
+       }
+      },
+      "required": [
+       "batches"
+      ],
+      "additionalProperties": false
+     },
+     {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "properties": {
+       "error": {
+        "type": "object",
+        "properties": {
+         "message": {
+          "type": "string"
+         },
+         "status": {
+          "type": "integer",
+          "minimum": -9007199254740991,
+          "maximum": 9007199254740991
+         },
+         "code": {
+          "type": "string"
+         },
+         "retryable": {
+          "type": "boolean"
+         },
+         "retryAfterMs": {
+          "type": "number"
+         },
+         "generationId": {
+          "type": "string"
+         },
+         "importJobId": {
+          "type": "string",
+          "format": "uuid",
+          "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+         },
+         "importStatus": {
+          "type": "string",
+          "enum": [
+           "queued",
+           "downloading",
+           "processing",
+           "completed",
+           "failed"
+          ]
+         },
+         "progress": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100
+         }
+        },
+        "required": [
+         "message"
+        ],
+        "additionalProperties": false
+       }
+      },
+      "required": [
+       "error"
+      ],
+      "additionalProperties": false
+     }
+    ]
+   },
+   "annotations": {
+    "readOnlyHint": true,
+    "destructiveHint": false,
+    "idempotentHint": true,
+    "openWorldHint": false
+   },
+   "_meta": {
+    "securitySchemes": [
+     {
+      "type": "oauth2",
+      "scopes": []
+     }
+    ]
+   }
+  },
+  {
    "name": "get-dialogue-options",
    "title": "check edit dialogue availability",
    "description": "Check whether the connected API supports timed-word Edit Dialogue. Does not transcribe, synthesize or generate.",
@@ -5744,6 +6335,169 @@
    "annotations": {
     "readOnlyHint": true,
     "destructiveHint": false,
+    "openWorldHint": false
+   },
+   "_meta": {
+    "securitySchemes": [
+     {
+      "type": "oauth2",
+      "scopes": []
+     }
+    ]
+   }
+  },
+  {
+   "name": "send-feedback",
+   "title": "send feedback to sync",
+   "description": "Tell the Sync team about friction with these tools: an error that did not say what to fix, a result that was wrong, a capability you needed, or extra steps you had to take. Send one report per problem, after you have dealt with it; the team reviews reports daily. Does not change, retry or cancel any job, and never needs the user’s approval.",
+   "inputSchema": {
+    "type": "object",
+    "properties": {
+     "kind": {
+      "type": "string",
+      "enum": [
+       "confusing_error",
+       "bug",
+       "missing_capability",
+       "workaround",
+       "docs",
+       "other"
+      ],
+      "description": "confusing_error: an error that did not say what to fix. bug: wrong result or crash. missing_capability: a tool or option you needed. workaround: you had to do extra steps. docs: a description that misled you."
+     },
+     "message": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 4000,
+      "description": "What you tried, what happened, and what would have helped. Include the exact error text. No personal data or secrets."
+     },
+     "tool": {
+      "description": "Tool the feedback is about.",
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128
+     },
+     "errorCode": {
+      "description": "Error code you received.",
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128
+     },
+     "generationId": {
+      "description": "Generation the feedback is about.",
+      "type": "string",
+      "format": "uuid",
+      "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+     },
+     "jobId": {
+      "description": "Other job the feedback is about: an import, transcription or translation id.",
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128
+     },
+     "severity": {
+      "description": "blocker: you could not finish. major: you finished with a workaround. minor: an annoyance.",
+      "type": "string",
+      "enum": [
+       "blocker",
+       "major",
+       "minor"
+      ]
+     }
+    },
+    "required": [
+     "kind",
+     "message"
+    ],
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "additionalProperties": false
+   },
+   "outputSchema": {
+    "type": "object",
+    "anyOf": [
+     {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "properties": {
+       "id": {
+        "type": "string"
+       },
+       "received": {
+        "type": "boolean",
+        "const": true
+       }
+      },
+      "required": [
+       "id",
+       "received"
+      ],
+      "additionalProperties": false
+     },
+     {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "properties": {
+       "error": {
+        "type": "object",
+        "properties": {
+         "message": {
+          "type": "string"
+         },
+         "status": {
+          "type": "integer",
+          "minimum": -9007199254740991,
+          "maximum": 9007199254740991
+         },
+         "code": {
+          "type": "string"
+         },
+         "retryable": {
+          "type": "boolean"
+         },
+         "retryAfterMs": {
+          "type": "number"
+         },
+         "generationId": {
+          "type": "string"
+         },
+         "importJobId": {
+          "type": "string",
+          "format": "uuid",
+          "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+         },
+         "importStatus": {
+          "type": "string",
+          "enum": [
+           "queued",
+           "downloading",
+           "processing",
+           "completed",
+           "failed"
+          ]
+         },
+         "progress": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100
+         }
+        },
+        "required": [
+         "message"
+        ],
+        "additionalProperties": false
+       }
+      },
+      "required": [
+       "error"
+      ],
+      "additionalProperties": false
+     }
+    ]
+   },
+   "annotations": {
+    "readOnlyHint": false,
+    "destructiveHint": false,
+    "idempotentHint": false,
     "openWorldHint": false
    },
    "_meta": {

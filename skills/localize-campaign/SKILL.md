@@ -38,6 +38,7 @@ Before spending anything, tell the user what stays the same, so nobody is surpri
 - Read `generationLimits.concurrency` from `get-account-context`, and keep that many versions in flight at most. On `concurrency_limit_reached`, wait `error.retryAfterMs` milliseconds and retry the identical request with the same key.
 - Give every version its own `idempotencyKey`, written into the matrix before the call, such as `<campaign>-<video>-<lang>`, and reuse it on every retry. Track each version's generation `id` and status in the matrix as you go, so an interrupted run resumes instead of paying twice.
 - If one version fails, record why and carry on with the others.
+- On Scale plans and above, 20 or more versions can go in one `batches_create` call instead, each item a generate body with the video and `dubParams` (`{"providerName": "elevenlabs", "targetLang": "<lang>"}`). Validate with `dryRun: true` first, and follow it with `batches_get`.
 
 ## 5. Deliver
 

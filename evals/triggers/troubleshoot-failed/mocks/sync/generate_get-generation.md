@@ -1,0 +1,1 @@
+{"id":"{{input.id}}","status":"FAILED","errorCode":"generation_input_resolution_unsupported","error":"Input video resolution 8192x4320 exceeds the maximum supported resolution of 4096x2160.","model":"sync-3","outputMediaUrl":null}

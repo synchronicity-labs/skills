@@ -16,9 +16,9 @@ ROOT = Path(__file__).resolve().parents[1]
 
 # shared file -> skills that ship a copy in references/
 USES = {
-    "connect.md": ["setup", "lipsync", "talking-photo", "translate-and-dub", "edit-dialogue",
+    "connect.md": ["setup", "troubleshoot", "lipsync", "talking-photo", "translate-and-dub", "edit-dialogue",
                    "ai-video-to-talking", "batch-lipsync", "localize-campaign"],
-    "media-input.md": ["lipsync", "talking-photo", "translate-and-dub", "edit-dialogue",
+    "media-input.md": ["troubleshoot", "lipsync", "talking-photo", "translate-and-dub", "edit-dialogue",
                        "ai-video-to-talking", "batch-lipsync", "localize-campaign"],
     "api.md": ["lipsync", "talking-photo", "translate-and-dub", "ai-video-to-talking",
                "localize-campaign", "sync-api"],

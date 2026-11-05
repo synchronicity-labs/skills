@@ -6,4 +6,4 @@ timeout_seconds: 420
 allowed_tools: ["Skill", "Read", "Glob", "Grep"]
 ---
 
-https://example.com/gen/barista-veo.mp4 is an 8 second Kling clip of a barista. Make her say "Morning! Oat latte again?" Pick whatever voice fits a friendly barista. Cost approved.
+https://example.com/gen/barista-kling.mp4 is a 12 second Kling clip of a barista. Make her say "Morning! Oat latte again?" Pick whatever voice fits a friendly barista. Cost approved.

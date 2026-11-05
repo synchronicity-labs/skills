@@ -41,6 +41,7 @@ The skills use the hosted sync. MCP server at `https://mcp.sync.so/mcp`, where y
 | [edit-dialogue](skills/edit-dialogue) ([guide](docs/edit-dialogue.md)) | Changes or removes a few spoken words in the speaker's own voice. | "Change the price I say to $49" |
 | [localize-campaign](skills/localize-campaign) ([guide](docs/localize-campaign.md)) | Localizes a set of videos across markets: plan, pilot, run, review sheet. | "Make these three ads in Spanish, German and Japanese" |
 | [batch-lipsync](skills/batch-lipsync) ([guide](docs/batch-lipsync.md)) | Lip-syncs every row of a CSV or folder, resumably, within your plan's limits or through the Batch API. | "Lipsync each row of leads.csv onto presenter.mp4" |
+| [troubleshoot](skills/troubleshoot) ([guide](docs/troubleshoot.md)) | Finds why a job failed, stalled or was rejected, resumes it without paying twice, and can report the problem to sync. | "My lipsync failed, why?" |
 | [sync-api](skills/sync-api) ([guide](docs/sync-api.md)) | Builds sync. into apps with the REST API or the Python and TypeScript SDKs: uploads, idempotency, webhooks, errors. | "Add sync. lipsync to my Next.js app" |
 
 Every skill quotes the cost before starting paid work and waits for your approval. Each one has a guide in [`docs/`](docs) with example prompts and common questions.

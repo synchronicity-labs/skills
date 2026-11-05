@@ -177,10 +177,10 @@ case(B, "batch-mcp-three-rows", "Run every row of manifest.csv through sync lips
      ["behavior", "batch-lipsync"], "MCP-only batch: reads concurrency, one create per row.",
      max_turns=60, allowed=("Skill", "Read", "Glob", "Grep", "Bash", "Write", "Edit"),
      files={"manifest.csv": "id,video,audio\nintro,https://example.com/v/presenter.mp4,https://example.com/a/intro.wav\npricing,https://example.com/v/presenter.mp4,https://example.com/a/pricing.wav\noutro,https://example.com/v/presenter.mp4,https://example.com/a/outro.wav\n"})
-case(B, "ai-video-script-approved", "https://example.com/gen/barista-veo.mp4 is an 8 second Kling clip of a barista. Make her say \"Morning! Oat latte again?\" Pick whatever voice fits a friendly barista. Cost approved.",
+case(B, "ai-video-script-approved", "https://example.com/gen/barista-kling.mp4 is a 12 second Kling clip of a barista. Make her say \"Morning! Oat latte again?\" Pick whatever voice fits a friendly barista. Cost approved.",
      {"skill-fired": fired("ai-video-to-talking"), "voice": used("voices_get-voices"),
       "script-create": used("create-lipsync", min=1, max=1, input_match='"script"\\s*:\\s*"Morning! Oat latte again\\?"'),
-      "video-input": used("create-lipsync", input_match='"videoUrl"\\s*:\\s*"https://example\\.com/gen/barista-veo\\.mp4"|"videoAssetId"')},
+      "video-input": used("create-lipsync", input_match='"videoUrl"\\s*:\\s*"https://example\\.com/gen/barista-kling\\.mp4"|"videoAssetId"')},
      ["behavior", "ai-video-to-talking"], "AI clip with the user's exact line and a chosen voice.", max_turns=30)
 case(B, "sync-api-python-script", "Write lipsync.py: a Python script that lipsyncs ./talk.mp4 with ./voice.wav using the sync.so API and prints the output URL. Don't run it.",
      {"skill-fired": fired("sync-api"),
@@ -223,4 +223,24 @@ You are the sync. MCP server's create-lipsync tool. Look at the earlier calls in
   {"id":"gen-KEY","status":"PENDING","model":"sync-3"}
 """)
 mock("generate_estimate-cost", '{"estimatedGenerationCost":1.6,"estimatedCredits":null,"estimatedFrameCount":300,"durationEstimate":{"durationSeconds":12,"audioDurationSeconds":12,"source":"audio","approximate":false,"excludesSpeechSynthesis":true}}', {"model": "string"})
+
+def case_mock(group, name, tool, body):
+    d = ROOT / group / name / "mocks" / "sync"
+    d.mkdir(parents=True, exist_ok=True)
+    (d / f"{tool}.md").write_text(body.strip() + "\n")
+
+case(T, "troubleshoot-failed", "my lipsync 7c1e2a90-4b1d-4f6e-9a55-0d2f1c3b9e01 failed, what happened? was I charged?",
+     {"skill-fired": fired("troubleshoot"), "read-job": used("generate_get-generation"), "no-paid-create": never("create-lipsync"),
+      "explains": judge("PASS if the reply says the video's resolution (8192x4320) is above the 4096x2160 maximum, suggests re-exporting at 4K or 1080p, and says failed generations aren't charged.\nFAIL if it starts a new generation, guesses a different cause, or says the user was charged.")},
+     ["trigger", "troubleshoot"], "Failed generation: read it, explain the real cause, say it isn't charged, no new paid job.")
+case_mock(T, "troubleshoot-failed", "generate_get-generation", '{"id":"{{input.id}}","status":"FAILED","errorCode":"generation_input_resolution_unsupported","error":"Input video resolution 8192x4320 exceeds the maximum supported resolution of 4096x2160.","model":"sync-3","outputMediaUrl":null}')
+case(T, "troubleshoot-stuck", "this dub d0b1a2c3-0000-4000-8000-es0000000001 has been processing for like 25 minutes. should i just start it again?",
+     {"skill-fired": fired(["troubleshoot", "translate-and-dub"]), "read-job": used("generate_get-generation"),
+      "no-new-dub": never("create-translate-and-dub"), "no-new-lipsync": never("create-lipsync"),
+      "advice": judge("PASS if the reply says the job is still processing, advises not to start it again because that would be a second paid job and wouldn't be faster, and offers to keep checking the same job.\nFAIL if it recommends or starts a new dub.")},
+     ["trigger", "troubleshoot"], "Slow job: keep polling the same ID, never resubmit.")
+case_mock(T, "troubleshoot-stuck", "generate_get-generation", '{"id":"{{input.id}}","status":"PROCESSING","progress_percent":62,"model":"sync-3","outputMediaUrl":null}')
+case(T, "neg-troubleshoot-code-retry", "write retry logic in our node worker for when sync's /v2/generate returns 429 concurrency_limit_reached",
+     {"skill-fired": fired("sync-api"), "not-troubleshoot": {"type": "tool_used", "tool": "Skill", "input_match": '"skill"\\s*:\\s*"(?:sync:)?troubleshoot"', "min": 0, "max": 0, "arm": "both"}},
+     ["trigger", "negative", "troubleshoot"], "Integration code for 429s goes to sync-api, not troubleshoot.")
 print("ok")

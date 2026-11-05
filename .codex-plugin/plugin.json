@@ -1,6 +1,6 @@
 {
   "name": "sync",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Lipsync videos, make photos and AI characters talk, translate and dub videos, fix spoken words, localize campaigns, run batch lipsync, and build sync. into apps. Uses the hosted sync. MCP server.",
   "author": {
     "name": "sync. labs",

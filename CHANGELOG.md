@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.1.0
+
+- New `troubleshoot` skill: diagnoses failed, stalled or rejected work, resumes it without a second paid job, and can send a redacted report with `send-feedback`. Adapted from Noah's work in mcp-server#143.
+- `batch-lipsync` and `localize-campaign` can use the MCP server's `batches_create`, `batches_get` and `batches_list` on Scale plans and above.
+- `ai-video-to-talking` now treats voice cloning as a one-time, non-idempotent action and checks the voice list before any retry.
+
 ## 1.0.0
 
 First public release.
