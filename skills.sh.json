@@ -1,0 +1,25 @@
+{
+  "notGrouped": "bottom",
+  "groupings": [
+    {
+      "title": "Get started",
+      "description": "Connect sync. to your agent, check your account, and get to a first video.",
+      "skills": ["setup"]
+    },
+    {
+      "title": "Make one video",
+      "description": "Lipsync footage, make a photo or an AI-generated character talk, dub into other languages, or fix a few spoken words.",
+      "skills": ["lipsync", "talking-photo", "ai-video-to-talking", "translate-and-dub", "edit-dialogue"]
+    },
+    {
+      "title": "Many videos",
+      "description": "Run a CSV of lipsync jobs, or localize a whole campaign across markets.",
+      "skills": ["batch-lipsync", "localize-campaign"]
+    },
+    {
+      "title": "Build and fix",
+      "description": "Build sync. into your own code, or find out why a job failed and resume it safely.",
+      "skills": ["sync-api", "troubleshoot"]
+    }
+  ]
+}

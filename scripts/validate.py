@@ -263,6 +263,15 @@ def main() -> int:
             errors.append(f"{yaml.relative_to(ROOT)}: missing, or its default_prompt doesn't name ${skill.name}")
     errors += validate_docs(names)
 
+    # skills.sh groups the repo page by skills.sh.json; every skill should appear exactly once.
+    groups = json.loads((ROOT / "skills.sh.json").read_text()).get("groupings", [])
+    grouped = [s for g in groups for s in g.get("skills", [])]
+    for name in sorted(names):
+        if grouped.count(name) != 1:
+            errors.append(f"skills.sh.json: skill {name} must appear in exactly one grouping (found {grouped.count(name)})")
+    for name in set(grouped) - names:
+        errors.append(f"skills.sh.json: unknown skill {name}")
+
     readme = (ROOT / "README.md").read_text()
     for name in names:
         if f"skills/{name}" not in readme:
