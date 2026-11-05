@@ -1,10 +1,21 @@
+---
+title: "batch-lipsync skill"
+subtitle: "Lip-sync every row of a CSV or folder, resumably, within your plan's limits or through the Batch API."
+description: "The sync. labs batch-lipsync agent skill lip-syncs many videos in one go from a CSV, spreadsheet, folder or list: it quotes the whole run, offers a pilot, keeps to your plan's concurrency and resumes without paying twice."
+og:subtitle: "Lip-sync every row of a CSV or folder, resumably."
+og:description: "Lip-sync every row of a CSV or folder from your agent, resumably, within your plan's limits or through the Batch API."
+---
+
 # batch-lipsync
+
+> [!TIP]
+> Install this skill with `npx skills add synchronicity-labs/skills --skill batch-lipsync`, or get every skill with the Claude Code plugin. See [Agent skills](overview.md).
 
 ## What it does
 
 `batch-lipsync` lip-syncs many videos in one go: one output per row of a CSV, a spreadsheet, a folder, or a list like "this presenter with each of these 40 audio files". It builds a manifest, quotes the whole run, offers a pilot, then runs every row within your plan's limits and collects the outputs into a results table.
 
-With an API key it uses a bundled script, `sync_batch.py`, that uploads each file once, keeps to your plan's concurrency, resumes after an interruption, and downloads every result. On Scale plans and above, 20 or more rows can go through the Batch API instead, either with the script or straight through the MCP server's batch tools.
+With an API key it uses a bundled script, `sync_batch.py`, that uploads each file once, keeps to your plan's concurrency, resumes after an interruption, and downloads every result. On Scale plans and above, 20 or more rows can go through the [Batch API](https://sync.so/docs/api-reference/guides/batch-processing) instead, either with the script or straight through the MCP server's batch tools.
 
 ## When to reach for it
 
@@ -24,7 +35,7 @@ With an API key it uses a bundled script, `sync_batch.py`, that uploads each fil
 
 ## What you need
 
-- The sync. MCP server connected, or `SYNC_API_KEY` and Python 3.9 or later for the script.
+- The sync. MCP server connected, or `SYNC_API_KEY` and Python 3.9 or later for the script. The [setup](setup.md) skill walks you through either.
 - A list where every row has a video or image, and audio or a script with a voice.
 
 ## Common questions

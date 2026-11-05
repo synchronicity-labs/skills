@@ -1,4 +1,14 @@
+---
+title: "edit-dialogue skill"
+subtitle: "Change or remove a few spoken words in the speaker's own voice."
+description: "The sync. labs edit-dialogue agent skill fixes a few spoken words in a single-speaker video without a reshoot: it transcribes, previews the new words in the speaker's own voice, then re-syncs the lips on just that part."
+og:description: "Fix a wrong price, name, date or word in a video, in the speaker's own voice, without a reshoot."
+---
+
 # edit-dialogue
+
+> [!TIP]
+> Install this skill with `npx skills add synchronicity-labs/skills --skill edit-dialogue`, or get every skill with the Claude Code plugin. See [Agent skills](overview.md).
 
 ## What it does
 
@@ -21,7 +31,7 @@
 
 ## What you need
 
-- The sync. MCP server connected. The REST version of this workflow is in early access.
+- The sync. MCP server connected. The [setup](setup.md) skill walks you through it. The REST version of this workflow is in early access; see [Transcription and Dialogue Editing](https://sync.so/docs/developer-guides/dialogue-editing).
 - A video with one speaker, up to 10 minutes.
 
 ## Common questions

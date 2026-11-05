@@ -44,13 +44,14 @@ The skills use the hosted sync. MCP server at `https://mcp.sync.so/mcp`, where y
 | [troubleshoot](skills/troubleshoot) ([guide](docs/troubleshoot.md)) | Finds why a job failed, stalled or was rejected, resumes it without paying twice, and can report the problem to sync. | "My lipsync failed, why?" |
 | [sync-api](skills/sync-api) ([guide](docs/sync-api.md)) | Builds sync. into apps with the REST API or the Python and TypeScript SDKs: uploads, idempotency, webhooks, errors. | "Add sync. lipsync to my Next.js app" |
 
-Every skill quotes the cost before starting paid work and waits for your approval. Each one has a guide in [`docs/`](docs) with example prompts and common questions.
+Every skill quotes the cost before starting paid work and waits for your approval. Each one has a guide in [`docs/`](docs) with example prompts and common questions. The same guides, with Spanish, French, Brazilian Portuguese and German translations in [`docs/i18n/`](docs/i18n), are published at [sync.so/docs](https://sync.so/docs/plugins-and-extensions/agent-skills/overview) whenever this repo changes.
 
 ## Repository layout
 
 ```text
 skills/<name>/SKILL.md       one skill per folder; references/ and scripts/ load on demand
-docs/<name>.md               a guide per skill for people
+docs/<name>.md               a guide per skill for people, plus overview.md; published on sync.so/docs
+docs/i18n/<locale>/          translations of every guide (es, fr, pt-BR, de)
 shared/                      reference files copied into the skills that use them
 .claude-plugin/              Claude Code plugin and marketplace manifests
 .codex-plugin/, .cursor-plugin/
@@ -66,8 +67,9 @@ tests/                       tests for bundled scripts
 See [AGENTS.md](AGENTS.md) for the rules. In short:
 
 1. Edit a skill, or a file in `shared/`. Then run `python3 scripts/sync_shared.py` so every copy matches.
-2. Check it: `python3 scripts/validate.py`, `python3 -m unittest discover -s tests`, and `claude plugin validate .`.
-3. Run the evals for what you changed: `claude plugin eval . --case '<skill>-*'`. See [evals/README.md](evals/README.md).
+2. If you changed a guide in `docs/`, update its four translations in `docs/i18n/` and their `source-sha256` (see [AGENTS.md](AGENTS.md#docs-pages)).
+3. Check it: `python3 scripts/validate.py`, `python3 -m unittest discover -s tests`, and `claude plugin validate .`.
+4. Run the evals for what you changed: `claude plugin eval . --case '<skill>-*'`. See [evals/README.md](evals/README.md).
 
 When the MCP server's tools change, refresh `evals/mocks/sync/_tools.json` (see `evals/README.md`). The validator then flags any tool name a skill mentions that no longer exists.
 

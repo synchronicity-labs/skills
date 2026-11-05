@@ -1,4 +1,14 @@
+---
+title: "troubleshoot skill"
+subtitle: "Find why a job failed, stalled or was rejected, and resume it without paying twice."
+description: "The sync. labs troubleshoot agent skill works out why a sync. job failed, stalled or was rejected, explains the real cause in plain words, picks the work back up without starting a second paid job, and can report the problem to sync."
+og:description: "Find out from your agent why a sync. job failed, stalled or was rejected, and resume it without paying twice."
+---
+
 # troubleshoot
+
+> [!TIP]
+> Install this skill with `npx skills add synchronicity-labs/skills --skill troubleshoot`, or get every skill with the Claude Code plugin. See [Agent skills](overview.md).
 
 ## What it does
 
@@ -38,7 +48,7 @@ No. Pending isn't failed, and a second job won't finish sooner. The skill keeps 
 Maybe. The skill looks for the job, or retries the identical request with the same key, which returns the original instead of starting another one.
 
 **The result looks wrong.**
-The usual causes are in the source: a turned or covered face, several people in frame, music under the voice, or low resolution. The skill checks those, and suggests sync-3 if an older model was used. Trying again is a new paid generation, so it quotes first.
+The usual causes are in the source: a turned or covered face, several people in frame, music under the voice, or low resolution. The skill checks those, and suggests `sync-3` if an older model was used. Trying again is a new paid generation, so it quotes first.
 
 **What does the report to sync. include?**
 The kind of problem, the exact error, the tool and the job ID. Never your key, signed links, personal data or media.

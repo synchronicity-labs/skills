@@ -1,4 +1,14 @@
+---
+title: "setup skill"
+subtitle: "Connect sync. to your agent, check your account and get to a first video."
+description: "The sync. labs setup agent skill connects sync. to Claude Code, Codex, Cursor and other agents, shows your plan and credits, and suggests a first video. It never starts paid work."
+og:description: "Connect sync. to your agent, check your account, plan and credits, and get to a first video."
+---
+
 # setup
+
+> [!TIP]
+> Install this skill with `npx skills add synchronicity-labs/skills --skill setup`, or get every skill with the Claude Code plugin. See [Agent skills](overview.md).
 
 ## What it does
 
@@ -28,7 +38,7 @@ Media requests like "lipsync this" go straight to their own skill, which connect
 | Cursor | Add `{"mcpServers": {"sync": {"url": "https://mcp.sync.so/mcp"}}}` to `.cursor/mcp.json` |
 | Scripts and CI | Set `SYNC_API_KEY`, or run the local server with `npx -y @sync.so/mcp-server@latest` |
 
-The hosted server signs you in with your sync. account, so there's no key to copy.
+The hosted server signs you in with your sync. account, so there's no key to copy. For an API key, see [Authentication](https://sync.so/docs/api-reference/guides/authentication). For more about the server itself, see the [MCP Server](https://sync.so/docs/plugins-and-extensions/mcp-server) guide.
 
 ## Common questions
 

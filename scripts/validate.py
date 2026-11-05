@@ -14,9 +14,15 @@ Checks:
 - Shared copies are current (scripts/sync_shared.py --check).
 - The plugin manifests parse, use only known top-level keys, and list only skills that exist.
 - No em dashes or en dashes anywhere in the repo's text files.
+- docs/ has a page per skill plus overview.md, each with title, subtitle, description and
+  og:description front matter, links only to other pages (name.md) or absolute URLs, and no
+  <, { or } outside code. Every page has a translation in docs/i18n/<locale>/ for each of LOCALES
+  whose `source-sha256` is the sha256 of the English page it was translated from, with the same
+  headings, questions and table rows.
 """
 from __future__ import annotations
 
+import hashlib
 import json
 import re
 import subprocess
@@ -24,6 +30,9 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
+# Languages sync.so/docs serves (synchronicity-labs/sync-fern fern/docs.yml `translations`).
+LOCALES = ["es", "fr", "pt-BR", "de"]
+DOC_FIELDS = ("title", "subtitle", "description", "og:description")
 NAME_RE = re.compile(r"^[a-z0-9]+(-[a-z0-9]+)*$")
 # Tools the hosted server shows only to chat apps with file uploads (ChatGPT, Codex app).
 APP_ONLY_TOOLS = {"upload-media"}
@@ -53,6 +62,109 @@ def frontmatter(text: str) -> dict:
             key, value = line.split(":", 1)
             fields[key.strip()] = value.strip()
     return fields
+
+
+def doc_frontmatter(path: Path, errors: list) -> dict:
+    """Front matter of a docs page. Keys may contain ':' (og:description), so split on the first ': '."""
+    rel = path.relative_to(ROOT)
+    match = re.match(r"^---\n(.*?)\n---\n", path.read_text(), re.S)
+    if not match:
+        errors.append(f"{rel}: missing front matter")
+        return {}
+    fields = {}
+    for line in match.group(1).splitlines():
+        field = re.match(r"^([a-z][a-z0-9:-]*?): (.*)$", line)
+        if not field:
+            errors.append(f"{rel}: front matter line {line!r} isn't `key: value`")
+            continue
+        key, value = field.group(1), field.group(2).strip()
+        if value.startswith('"'):
+            try:
+                value = json.loads(value)
+            except ValueError:
+                errors.append(f"{rel}: front matter `{key}` isn't a valid double-quoted string")
+        elif value.startswith("'"):
+            value = value[1:-1].replace("''", "'")
+        elif ": " in value or " #" in value:
+            errors.append(f"{rel}: front matter `{key}` has an unquoted ': ' or ' #'; quote the value")
+        fields[key] = value
+    return fields
+
+
+def doc_body_checks(path: Path, pages: set, errors: list) -> None:
+    """Keep pages convertible to Fern MDX by synchronicity-labs/sync-fern's scripts/sync-agent-skills.mjs."""
+    rel = path.relative_to(ROOT)
+    text = re.sub(r"^---\n.*?\n---\n", "", path.read_text(), flags=re.S)
+    text = re.sub(r"^\s*(```|~~~).*?^\s*\1\s*$", "", text, flags=re.S | re.M)
+    for line in text.splitlines():
+        if line.startswith("<!--"):
+            continue
+        prose = re.sub(r"`+[^`]*`+", "", line)
+        if re.search(r"[<{}]", prose):
+            errors.append(f"{rel}: {line.strip()[:60]!r} has <, {{ or }} outside code, which the docs site reads as JSX")
+        for target in re.findall(r"\]\(([^)\s]+)\)", prose):
+            if re.match(r"^[a-z]+:", target) or target.startswith("#"):
+                continue
+            page = re.match(r"^([a-z0-9-]+)\.md(#.*)?$", target)
+            if not page or page.group(1) not in pages:
+                errors.append(f"{rel}: link {target} must be another docs page (name.md) or an absolute URL")
+
+
+def section_shape(path: Path) -> tuple:
+    text = path.read_text()
+    return (len(re.findall(r"^## ", text, re.M)), len(re.findall(r"^\*\*.+\*\*$", text, re.M)),
+            len(re.findall(r"^\|", text, re.M)))
+
+
+def validate_docs(names: set) -> list:
+    errors = []
+    docs = ROOT / "docs"
+    pages = {p.stem for p in docs.glob("*.md")}
+    expected = names | {"overview"}
+    for extra in sorted(pages - expected):
+        errors.append(f"docs/{extra}.md: not a skill or the overview; the docs site publishes every page in docs/")
+    for page in sorted(pages):
+        fields = doc_frontmatter(docs / f"{page}.md", errors)
+        for key in DOC_FIELDS:
+            if not fields.get(key):
+                errors.append(f"docs/{page}.md: front matter needs `{key}`")
+        doc_body_checks(docs / f"{page}.md", pages, errors)
+    overview = (docs / "overview.md").read_text() if "overview" in pages else ""
+    for name in sorted(names):
+        if f"]({name}.md)" not in overview:
+            errors.append(f"docs/overview.md: skill {name} isn't in the skills table")
+    labels = json.loads((docs / "meta.json").read_text()) if (docs / "meta.json").exists() else {}
+    if set(labels) != {"section", "overview"}:
+        errors.append("docs/meta.json: needs exactly `section` and `overview` navigation labels")
+
+    for locale_dir in sorted(p for p in (docs / "i18n").glob("*") if p.is_dir()):
+        if locale_dir.name not in LOCALES:
+            errors.append(f"{locale_dir.relative_to(ROOT)}: unknown locale; the docs site serves {', '.join(LOCALES)}")
+    for locale in LOCALES:
+        loc = docs / "i18n" / locale
+        meta = loc / "meta.json"
+        if not meta.exists() or set(json.loads(meta.read_text())) != set(labels):
+            errors.append(f"{meta.relative_to(ROOT)}: needs the same keys as docs/meta.json")
+        for stray in sorted({p.stem for p in loc.glob("*.md")} - pages):
+            errors.append(f"docs/i18n/{locale}/{stray}.md: translates a page that docs/{stray}.md doesn't have")
+        for page in sorted(pages):
+            path = loc / f"{page}.md"
+            rel = f"docs/i18n/{locale}/{page}.md"
+            if not path.exists():
+                errors.append(f"{rel}: missing translation of docs/{page}.md")
+                continue
+            fields = doc_frontmatter(path, errors)
+            for key in DOC_FIELDS:
+                if not fields.get(key):
+                    errors.append(f"{rel}: front matter needs `{key}`")
+            source = hashlib.sha256((docs / f"{page}.md").read_bytes()).hexdigest()
+            if fields.get("source-sha256") != source:
+                errors.append(f"{rel}: stale; docs/{page}.md changed since it was translated. Update the translation, "
+                              f"then set `source-sha256: {source}`")
+            if section_shape(path) != section_shape(docs / f"{page}.md"):
+                errors.append(f"{rel}: headings, questions or table rows don't match docs/{page}.md")
+            doc_body_checks(path, pages, errors)
+    return errors
 
 
 def main() -> int:
@@ -149,10 +261,7 @@ def main() -> int:
         yaml = skill / "agents" / "openai.yaml"
         if not yaml.exists() or f"${skill.name} " not in yaml.read_text():
             errors.append(f"{yaml.relative_to(ROOT)}: missing, or its default_prompt doesn't name ${skill.name}")
-    for page in (ROOT / "docs").glob("*.md"):
-        for target in re.findall(r"\]\(([^)#\s]+)\)", page.read_text()):
-            if not re.match(r"^[a-z]+://", target) and not (page.parent / target).exists():
-                errors.append(f"{page.relative_to(ROOT)}: broken link {target}")
+    errors += validate_docs(names)
 
     readme = (ROOT / "README.md").read_text()
     for name in names:

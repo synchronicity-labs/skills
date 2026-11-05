@@ -9,4 +9,5 @@ First public release.
 - `batch-lipsync` and `localize-campaign` can use the MCP server's batch tools on Scale plans and above.
 - `batch-lipsync` ships `sync_batch.py`: one upload per file, stable idempotency keys, plan-aware concurrency, safe resume, and the Batch API on Scale plans and above.
 - `catalog.json`, a generated list of the skills that Studio and the docs read from GitHub.
+- `docs/` is the source of the Agent Skills pages on sync.so/docs, with an overview page and Spanish, French, Brazilian Portuguese and German translations that the validator keeps in step with the English pages.
 - A `claude plugin eval` suite with MCP mocks, plus tests for the bundled script and the `sync-api` code samples.

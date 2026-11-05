@@ -1,0 +1,60 @@
+---
+title: "localize-campaign-Skill"
+subtitle: "Lokalisiere eine Reihe von Videos für mehrere Märkte: Plan, Pilot, Durchlauf, Review-Tabelle."
+description: "Der localize-campaign-Skill von sync. labs erstellt jedes Video einer Kampagne, eines Kurses oder einer Produktreihe in jeder Zielsprache: Er ordnet Märkte Sprachen zu, schätzt die Kosten der Matrix, testet eine Version im Pilotlauf und führt dann den Rest mit einer Review-Tabelle aus."
+og:description: "Lokalisiere aus deinem Agenten mehrere Videos in mehrere Sprachen, mit einem Pilotlauf zuerst und einer Review-Tabelle am Ende."
+source-sha256: c64ee14c4d74ed022727d76fcb09febf3bd1b7092007a66113fed5599d610b6b
+---
+
+# localize-campaign
+
+> [!TIP]
+> Installiere diesen Skill mit `npx skills add synchronicity-labs/skills --skill localize-campaign` oder hol dir alle Skills mit dem Claude Code-Plugin. Siehe [Agent Skills](overview.md).
+
+## Was er macht
+
+`localize-campaign` nimmt eine Reihe von Videos, etwa die Anzeigen einer Kampagne, einen Kurs oder Produktvideos, und erstellt jedes davon in jeder Zielsprache. Er ordnet deine Märkte Sprachen zu, legt die Matrix aus Videos und Sprachen an, schätzt die Gesamtkosten, testet eine Version im Pilotlauf, damit Namen und Begriffe früh geprüft werden, und führt dann den Rest aus. Du bekommst einheitlich benannte Dateien und eine `review.csv`, mit der regionale Teams freigeben können.
+
+## Wann du ihn nutzt
+
+| Was du hast | Nimm |
+| --- | --- |
+| Mehrere Videos, mehrere Märkte oder Sprachen | `localize-campaign` |
+| Ein Video in wenige Sprachen | [translate-and-dub](translate-and-dub.md) |
+| Viele Videos mit neuer Sprache in derselben Sprache | [batch-lipsync](batch-lipsync.md) |
+
+## Probier es aus
+
+- „Wir starten nächsten Monat in DACH, Brasilien und Japan. Lokalisiere diese drei Anzeigen.“
+- „Mach unsere fünf Onboarding-Videos auf Spanisch, Französisch und Italienisch“
+
+## Was du brauchst
+
+- Den verbundenen sync. MCP-Server oder eine gesetzte `SYNC_API_KEY`. Der [setup](setup.md)-Skill führt dich durch beides.
+- Die Quellvideos, jeweils mit ihrer Originalsprache.
+
+## Häufige Fragen
+
+**Ich habe Märkte angegeben, keine Sprachen.**
+Das ist so vorgesehen. Der Agent ordnet sie zu (DACH zu Deutsch, Brasilien zu Portugiesisch, Japan zu Japanisch) und bittet dich um Bestätigung, bevor er die Kosten schätzt.
+
+**Warum zuerst ein Pilotlauf?**
+Ein falsch übersetzter Produktname oder Slogan würde sich sonst in jeder Version wiederholen. Eine Version, geprüft von dir oder einer Person mit der Zielsprache als Muttersprache, fängt das zum Preis einer einzigen Synchronisation ab.
+
+**Was ändert sich nicht?**
+Text im Bild, eingebrannte Untertitel, Logos und Abspanntafeln bleiben in der Ausgangssprache. Der Agent sagt dir das vorab, damit niemand im Review überrascht wird.
+
+**Wie heißen die Dateien?**
+Standardmäßig `<campaign>_<video>_<lang>.mp4`, zum Beispiel `spring24_hero-30s_de.mp4`. Wenn du ein anderes Muster brauchst, lege es vor dem Durchlauf fest.
+
+**Kann alles in einem Batch laufen?**
+Ab dem Scale-Tarif können 20 oder mehr Versionen in einem Batch über die Batch-Tools des MCP-Servers laufen. Darunter laufen die Versionen parallel bis zum Limit deines Tarifs.
+
+**Der Durchlauf wurde unterbrochen.**
+Jede Version hat ihren eigenen gespeicherten Schlüssel und ihre Generierungs-ID, deshalb macht die Fortsetzung dort weiter, wo sie aufgehört hat, ohne doppelt zu zahlen.
+
+## Es funktioniert, wenn
+
+- Du die Zuordnung von Märkten zu Sprachen und die Matrix bestätigst, bevor Kosten entstehen.
+- Der Pilotlauf zurückkommt, bevor der Rest startet.
+- Du am Ende eine Datei pro Video und Sprache hast, dazu eine Review-Tabelle.

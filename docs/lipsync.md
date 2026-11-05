@@ -1,4 +1,14 @@
+---
+title: "lipsync skill"
+subtitle: "Lip-sync a video to new audio or a typed script."
+description: "The sync. labs lipsync agent skill makes a person in a video match new speech: a voiceover, a re-recorded take, a song, or a script that sync. voices. It quotes the cost and waits for approval first."
+og:description: "Lip-sync a video of a real person to new audio or a typed script from your agent, with a quote before any generation."
+---
+
 # lipsync
+
+> [!TIP]
+> Install this skill with `npx skills add synchronicity-labs/skills --skill lipsync`, or get every skill with the Claude Code plugin. See [Agent skills](overview.md).
 
 ## What it does
 
@@ -37,7 +47,7 @@ Use it when you already have footage of a real person and want them to say somet
 Every generation is billed, so the skill always shows the estimate first and waits for approval. Say "go ahead, anything under $5 is fine" up front and it won't stop twice.
 
 **My audio is longer than my video. What happens?**
-The agent asks which sync mode you want: play the video forward and back (`bounce`, the default), loop it, cut the speech when the video ends, keep the video going silently, or speed the video up or down to fit (`remap`).
+The agent asks which [sync mode](https://sync.so/docs/developer-guides/sync-mode) you want: play the video forward and back (`bounce`, the default), loop it, cut the speech when the video ends, keep the video going silently, or speed the video up or down to fit (`remap`).
 
 **There are two people in the shot.**
 The agent asks who should speak and points sync. at that face. Without that, sync. picks the active speaker itself.

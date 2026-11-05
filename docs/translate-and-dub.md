@@ -1,4 +1,14 @@
+---
+title: "translate-and-dub skill"
+subtitle: "Dub a video into other languages with matching lips."
+description: "The sync. labs translate-and-dub agent skill translates the speech in one video into other languages and re-syncs the speaker's lips, from a local file, a URL, or a YouTube, TikTok, Instagram or Facebook link."
+og:description: "Dub one video into other languages with matching lips from your agent, with a per-language quote first."
+---
+
 # translate-and-dub
+
+> [!TIP]
+> Install this skill with `npx skills add synchronicity-labs/skills --skill translate-and-dub`, or get every skill with the Claude Code plugin. See [Agent skills](overview.md).
 
 ## What it does
 
@@ -21,7 +31,7 @@
 
 ## What you need
 
-- The sync. MCP server connected, or `SYNC_API_KEY` set.
+- The sync. MCP server connected, or `SYNC_API_KEY` set. The [setup](setup.md) skill walks you through either.
 - A video with its original speech on the audio track.
 
 ## Common questions

@@ -1,4 +1,14 @@
+---
+title: "ai-video-to-talking skill"
+subtitle: "Give dialogue to AI-generated clips from Veo, Kling, Sora and others."
+description: "The sync. labs ai-video-to-talking agent skill gives dialogue to AI-generated video from Veo, Kling, Sora, Runway and other generators, picks a voice that fits, and lip-syncs the character, including multi-shot scenes."
+og:description: "Make characters in AI-generated video speak your lines, including multi-shot scenes with two characters."
+---
+
 # ai-video-to-talking
+
+> [!TIP]
+> Install this skill with `npx skills add synchronicity-labs/skills --skill ai-video-to-talking`, or get every skill with the Claude Code plugin. See [Agent skills](overview.md).
 
 ## What it does
 
@@ -22,7 +32,7 @@ sync. doesn't generate the video. If you only have an idea, the skill writes a p
 
 ## What you need
 
-- The sync. MCP server connected, or `SYNC_API_KEY` set.
+- The sync. MCP server connected, or `SYNC_API_KEY` set. The [setup](setup.md) skill walks you through either.
 - The clip, or access to a video generator.
 - The line, or a description of what the character should say.
 
@@ -32,7 +42,7 @@ sync. doesn't generate the video. If you only have an idea, the skill writes a p
 One character facing the camera, the face filling a good part of the frame, the mouth unobstructed, a steady camera, one continuous shot, and the character already moving like they're talking. The skill's prompt guide covers this, with an example prompt.
 
 **My line is longer than the clip.**
-Generated clips are often 5 to 10 seconds, which holds about 12 to 25 words. The skill suggests trimming the line, generating a longer clip, or using a sync mode that extends the video.
+Generated clips are often 5 to 10 seconds, which holds about 12 to 25 words. The skill suggests trimming the line, generating a longer clip, or using a [sync mode](https://sync.so/docs/developer-guides/sync-mode) that extends the video.
 
 **Can it handle two characters or several shots?**
 Yes, with the timeline tool. Each line gets its own voice and is placed on the shot where that character speaks. The lines, voices and total cost are agreed before anything is created.

@@ -1,4 +1,14 @@
+---
+title: "talking-photo skill"
+subtitle: "Make a photo, portrait or character talk."
+description: "The sync. labs talking-photo agent skill turns a photo, headshot or illustrated character into a talking video from a script or a recording, with a voice picked from your account and a quote before anything is created."
+og:description: "Turn a photo, headshot or illustrated character into a talking video from your agent."
+---
+
 # talking-photo
+
+> [!TIP]
+> Install this skill with `npx skills add synchronicity-labs/skills --skill talking-photo`, or get every skill with the Claude Code plugin. See [Agent skills](overview.md).
 
 ## What it does
 
@@ -22,7 +32,7 @@ If you don't have a picture yet and your agent can generate images, it offers to
 
 ## What you need
 
-- The sync. MCP server connected, or `SYNC_API_KEY` set.
+- The sync. MCP server connected, or `SYNC_API_KEY` set. The [setup](setup.md) skill walks you through either.
 - An image with one clear human or human-like face. Animals and non-humanoid characters aren't supported.
 - A script, or an audio file, URL or sync. asset.
 

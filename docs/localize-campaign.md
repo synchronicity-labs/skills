@@ -1,4 +1,14 @@
+---
+title: "localize-campaign skill"
+subtitle: "Localize a set of videos across markets: plan, pilot, run, review sheet."
+description: "The sync. labs localize-campaign agent skill produces every video in a campaign, course or product set in every target language: it maps markets to languages, quotes the matrix, pilots one version, then runs the rest with a review sheet."
+og:description: "Localize several videos into several languages from your agent, with a pilot first and a review sheet at the end."
+---
+
 # localize-campaign
+
+> [!TIP]
+> Install this skill with `npx skills add synchronicity-labs/skills --skill localize-campaign`, or get every skill with the Claude Code plugin. See [Agent skills](overview.md).
 
 ## What it does
 
@@ -19,7 +29,7 @@
 
 ## What you need
 
-- The sync. MCP server connected, or `SYNC_API_KEY` set.
+- The sync. MCP server connected, or `SYNC_API_KEY` set. The [setup](setup.md) skill walks you through either.
 - The source videos, each with its original speech.
 
 ## Common questions
