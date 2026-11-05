@@ -4,7 +4,7 @@
 
 The sync. skills work in one of three modes. Pick one silently at the start of a task, and don't narrate the choice to the user.
 
-1. **sync. MCP tools are available.** You can see tools such as `create-lipsync`, `generate_estimate-cost` and `get-account-context`. Some clients prefix them, for example `mcp__sync__create-lipsync` or `mcp__plugin_sync_sync__create-lipsync`. Use them; this is the preferred mode.
+1. **sync. MCP tools are available.** You can see tools such as `lipsync_create`, `generations_estimate-cost` and `account_get-context`. Some clients prefix them, for example `mcp__sync__lipsync_create` or `mcp__plugin_sync_sync__lipsync_create`. Use them; this is the preferred mode.
 2. **No MCP tools, but `SYNC_API_KEY` is set** and you can run shell commands. Call the REST API at `https://api.sync.so/v2` with the header `x-api-key: $SYNC_API_KEY`. The skill's `references/api.md` has the requests. Never print the key or paste it into chat.
 3. **Neither.** Help the user connect, then continue with the original request.
 

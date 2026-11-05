@@ -15,7 +15,7 @@ This repo is the public home of the sync. labs agent skills. It ships to skills.
 ## Rules
 
 - When you add, rename or change a skill, update its `docs/<name>.md` and that page's translations, its `agents/openai.yaml`, the README table, the skills table in `docs/overview.md` and `CHANGELOG.md` in the same change.
-- Skills never hardcode prices, plan limits or model lists. They read them from the tools (`generate_estimate-cost`, `get-account-context`, `models_get`) so they stay correct as the product changes.
+- Skills never hardcode prices, plan limits or model lists. They read them from the tools (`generations_estimate-cost`, `account_get-context`, `models_list`) so they stay correct as the product changes.
 - Every paid action is quoted first and waits for approval, unless the user already approved that exact request and cost.
 - Every create call carries an idempotency key that is saved before the call and reused on retries.
 - No em dashes or en dashes anywhere, in every language. Rewrite the sentence with a comma, colon, period or "to" for ranges.

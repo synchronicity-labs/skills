@@ -37,8 +37,10 @@ DOC_FIELDS = ("title", "subtitle", "description", "og:description")
 NAME_RE = re.compile(r"^[a-z0-9]+(-[a-z0-9]+)*$")
 HOSTED_MCP_URL = "https://mcp.sync.so/mcp"
 # Tools the hosted server shows only to chat apps with file uploads (ChatGPT, Codex app).
-APP_ONLY_TOOLS = {"upload-media"}
-TOOL_LIKE = re.compile(r"`((?:[a-z]+_)?[a-z]+(?:-[a-z]+)+|[a-z]+_[a-z]+(?:-[a-z]+)*)`")
+APP_ONLY_TOOLS = {"assets_upload"}
+# `<noun>_<verb>` tool names, whose noun may be hyphenated (`translation-previews_get`), and
+# hyphenated tokens (`edit-dialogue`), which NOT_TOOLS separates from tools.
+TOOL_LIKE = re.compile(r"`([a-z]+(?:-[a-z]+)*_[a-z]+(?:-[a-z]+)*|[a-z]+(?:-[a-z]+)+)`")
 NOT_TOOLS = {
     # Backticked values that look like tool names but are field values, workflows or skill names.
     "cut_off", "sync_mode", "translate-and-dub", "edit-dialogue", "talking-photo", "lipsync-video",

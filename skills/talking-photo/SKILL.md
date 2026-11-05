@@ -22,20 +22,20 @@ Ask only for what's missing. Never invent the words. If the user asks you to wri
 
 | Step | Tool |
 | --- | --- |
-| Save files | `upload-media` (chat apps), or `assets_create-upload-url` then `assets_create` (local files) |
-| Pick a voice (script only) | `voices_get-voices` |
-| Quote | `generate_estimate-cost` |
-| Create | `create-lipsync` |
-| Wait | `generate_get-generation` |
+| Save files | `assets_upload` (chat apps), or `assets_create-upload-url` then `assets_create` (local files) |
+| Pick a voice (script only) | `voices_list` |
+| Quote | `generations_estimate-cost` |
+| Create | `lipsync_create` |
+| Wait | `generations_get` |
 
 ## Steps
 
 1. **Save the inputs.** Follow [references/media-input.md](references/media-input.md) for the picture and any audio. Public URLs and asset IDs need no upload. Before spending money, check that the image shows exactly one clear, reasonably large human or human-like face. Animals and non-humanoid characters aren't supported.
-2. **Voice.** For a script, call `voices_get-voices`. Unless the user named a voice, suggest two or three that fit the character, each with a few words on its style. Use the chosen voice's `id` as `voiceId`; never invent one.
-3. **Quote.** Call `generate_estimate-cost` with `model: "sync-3"`, `visualType: "image"`, and either the `script` or the audio's `audioDuration`. This prices the lipsync only. For a script, say the length is approximate and that speech synthesis is billed separately.
+2. **Voice.** For a script, call `voices_list`. Unless the user named a voice, suggest two or three that fit the character, each with a few words on its style. Use the chosen voice's `id` as `voiceId`; never invent one.
+3. **Quote.** Call `generations_estimate-cost` with `model: "sync-3"`, `visualType: "image"`, and either the `script` or the audio's `audioDuration`. This prices the lipsync only. For a script, say the length is approximate and that speech synthesis is billed separately.
 4. **Confirm.** Show the picture, the script or audio, the voice and the estimate, and wait for approval. Skip the wait only if the user already approved this exact request and cost.
-5. **Create.** Call `create-lipsync` once with the picture (`imageAssetId` or `imageUrl`), the speech (`script` with `voiceId`, or `audioAssetId` or `audioUrl`), `model: "sync-3"`, a new `idempotencyKey`, a new random UUID as `projectCreationKey`, and a short `projectName` such as "Talking portrait". Images work only with sync-3, and `sync_mode` doesn't apply to them. Save the keys before calling. If the response is lost or times out, retry once with the same keys and inputs, which returns the original generation if it exists.
-6. **Wait and deliver.** Call `generate_get-generation` with the returned `id` and `wait: true`, repeating until the status is final. Give the exact `outputMediaUrl` unchanged, and offer one next step: another line, another voice, or dubbing it into another language.
+5. **Create.** Call `lipsync_create` once with the picture (`imageAssetId` or `imageUrl`), the speech (`script` with `voiceId`, or `audioAssetId` or `audioUrl`), `model: "sync-3"`, a new `idempotencyKey`, a new random UUID as `projectCreationKey`, and a short `projectName` such as "Talking portrait". Images work only with sync-3, and `sync_mode` doesn't apply to them. Save the keys before calling. If the response is lost or times out, retry once with the same keys and inputs, which returns the original generation if it exists.
+6. **Wait and deliver.** Call `generations_get` with the returned `id` and `wait: true`, repeating until the status is final. Give the exact `outputMediaUrl` unchanged, and offer one next step: another line, another voice, or dubbing it into another language.
 
 ## When something fails
 

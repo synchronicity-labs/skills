@@ -8,9 +8,9 @@ Every generation needs its visual input (video or image) and its speech (audio, 
 
 | What the user has | Route |
 | --- | --- |
-| A public `https://` media URL | For `create-lipsync`, pass it as `videoUrl`, `imageUrl` or `audioUrl`. Translation, Edit Dialogue and timeline lipsync need a saved asset: register the URL with `assets_create` and use the returned `id`. Signed URLs that expire soon are risky; save them as an asset too. |
+| A public `https://` media URL | For `lipsync_create`, pass it as `videoUrl`, `imageUrl` or `audioUrl`. Translation, Edit Dialogue and timeline lipsync need a saved asset: register the URL with `assets_create` and use the returned `id`. Signed URLs that expire soon are risky; save them as an asset too. |
 | A sync. asset ID | Pass it as `videoAssetId`, `imageAssetId` or `audioAssetId`. |
-| A file attached in a chat app (ChatGPT, Codex) | If the `upload-media` tool is available, call it once per file with `mediaType` `video`, `image` or `audio`, and use the returned asset ID. |
+| A file attached in a chat app (ChatGPT, Codex) | If the `assets_upload` tool is available, call it once per file with `mediaType` `video`, `image` or `audio`, and use the returned asset ID. |
 | A file on disk | Upload it, as described below. |
 | A YouTube, TikTok, Instagram or Facebook link | Import it, as described below. |
 

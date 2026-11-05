@@ -1,5 +1,10 @@
 # Changelog
 
+## Unreleased
+
+- Skills, shared references and eval mocks use the sync. MCP server's `<noun>_<verb>` tool names (mcp-server#148): `lipsync_create`, `generations_get`, `generations_estimate-cost`, `account_get-context`, `dubbing_create`, `voices_list`, `models_list` and the rest. The old names stay callable on the server for a deprecation period, but clients list only the new ones.
+- `scripts/validate.py` recognizes tool names whose noun is hyphenated, such as `translation-previews_get` and `audio-trims_create`, so those are checked against the hosted tool list too.
+
 ## 1.0.0
 
 First public release.

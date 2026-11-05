@@ -20,22 +20,22 @@ If no sync. tools are available, follow [references/connect.md](references/conne
 
 | Step | Tool |
 | --- | --- |
-| Check languages | `get-translation-options` |
+| Check languages | `dubbing_get-options` |
 | Create the project | `projects_create` |
-| Save the video | `upload-media`, `assets_create-upload-url` + `assets_create`, or `assets_create` with a link |
-| Quote | `generate_estimate-cost` |
-| Create | `create-translate-and-dub` |
-| Wait | `generate_get-generation` |
+| Save the video | `assets_upload`, `assets_create-upload-url` + `assets_create`, or `assets_create` with a link |
+| Quote | `generations_estimate-cost` |
+| Create | `dubbing_create` |
+| Wait | `generations_get` |
 
 ## Steps
 
-1. **Languages.** Call `get-translation-options` and check every requested language. For any that isn't supported, name the closest supported option.
+1. **Languages.** Call `dubbing_get-options` and check every requested language. For any that isn't supported, name the closest supported option.
 2. **Project.** Call `projects_create` with a new random UUID as `id`, a short `name` and `defaultWorkflow: "translate_and_dub"`. Save the returned `id` as `projectId`. Pass it wherever a tool asks for `projectId`, and add `projectIntent: "explicit"` only on tools that take that field.
 3. **Save the video** into that project. Follow [references/media-input.md](references/media-input.md).
-4. **Quote.** Call `generate_estimate-cost` with `workflow: "translate-and-dub"`, `model: "sync-3"` and the video's length as `duration` in seconds. Show the returned estimate and its breakdown per language and in total. If it reports external provider charges as excluded, say they're extra.
+4. **Quote.** Call `generations_estimate-cost` with `workflow: "translate-and-dub"`, `model: "sync-3"` and the video's length as `duration` in seconds. Show the returned estimate and its breakdown per language and in total. If it reports external provider charges as excluded, say they're extra.
 5. **Confirm.** Show the video, the languages and the estimate, and wait for approval. Skip the wait only if the user already approved this exact request and cost.
-6. **Create.** For each language, call `create-translate-and-dub` once with `videoAssetId`, `targetLang`, `sourceLang`, `model: "sync-3"`, the `projectId` with `projectIntent: "explicit"`, and its own new `idempotencyKey`. If a response is lost, retry that language once with the same key and inputs.
-7. **Wait and deliver.** Poll `generate_get-generation` with each `id` and `wait: true` until each is final. Dubbing takes longer than plain lipsync, so tell the user it may take several minutes. Give each exact `outputMediaUrl`, unchanged and labelled with its language.
+6. **Create.** For each language, call `dubbing_create` once with `videoAssetId`, `targetLang`, `sourceLang`, `model: "sync-3"`, the `projectId` with `projectIntent: "explicit"`, and its own new `idempotencyKey`. If a response is lost, retry that language once with the same key and inputs.
+7. **Wait and deliver.** Poll `generations_get` with each `id` and `wait: true` until each is final. Dubbing takes longer than plain lipsync, so tell the user it may take several minutes. Give each exact `outputMediaUrl`, unchanged and labelled with its language.
 
 ## Rules
 
