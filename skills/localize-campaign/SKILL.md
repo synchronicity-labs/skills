@@ -1,6 +1,6 @@
 ---
 name: localize-campaign
-description: Localize a whole video campaign into several languages and markets with sync. labs (sync.so). Plans the video × language matrix, maps markets to languages, pilots one video so names and terms are right before spending on the rest, dubs and lip-syncs every version, and delivers consistently named files plus a review sheet per market. Use for several source videos across languages or markets: "make these ads in Spanish, German and Japanese", launching a campaign or a course in new markets, international or multi-market rollouts. Not for one video into a few languages (translate-and-dub), new speech in the same language (lipsync, batch-lipsync), or subtitles only.
+description: Localize a whole video campaign into several languages and markets with sync. labs (sync.so). Plans the video × language matrix, maps markets to languages, pilots one video so names and terms are right before spending on the rest, dubs and lip-syncs every version, and delivers consistently named files plus a review sheet per market. Use for several source videos across languages or markets, such as "make these ads in Spanish, German and Japanese", launching a campaign or a course in new markets, international or multi-market rollouts. Not for one video into a few languages (translate-and-dub), new speech in the same language (lipsync, batch-lipsync), or subtitles only.
 license: MIT
 compatibility: Needs the sync. MCP server or a SYNC_API_KEY. See references/connect.md.
 ---

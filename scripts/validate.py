@@ -70,6 +70,10 @@ def main() -> int:
             errors.append(f"{rel}: name {name!r} must equal the directory name")
         if not NAME_RE.match(name) or len(name) > 64:
             errors.append(f"{rel}: name must be lowercase letters, digits and single hyphens, at most 64 chars")
+        for key, value in fm.items():
+            # Strict YAML parsers (the skills.sh CLI) read an unquoted ": " or " #" as structure, not text.
+            if value and value[0] not in "\"'|>" and (": " in value or " #" in value):
+                errors.append(f"{rel}: frontmatter `{key}` has an unquoted ': ' or ' #'; reword it or quote the value")
         if not desc or len(desc) > 1024:
             errors.append(f"{rel}: description must be 1-1024 chars (is {len(desc)})")
         if len(compat) > 500:
