@@ -12,6 +12,7 @@ import hmac
 import json
 import os
 import re
+import secrets
 import shutil
 import subprocess
 import tempfile
@@ -20,6 +21,9 @@ import unittest
 from pathlib import Path
 
 from fake_sync import KEY, serve
+
+# Made per run so no signing secret, even a fake one, sits in the source.
+WEBHOOK_SECRET = "whsec_" + secrets.token_hex(16)
 
 REFS = Path(__file__).resolve().parents[1] / "skills" / "sync-api" / "references"
 
@@ -149,7 +153,7 @@ class ExamplesTest(unittest.TestCase):
         modules = self.node_dir()
         route = code_block(REFS / "webhooks.md", "typescript")
         (self.dir / "route.ts").write_text(route)
-        secret = "whsec_test"
+        secret = WEBHOOK_SECRET
         good_body, good_sig = sign({"id": "g1", "status": "COMPLETED"}, secret)
         _, old_sig = sign({"id": "g1", "status": "COMPLETED"}, secret, t=int(time.time()) - 3600)
         harness = f"""
@@ -175,13 +179,13 @@ console.log(JSON.stringify(results));
         block = code_block(REFS / "webhooks.md", "python")
         verify_src = block[block.index("def verify"):block.index("@app.post")]
         namespace = {}
-        exec("import hashlib, hmac, re, time\nSECRET = b'whsec_test'\n" + verify_src, namespace)
+        exec(f"import hashlib, hmac, re, time\nSECRET = {WEBHOOK_SECRET.encode()!r}\n" + verify_src, namespace)
         verify = namespace["verify"]
-        body, sig = sign({"id": "g1", "status": "COMPLETED"}, "whsec_test")
+        body, sig = sign({"id": "g1", "status": "COMPLETED"}, WEBHOOK_SECRET)
         self.assertTrue(verify(body.encode(), sig))
         self.assertFalse(verify(body.replace("COMPLETED", "FAILED").encode(), sig))
         self.assertFalse(verify(body.encode(), None))
-        _, old = sign({"id": "g1"}, "whsec_test", t=int(time.time()) - 3600)
+        _, old = sign({"id": "g1"}, WEBHOOK_SECRET, t=int(time.time()) - 3600)
         self.assertFalse(verify(json.dumps({"id": "g1"}, separators=(",", ":")).encode(), old))
 
 
