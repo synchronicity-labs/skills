@@ -1,5 +1,5 @@
 ---
-description: "MCP-only batch: reads concurrency, one create per row."
+description: "MCP-only batch without jobs_create-many listed: reads concurrency, one create per row."
 tags: ["behavior", "batch-lipsync"]
 max_turns: 60
 timeout_seconds: 420
