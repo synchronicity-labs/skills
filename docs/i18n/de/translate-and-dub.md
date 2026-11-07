@@ -3,7 +3,7 @@ title: "translate-and-dub-Skill"
 subtitle: "Synchronisiere ein Video in andere Sprachen, mit passenden Lippenbewegungen."
 description: "Der translate-and-dub-Skill von sync. labs übersetzt die Sprache in einem Video in andere Sprachen und passt die Lippen der sprechenden Person neu an, aus einer lokalen Datei, einer URL oder einem Link zu YouTube, TikTok, Instagram oder Facebook."
 og:description: "Synchronisiere aus deinem Agenten ein Video in andere Sprachen, mit passenden Lippenbewegungen und vorab einer Kostenschätzung pro Sprache."
-source-sha256: 3de39f1f8e5d6a108573d5c543d10e7380a08881c78f0209706b1e7bf1f1108f
+source-sha256: 7f634da776bfe7c98f91c58950211d376361728413314e96ff125972692270bb
 ---
 
 # translate-and-dub
@@ -45,6 +45,9 @@ Nach der Länge des Quellvideos, einmal pro Sprache. Die Kostenschätzung zeigt 
 
 **Wird Text im Bild übersetzt?**
 Nein. Titel, Untertitel im Bild und Logos bleiben, wie sie sind. Nur die Sprache ändert sich.
+
+**Werden die Sprachen nacheinander synchronisiert?**
+Nein. Nach einer einzigen Freigabe starten alle Sprachen zusammen, bis zum Limit deines Tarifs. Über den MCP-Server ist das ein einziger Aufruf von `jobs_create-many`.
 
 **Eine Sprache ist fehlgeschlagen.**
 Jede Sprache ist ein eigener Auftrag, die anderen werden also trotzdem fertig. Der Agent meldet, welche fehlgeschlagen ist und warum.

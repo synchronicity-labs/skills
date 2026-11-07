@@ -2,21 +2,22 @@
 
 # sync. Batch API
 
-`POST /v2/batch` takes many `/v2/generate` requests in one submission. sync. tracks every row and gives you one results file, plus a webhook when the batch finishes. Full guide: https://sync.so/docs/api-reference/guides/batch-processing.
+`POST /v2/batch` takes many `/v2/generate` requests in one submission. sync. queues them, tracks every row and gives you one results file, plus a webhook when the batch finishes. Full guide: https://sync.so/docs/api-reference/guides/batch-processing.
 
 ## When to use it
 
-Every paid plan can send batches. The free tier can't. What a batch can hold depends on the plan:
+The Batch API is for Scale plans and above. A batch holds 20 to 500 rows, or the account's own limit, and each row's inputs can be up to 30 seconds. sync. queues the rows outside the plan's generation concurrency, so a batch doesn't hold up the account's other work, and results can take up to about 24 hours.
 
-| Plan | Rows per batch | How it runs |
-| --- | --- | --- |
-| Scale and above | 20 to 500 | Queued, outside the plan's generation concurrency. Results usually arrive within the 24-hour target turnaround. |
-| Other paid plans | 1 up to the plan's free concurrency slots right now | The rows count toward the plan's concurrency, like single generations. |
+Below Scale, `POST /v2/batch` answers `402 plan_feature_unavailable` with `requiredPlan: "scale"`.
 
-So below Scale, a batch is a convenience, not extra capacity. For more rows than the plan runs at once, individual generations (`sync_batch.py run`) get the same throughput with less bookkeeping.
+## When not to use it
+
+A batch is a queued pipeline for large, slow runs, not a faster way to send a few generations. For a handful of jobs, or any run that should start now, send normal requests side by side instead: one `POST /v2/generate` per job, each with its own idempotency key, keeping at most the plan's concurrency limit in flight. Through the sync. MCP server, `jobs_create-many` does that for 2 or more independent jobs on any paid plan, when the client lists it.
+
+## Validate first
 
 - Always send `dry_run: true` first. It validates the rows against the plan's limits, creates nothing, and returns `{"status": "VALIDATED"}`.
-- `400` means too many rows for the plan. `429 concurrency_limit_reached` means not enough free slots, or too many batches running. Wait `retryAfterSeconds`, or split the rows. `402 plan_feature_unavailable` means the plan has no batch access. `402 insufficient_credits` means the balance doesn't cover the whole batch; credit-billed plans reserve credits for every row at submit.
+- `400` means too many rows for the plan. `429 concurrency_limit_reached` means too many batches are running. Wait `retryAfterSeconds`, or split the rows. `402 plan_feature_unavailable` means the plan has no batch access: run the rows as normal requests instead.
 - Batches only take `/v2/generate` rows, and rows with inputs over 30 seconds may be refused.
 
 ## Request
@@ -45,4 +46,4 @@ curl -sS https://api.sync.so/v2/batch -H "x-api-key: $SYNC_API_KEY" -H 'Content-
 
 ## Dialogue edit rows (early access)
 
-To render one recording personalized many ways, such as one version per recipient's name in the presenter's own voice, make one dialogue-edit preview per variant (see the edit-dialogue skill). Then submit one row per completed preview: the same source video as the only input, plus `"dialogueEdit": {"id": "<previewId>"}`. This is enabled per organization. The `dry_run` response says whether it's available. Preview requests are limited to 30 a minute, so pace them.
+On Scale, a large run of one recording personalized many ways, such as one version per recipient's name in the presenter's own voice, can render as batch rows. Make one dialogue-edit preview per variant first (see the edit-dialogue skill). Then submit one row per completed preview: the same source video as the only input, plus `"dialogueEdit": {"id": "<previewId>"}`. This is enabled per organization. The `dry_run` response says whether it's available. Preview requests are limited to 30 a minute, so pace them. For a few variants, or on other plans, render each preview with its own Edit Dialogue video request instead.

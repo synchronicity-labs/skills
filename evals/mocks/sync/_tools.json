@@ -4838,6 +4838,590 @@
    }
   },
   {
+   "name": "jobs_create-many",
+   "title": "start many sync jobs",
+   "description": "Start 2 to 50 independent Sync jobs at once by running one create tool once per item: lipsync_create, lipsync_create-timeline, dubbing_create, translation-previews_create, dialogue-previews_create, dialogue-videos_create, speech-previews_create. Use it whenever the user wants 2 or more jobs that do not depend on each other, such as one video lip-synced to several audios, one video dubbed into several languages (one dubbing_create item per language, when available), or one Edit Dialogue preview, then one video, per variant. It works on every plan and uses the same API, limits and billing as calling the tool once per item; it is not the batch API. Each item is that tool’s own arguments and is checked as a direct call would be; nothing starts if any item is invalid or repeats another. This is a paid action: every item is billed as its own job. Before calling, estimate each distinct configuration with the matching estimate tool, tell the user the item count and the estimated total, and wait for one confirmation of the whole set. Items without projectId each get a new project; to keep the set together, create one project with projects_create and pass its projectId with projectIntent=explicit in every item. It keeps at most the account’s concurrent generation limit in flight and waits out capacity refusals, resending the same keyed request, then returns within about 50 seconds without waiting for the jobs to finish. Each item comes back started (with kind and id), failed (with error) or not_started (the account stayed busy). Pass jobs to jobs_get-many to follow them; when remaining is present, call again later with remaining, which reuses the same keys and so never starts a job twice.",
+   "inputSchema": {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "additionalProperties": false,
+    "properties": {
+     "idempotencyKey": {
+      "description": "A fresh UUID for this approved set, saved before the call. Reuse it unchanged, with the same items, when calling again for remaining or uncertain items; each item derives its own keys from it.",
+      "format": "uuid",
+      "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$",
+      "type": "string"
+     },
+     "items": {
+      "description": "2 to 50 items, each exactly the arguments tool takes on its own, such as one dubbing_create input per target language. Items must differ.",
+      "items": {
+       "additionalProperties": {},
+       "propertyNames": {
+        "type": "string"
+       },
+       "type": "object"
+      },
+      "maxItems": 50,
+      "minItems": 2,
+      "type": "array"
+     },
+     "tool": {
+      "description": "The create tool to run once per item. Other tools cannot run this way.",
+      "enum": [
+       "lipsync_create",
+       "lipsync_create-timeline",
+       "dubbing_create",
+       "translation-previews_create",
+       "dialogue-previews_create",
+       "dialogue-videos_create",
+       "speech-previews_create"
+      ],
+      "type": "string"
+     }
+    },
+    "required": [
+     "tool",
+     "idempotencyKey",
+     "items"
+    ],
+    "type": "object"
+   },
+   "outputSchema": {
+    "anyOf": [
+     {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "additionalProperties": false,
+      "properties": {
+       "items": {
+        "description": "One result per item, in input order.",
+        "items": {
+         "additionalProperties": false,
+         "properties": {
+          "error": {
+           "additionalProperties": false,
+           "description": "Why the item failed, or the last refusal it waited on.",
+           "properties": {
+            "code": {
+             "type": "string"
+            },
+            "generationId": {
+             "type": "string"
+            },
+            "message": {
+             "type": "string"
+            },
+            "retryAfterMs": {
+             "type": "number"
+            },
+            "status": {
+             "type": "number"
+            }
+           },
+           "required": [
+            "message"
+           ],
+           "type": "object"
+          },
+          "id": {
+           "description": "The started job’s id.",
+           "type": "string"
+          },
+          "index": {
+           "description": "The item’s position in items.",
+           "type": "number"
+          },
+          "kind": {
+           "description": "The job kind, for jobs_get-many.",
+           "type": "string"
+          },
+          "status": {
+           "enum": [
+            "started",
+            "failed",
+            "not_started"
+           ],
+           "type": "string"
+          }
+         },
+         "required": [
+          "index",
+          "status"
+         ],
+         "type": "object"
+        },
+        "type": "array"
+       },
+       "jobs": {
+        "description": "The started jobs, ready to pass as jobs to jobs_get-many.",
+        "items": {
+         "additionalProperties": false,
+         "properties": {
+          "id": {
+           "type": "string"
+          },
+          "kind": {
+           "type": "string"
+          },
+          "projectId": {
+           "type": "string"
+          },
+          "videoAssetId": {
+           "type": "string"
+          }
+         },
+         "required": [
+          "kind",
+          "id"
+         ],
+         "type": "object"
+        },
+        "type": "array"
+       },
+       "nextStep": {
+        "description": "What to do next.",
+        "type": "string"
+       },
+       "remaining": {
+        "additionalProperties": false,
+        "description": "The items not started, as passed; send them again later as they are.",
+        "properties": {
+         "idempotencyKey": {
+          "type": "string"
+         },
+         "items": {
+          "items": {
+           "additionalProperties": {},
+           "propertyNames": {
+            "type": "string"
+           },
+           "type": "object"
+          },
+          "type": "array"
+         },
+         "tool": {
+          "type": "string"
+         }
+        },
+        "required": [
+         "tool",
+         "idempotencyKey",
+         "items"
+        ],
+        "type": "object"
+       },
+       "summary": {
+        "additionalProperties": false,
+        "description": "How many items ended in each status.",
+        "properties": {
+         "failed": {
+          "type": "number"
+         },
+         "notStarted": {
+          "type": "number"
+         },
+         "started": {
+          "type": "number"
+         },
+         "total": {
+          "type": "number"
+         }
+        },
+        "required": [
+         "total",
+         "started",
+         "failed",
+         "notStarted"
+        ],
+        "type": "object"
+       },
+       "tool": {
+        "description": "The create tool that ran.",
+        "type": "string"
+       }
+      },
+      "required": [
+       "tool",
+       "summary",
+       "items",
+       "jobs",
+       "nextStep"
+      ],
+      "type": "object"
+     },
+     {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "additionalProperties": false,
+      "properties": {
+       "error": {
+        "additionalProperties": false,
+        "properties": {
+         "code": {
+          "type": "string"
+         },
+         "generationId": {
+          "type": "string"
+         },
+         "importJobId": {
+          "format": "uuid",
+          "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$",
+          "type": "string"
+         },
+         "importStatus": {
+          "enum": [
+           "queued",
+           "downloading",
+           "processing",
+           "completed",
+           "failed"
+          ],
+          "type": "string"
+         },
+         "message": {
+          "type": "string"
+         },
+         "progress": {
+          "maximum": 100,
+          "minimum": 0,
+          "type": "number"
+         },
+         "retryAfterMs": {
+          "type": "number"
+         },
+         "retryable": {
+          "type": "boolean"
+         },
+         "status": {
+          "maximum": 9007199254740991,
+          "minimum": -9007199254740991,
+          "type": "integer"
+         }
+        },
+        "required": [
+         "message"
+        ],
+        "type": "object"
+       }
+      },
+      "required": [
+       "error"
+      ],
+      "type": "object"
+     }
+    ],
+    "type": "object"
+   },
+   "annotations": {
+    "destructiveHint": true,
+    "idempotentHint": false,
+    "openWorldHint": true,
+    "readOnlyHint": false
+   },
+   "_meta": {
+    "securitySchemes": [
+     {
+      "scopes": [],
+      "type": "oauth2"
+     }
+    ]
+   }
+  },
+  {
+   "name": "jobs_get-many",
+   "title": "read many sync jobs",
+   "description": "Read up to 50 Sync jobs of any kind at once, such as the set jobs_create-many started, by kind and id (Ids by kind:\n- generation: the id from lipsync_create, dubbing_create, lipsync_create-timeline or dialogue-videos_create\n- translation_preview: the translation-previews_create id, plus its projectId\n- import: the social video link passed to assets_create, plus the same projectId (and projectIntent if that call needed it)\n- batch: the batches_create id\n- dialogue_preview: the dialogue-previews_create id, plus its projectId and videoAssetId\n- speech_preview: the speech-previews_create id, plus its projectId). Returns each job as jobs_get does, {kind, id, status, progress?, estimatedFinishAt?, retryAfterMs?, result}, in input order, or {kind, id, error} for one that could not be read, plus counts of running, completed, failed and unreadable jobs. status is PENDING or PROCESSING while a job runs (never create it again), then COMPLETED, FAILED, REJECTED or CANCELED. Pass wait: true to wait on the server until all are final or about 50 seconds pass, with progress notifications; call again with wait: true while some are still running.",
+   "inputSchema": {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "additionalProperties": false,
+    "properties": {
+     "jobs": {
+      "description": "The jobs to read, up to 50; pass jobs_create-many's jobs list as it is.",
+      "items": {
+       "additionalProperties": false,
+       "properties": {
+        "id": {
+         "description": "The job to read; see the tool description per kind.",
+         "minLength": 1,
+         "type": "string"
+        },
+        "kind": {
+         "description": "Which kind of job id is.",
+         "enum": [
+          "generation",
+          "translation_preview",
+          "import",
+          "batch",
+          "dialogue_preview",
+          "speech_preview"
+         ],
+         "type": "string"
+        },
+        "projectId": {
+         "description": "Required for translation_preview, dialogue_preview, speech_preview; for import, the project passed to assets_create.",
+         "type": "string"
+        },
+        "projectIntent": {
+         "const": "explicit",
+         "description": "import only: pass it when the assets_create call for this link needed it.",
+         "type": "string"
+        },
+        "videoAssetId": {
+         "description": "dialogue_preview only: the videoAssetId the preview was created for.",
+         "type": "string"
+        }
+       },
+       "required": [
+        "kind",
+        "id"
+       ],
+       "type": "object"
+      },
+      "maxItems": 50,
+      "minItems": 1,
+      "type": "array"
+     },
+     "wait": {
+      "description": "Wait on the server until every job is final or about 50 seconds pass, then return the latest states. If some are still running, call again with wait: true instead of sleeping.",
+      "type": "boolean"
+     }
+    },
+    "required": [
+     "jobs"
+    ],
+    "type": "object"
+   },
+   "outputSchema": {
+    "anyOf": [
+     {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "additionalProperties": false,
+      "properties": {
+       "counts": {
+        "additionalProperties": false,
+        "description": "How many jobs are in each state.",
+        "properties": {
+         "completed": {
+          "type": "number"
+         },
+         "failed": {
+          "description": "FAILED, REJECTED or CANCELED.",
+          "type": "number"
+         },
+         "running": {
+          "type": "number"
+         },
+         "total": {
+          "type": "number"
+         },
+         "unreadable": {
+          "description": "Jobs whose read failed; see their error.",
+          "type": "number"
+         }
+        },
+        "required": [
+         "total",
+         "running",
+         "completed",
+         "failed",
+         "unreadable"
+        ],
+        "type": "object"
+       },
+       "jobs": {
+        "description": "Each job’s latest state, in input order.",
+        "items": {
+         "anyOf": [
+          {
+           "additionalProperties": false,
+           "properties": {
+            "estimatedFinishAt": {
+             "description": "Server estimate (ISO 8601) of when a running job finishes, when the API has one.",
+             "type": "string"
+            },
+            "id": {
+             "type": "string"
+            },
+            "kind": {
+             "enum": [
+              "generation",
+              "translation_preview",
+              "import",
+              "batch",
+              "dialogue_preview",
+              "speech_preview"
+             ],
+             "type": "string"
+            },
+            "progress": {
+             "description": "Percent complete while running, when the API reports it.",
+             "maximum": 100,
+             "minimum": 0,
+             "type": "number"
+            },
+            "result": {
+             "additionalProperties": {},
+             "description": "The job as the kind’s own read tool returns it.",
+             "propertyNames": {
+              "type": "string"
+             },
+             "type": "object"
+            },
+            "retryAfterMs": {
+             "description": "How long to wait before reading again, when the API asks for a pause.",
+             "type": "number"
+            },
+            "status": {
+             "description": "The unified status; see the tool description.",
+             "enum": [
+              "PENDING",
+              "PROCESSING",
+              "COMPLETED",
+              "FAILED",
+              "REJECTED",
+              "CANCELED"
+             ],
+             "type": "string"
+            }
+           },
+           "required": [
+            "kind",
+            "id",
+            "status",
+            "result"
+           ],
+           "type": "object"
+          },
+          {
+           "additionalProperties": false,
+           "properties": {
+            "error": {
+             "additionalProperties": false,
+             "description": "Why this job could not be read; the other jobs are unaffected.",
+             "properties": {
+              "code": {
+               "type": "string"
+              },
+              "message": {
+               "type": "string"
+              },
+              "status": {
+               "type": "number"
+              }
+             },
+             "required": [
+              "message"
+             ],
+             "type": "object"
+            },
+            "id": {
+             "type": "string"
+            },
+            "kind": {
+             "enum": [
+              "generation",
+              "translation_preview",
+              "import",
+              "batch",
+              "dialogue_preview",
+              "speech_preview"
+             ],
+             "type": "string"
+            }
+           },
+           "required": [
+            "kind",
+            "id",
+            "error"
+           ],
+           "type": "object"
+          }
+         ]
+        },
+        "type": "array"
+       }
+      },
+      "required": [
+       "jobs",
+       "counts"
+      ],
+      "type": "object"
+     },
+     {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "additionalProperties": false,
+      "properties": {
+       "error": {
+        "additionalProperties": false,
+        "properties": {
+         "code": {
+          "type": "string"
+         },
+         "generationId": {
+          "type": "string"
+         },
+         "importJobId": {
+          "format": "uuid",
+          "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$",
+          "type": "string"
+         },
+         "importStatus": {
+          "enum": [
+           "queued",
+           "downloading",
+           "processing",
+           "completed",
+           "failed"
+          ],
+          "type": "string"
+         },
+         "message": {
+          "type": "string"
+         },
+         "progress": {
+          "maximum": 100,
+          "minimum": 0,
+          "type": "number"
+         },
+         "retryAfterMs": {
+          "type": "number"
+         },
+         "retryable": {
+          "type": "boolean"
+         },
+         "status": {
+          "maximum": 9007199254740991,
+          "minimum": -9007199254740991,
+          "type": "integer"
+         }
+        },
+        "required": [
+         "message"
+        ],
+        "type": "object"
+       }
+      },
+      "required": [
+       "error"
+      ],
+      "type": "object"
+     }
+    ],
+    "type": "object"
+   },
+   "annotations": {
+    "destructiveHint": false,
+    "idempotentHint": true,
+    "openWorldHint": true,
+    "readOnlyHint": false
+   },
+   "_meta": {
+    "securitySchemes": [
+     {
+      "scopes": [],
+      "type": "oauth2"
+     }
+    ]
+   }
+  },
+  {
    "name": "dialogue_get-options",
    "title": "check edit dialogue availability",
    "description": "Check whether the connected API supports timed-word Edit Dialogue. Does not transcribe, synthesize or generate.",

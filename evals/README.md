@@ -6,7 +6,7 @@ A [`claude plugin eval`](https://code.claude.com/docs/en/plugin-evals) suite. Ea
 
 - `triggers/`: routing cases. Each prompt should load one specific skill, or, for the `neg-*` cases, no sync. skill. Most also check that nothing paid starts before the user approves a quote.
 - `behavior/`: workflow cases with approval given in the prompt. Graders check tool order, the inputs sent to the mocked tools (asset IDs, idempotency keys, models, word IDs), the files written, and the final reply.
-- `mocks/sync/`: one file per mocked tool, plus `_tools.json`, which is the hosted server's real tool list with its descriptions and input schemas. A tool without a mock file isn't available in the run.
+- `mocks/sync/`: one file per mocked tool, plus `_tools.json`, which is the hosted server's real tool list with its descriptions and input schemas. A tool without a mock file isn't available in the run. A case's own `mocks/sync/` adds to these, so `jobs_create-many` and `jobs_get-many`, mocked only in `behavior/batch-mcp-jobs-many`, are listed in that case alone.
 
 ## Edit
 

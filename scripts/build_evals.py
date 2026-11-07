@@ -170,13 +170,53 @@ case(B, "edit-dialogue-approved", "In https://example.com/promo/pricing.mp4 I sa
       "estimate-before-create": {"type": "tool_order", "before": P + "dialogue-videos_estimate", "after": P + "dialogue-videos_create"},
       "created-once": used("dialogue-videos_create", min=1, max=1)},
      ["behavior", "edit-dialogue"], "Word change + filler removal mapped to word IDs; estimate before create.", max_turns=45)
+THREE_ROWS = "id,video,audio\nintro,https://example.com/v/presenter.mp4,https://example.com/a/intro.wav\npricing,https://example.com/v/presenter.mp4,https://example.com/a/pricing.wav\noutro,https://example.com/v/presenter.mp4,https://example.com/a/outro.wav\n"
+
+def case_mock(group, name, tool, body):
+    d = ROOT / group / name / "mocks" / "sync"
+    d.mkdir(parents=True, exist_ok=True)
+    (d / f"{tool}.md").write_text(body.strip() + "\n")
+
 case(B, "batch-mcp-three-rows", "Run every row of manifest.csv through sync lipsync. It's 3 rows, the total is approved. Use the tools you have, there's no API key here.",
      {"skill-fired": fired("batch-lipsync"), "read-limits": used("account_get-context"),
       "three-creates": used("lipsync_create", min=3, max=3),
       "results-table": judge("PASS if the final reply reports all three rows (intro, pricing, outro) as done with their output URLs.\nFAIL if a row is missing or a row was created twice.")},
-     ["behavior", "batch-lipsync"], "MCP-only batch: reads concurrency, one create per row.",
+     ["behavior", "batch-lipsync"], "MCP-only batch without jobs_create-many listed: reads concurrency, one create per row.",
      max_turns=60, allowed=("Skill", "Read", "Glob", "Grep", "Bash", "Write", "Edit"),
-     files={"manifest.csv": "id,video,audio\nintro,https://example.com/v/presenter.mp4,https://example.com/a/intro.wav\npricing,https://example.com/v/presenter.mp4,https://example.com/a/pricing.wav\noutro,https://example.com/v/presenter.mp4,https://example.com/a/outro.wav\n"})
+     files={"manifest.csv": THREE_ROWS})
+# jobs_create-many and jobs_get-many are mocked only in this case, so every other case runs
+# as a client that doesn't list them (the ChatGPT app, or a server before they shipped).
+case(B, "batch-mcp-jobs-many", "Run every row of manifest.csv through sync lipsync. It's 3 rows, the total is approved. Use the tools you have, there's no API key here.",
+     {"skill-fired": fired("batch-lipsync"),
+      "one-set-call": used("jobs_create-many", min=1, max=1, input_match='"tool"\\s*:\\s*"lipsync_create"'),
+      "no-single-creates": never("lipsync_create"),
+      "followed": used("jobs_get-many"),
+      "items": {"type": "llm", "focus": "mock_calls", "_body": "PASS if jobs_create-many was called exactly once, with tool lipsync_create, a UUID idempotencyKey, and exactly three items: one per manifest row (the intro, pricing and outro audio URLs, each with the presenter video), every item with its own different idempotencyKey.\nFAIL if lipsync_create was called directly, jobs_create-many was called more than once, or an item is missing, repeated or shares another item's idempotencyKey."},
+      "results-table": judge("PASS if the final reply reports all three rows (intro, pricing, outro) as done with their output URLs.\nFAIL if a row is missing or a row was created twice.")},
+     ["behavior", "batch-lipsync"], "MCP batch with jobs_create-many listed: one call starts all three rows, then jobs_get-many follows them.",
+     max_turns=60, allowed=("Skill", "Read", "Glob", "Grep", "Bash", "Write", "Edit"),
+     files={"manifest.csv": THREE_ROWS})
+case_mock(B, "batch-mcp-jobs-many", "jobs_create-many", """---
+type: agent
+---
+
+You are the sync. MCP server's jobs_create-many tool. For each element of the call's items input, in order, let KEY be that item's idempotencyKey, or, when the item has none, the call's idempotencyKey followed by "-" and the item's index (starting at 0).
+
+Reply with exactly one JSON object and nothing else, of this shape, with one entry per item in items and in jobs:
+{"tool":"lipsync_create","summary":{"total":N,"started":N,"failed":0,"notStarted":0},"items":[{"index":0,"status":"started","kind":"generation","id":"gen-KEY"}],"jobs":[{"kind":"generation","id":"gen-KEY"}],"nextStep":"Follow the started jobs with jobs_get-many, passing jobs (wait: true to wait on the server); never start them again."}
+
+N is the number of items. If the tool input is not lipsync_create, reply instead with exactly:
+{"error":{"message":"This run only mocks lipsync_create items."}}
+""")
+case_mock(B, "batch-mcp-jobs-many", "jobs_get-many", """---
+type: agent
+---
+
+You are the sync. MCP server's jobs_get-many tool. Reply with exactly one JSON object and nothing else, with one entry in jobs for each element of the call's jobs input, in the same order, where ID is that element's id:
+{"jobs":[{"kind":"generation","id":"ID","status":"COMPLETED","progress":100,"result":{"id":"ID","status":"COMPLETED","model":"sync-3","outputMediaUrl":"https://assets.sync.so/generations/ID/result.mp4","outputDuration":12.0}}],"counts":{"total":N,"running":0,"completed":N,"failed":0,"unreadable":0}}
+
+N is the number of jobs in the input.
+""")
 case(B, "ai-video-script-approved", "https://example.com/gen/barista-kling.mp4 is a 12 second Kling clip of a barista. Make her say \"Morning! Oat latte again?\" Pick whatever voice fits a friendly barista. Cost approved.",
      {"skill-fired": fired("ai-video-to-talking"), "voice": used("voices_list"),
       "script-create": used("lipsync_create", min=1, max=1, input_match='"script"\\s*:\\s*"Morning! Oat latte again\\?"'),
@@ -223,11 +263,6 @@ You are the sync. MCP server's lipsync_create tool. Look at the earlier calls in
   {"id":"gen-KEY","status":"PENDING","model":"sync-3"}
 """)
 mock("generations_estimate-cost", '{"estimatedGenerationCost":1.6,"estimatedCredits":null,"estimatedFrameCount":300,"durationEstimate":{"durationSeconds":12,"audioDurationSeconds":12,"source":"audio","approximate":false,"excludesSpeechSynthesis":true}}', {"model": "string"})
-
-def case_mock(group, name, tool, body):
-    d = ROOT / group / name / "mocks" / "sync"
-    d.mkdir(parents=True, exist_ok=True)
-    (d / f"{tool}.md").write_text(body.strip() + "\n")
 
 case(T, "troubleshoot-failed", "my lipsync 7c1e2a90-4b1d-4f6e-9a55-0d2f1c3b9e01 failed, what happened? was I charged?",
      {"skill-fired": fired("troubleshoot"), "read-job": used("generations_get"), "no-paid-create": never("lipsync_create"),

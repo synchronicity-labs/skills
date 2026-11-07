@@ -3,7 +3,7 @@ title: "Skill translate-and-dub"
 subtitle: "Doublez une vidéo dans d'autres langues avec des lèvres synchronisées."
 description: "Le skill d'agent translate-and-dub de sync. labs traduit la parole d'une vidéo dans d'autres langues et resynchronise les lèvres de la personne qui parle, à partir d'un fichier local, d'une URL ou d'un lien YouTube, TikTok, Instagram ou Facebook."
 og:description: "Doublez une vidéo dans d'autres langues avec des lèvres synchronisées depuis votre agent, avec d'abord une estimation par langue."
-source-sha256: 3de39f1f8e5d6a108573d5c543d10e7380a08881c78f0209706b1e7bf1f1108f
+source-sha256: 7f634da776bfe7c98f91c58950211d376361728413314e96ff125972692270bb
 ---
 
 # translate-and-dub
@@ -45,6 +45,9 @@ Selon la durée de la vidéo source, une fois par langue. L'estimation détaille
 
 **Le texte à l'écran est-il traduit ?**
 Non. Les titres, les sous-titres incrustés et les logos restent tels quels. Seule la parole change.
+
+**Les langues sont-elles doublées l'une après l'autre ?**
+Non. Après une seule validation, toutes les langues démarrent ensemble, dans la limite de votre forfait. Via le serveur MCP, cela représente un seul appel à `jobs_create-many`.
 
 **Une langue a échoué.**
 Chaque langue est un travail distinct : les autres se terminent quand même. L'agent indique laquelle a échoué et pourquoi.

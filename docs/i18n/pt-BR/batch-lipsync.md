@@ -1,9 +1,9 @@
 ---
 title: "Skill batch-lipsync"
-subtitle: "Sincronize os lábios de cada linha de um CSV ou pasta, com retomada, dentro dos limites do seu plano ou pela Batch API."
+subtitle: "Sincronize os lábios de cada linha de um CSV ou pasta, com retomada, dentro dos limites do seu plano ou, nos planos Scale, pela Batch API."
 description: "A skill de agente batch-lipsync da sync. labs sincroniza os lábios de muitos vídeos de uma vez a partir de um CSV, planilha, pasta ou lista: ela estima o custo da execução inteira, oferece um piloto, respeita a concorrência do seu plano e retoma sem pagar duas vezes."
-og:description: "Sincronize os lábios de cada linha de um CSV ou pasta a partir do seu agente, com retomada, dentro dos limites do seu plano ou pela Batch API."
-source-sha256: f377f784e898a1d3716f298a9ebe4a645dd10ebef89f2b1ba50334da4e4e4cdb
+og:description: "Sincronize os lábios de cada linha de um CSV ou pasta a partir do seu agente, com retomada, dentro dos limites do seu plano ou, nos planos Scale, pela Batch API."
+source-sha256: dce75e3282ede2eced47c63275e8fa42accbe43a3e500b1e433052a4990cd187
 ---
 
 # batch-lipsync
@@ -15,7 +15,9 @@ source-sha256: f377f784e898a1d3716f298a9ebe4a645dd10ebef89f2b1ba50334da4e4e4cdb
 
 A `batch-lipsync` sincroniza os lábios de muitos vídeos de uma vez: um resultado por linha de um CSV, uma planilha, uma pasta ou uma lista como “este apresentador com cada um destes 40 arquivos de áudio”. Ela cria um manifesto, estima o custo da execução inteira, oferece um piloto, depois processa cada linha dentro dos limites do seu plano e reúne os resultados em uma tabela.
 
-Com uma chave de API, ela usa um script incluído, `sync_batch.py`, que envia cada arquivo uma única vez, respeita a concorrência do seu plano, retoma após uma interrupção e baixa todos os resultados. Nos planos Scale e superiores, 20 linhas ou mais podem ir pela [Batch API](https://sync.so/docs/api-reference/guides/batch-processing), seja com o script ou direto pelas ferramentas de batch do servidor MCP.
+Com uma chave de API, ela usa um script incluído, `sync_batch.py`, que envia cada arquivo uma única vez, respeita a concorrência do seu plano, retoma após uma interrupção e baixa todos os resultados. Pelo servidor MCP da sync., ela inicia todas as linhas com uma única chamada a `jobs_create-many`, que respeita a concorrência do seu plano, e acompanha todas com `jobs_get-many`. Quando essas ferramentas não aparecem, ela inicia uma geração por linha.
+
+Nos planos Scale e superiores, uma execução grande de 20 a 500 linhas curtas que pode esperar horas pode ir pela [Batch API](https://sync.so/docs/api-reference/guides/batch-processing), seja com o script ou pelas ferramentas de batch do servidor MCP.
 
 ## Quando usar
 
@@ -23,7 +25,7 @@ Com uma chave de API, ela usa um script incluído, `sync_batch.py`, que envia ca
 | --- | --- |
 | Muitas linhas de vídeo com áudio ou roteiro | `batch-lipsync` |
 | Um vídeo personalizado por lead ou cliente | `batch-lipsync` |
-| Uma gravação personalizada com o nome de cada destinatário na mesma voz | Prévias da [edit-dialogue](edit-dialogue.md) e depois `batch-lipsync` |
+| Uma gravação personalizada com o nome de cada destinatário na mesma voz | [edit-dialogue](edit-dialogue.md) |
 | Vários vídeos em outros idiomas | [localize-campaign](localize-campaign.md) |
 | Um único vídeo | [lipsync](lipsync.md) |
 
@@ -52,8 +54,11 @@ Execute o mesmo comando de novo. As linhas concluídas são puladas, as enviadas
 **Mudei uma linha depois que ela rodou.**
 O script se recusa a reutilizar o resultado dessa linha. Dê um novo ID à linha alterada, o que a transforma em uma nova geração.
 
+**Ela inicia as linhas uma de cada vez?**
+Não. Você aprova a execução inteira uma vez, e depois as linhas começam juntas, tantas ao mesmo tempo quanto o seu plano processa. Pelo servidor MCP, isso é uma chamada a `jobs_create-many` a cada 50 linhas, em qualquer plano pago, e as linhas que precisam esperar uma vaga livre começam assim que as anteriores terminam.
+
 **Devo usar a Batch API?**
-No Scale e superiores, para 20 a 500 linhas curtas quando um prazo de entrega de até 24 horas está ok. Nos outros planos pagos, um batch só comporta tantas linhas quanto o plano processa ao mesmo tempo, então a execução normal é igualmente rápida.
+Só nos planos Scale e superiores, para uma execução grande de 20 a 500 linhas curtas (cada uma com até 30 segundos) quando um prazo de entrega de horas está ok. Um batch é uma fila de processamento, não um jeito mais rápido de enviar algumas gerações: a execução normal inicia cada linha na hora, até o limite do seu plano. Abaixo do Scale, a Batch API não está disponível.
 
 **Algumas linhas falharam.**
 A tabela de resultados lista cada falha com o motivo. Linhas que falharam por entrada inválida precisam de uma entrada corrigida. Tente as demais de novo com `--retry-failed`.
@@ -61,5 +66,6 @@ A tabela de resultados lista cada falha com o motivo. Linhas que falharam por en
 ## Está funcionando se
 
 - A estimativa cobre todas as linhas ou informa quais linhas não conseguiu precificar.
+- Depois de uma única aprovação, as linhas começam juntas em vez de uma a uma.
 - Nunca rodam ao mesmo tempo mais gerações do que o seu plano permite.
 - Rodar de novo um manifesto concluído não cria nada novo.

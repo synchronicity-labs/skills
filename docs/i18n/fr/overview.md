@@ -3,7 +3,7 @@ title: "Skills d'agent de sync. labs"
 subtitle: "Synchronisez les lèvres, doublez et créez des vidéos parlantes depuis Claude Code, Codex, Cursor et d'autres agents."
 description: "Installez les skills d'agent officiels de sync. labs pour synchroniser les lèvres de vidéos, faire parler des photos et des personnages IA, traduire et doubler, corriger des mots prononcés, localiser des campagnes, lancer du lipsync par lots et intégrer sync. dans vos applications depuis votre agent."
 og:description: "Skills d'agent officiels de sync. labs pour le lipsync, le doublage, les photos parlantes, la modification de dialogues, la localisation de campagnes, les traitements par lots et les intégrations API."
-source-sha256: 43b442f47491f360fa5d1f80e5df5946ef813c244306230b85705d683afd7de1
+source-sha256: b2127b6c0b20e7920f0f6566eac05cca6fab410de78464947c0690fc7d640c07
 ---
 
 # Skills d'agent de sync. labs
@@ -76,7 +76,7 @@ npx -y @sync.so/mcp-server@latest
 | [translate-and-dub](translate-and-dub.md) | Double une vidéo dans d'autres langues avec des lèvres synchronisées. | « Double cette vidéo YouTube en espagnol » |
 | [edit-dialogue](edit-dialogue.md) | Modifie ou supprime quelques mots prononcés, avec la voix même de la personne qui parle. | « Remplace le prix que j'annonce par 49 $ » |
 | [localize-campaign](localize-campaign.md) | Localise un ensemble de vidéos pour plusieurs marchés : plan, pilote, exécution, fiche de relecture. | « Décline ces trois pubs en espagnol, en allemand et en japonais » |
-| [batch-lipsync](batch-lipsync.md) | Synchronise les lèvres pour chaque ligne d'un CSV ou d'un dossier, avec reprise, dans les limites de votre forfait ou via la Batch API. | « Synchronise chaque ligne de leads.csv sur presenter.mp4 » |
+| [batch-lipsync](batch-lipsync.md) | Synchronise les lèvres pour chaque ligne d'un CSV ou d'un dossier, avec reprise, dans les limites de votre forfait ou, avec les forfaits Scale, via la Batch API. | « Synchronise chaque ligne de leads.csv sur presenter.mp4 » |
 | [sync-api](sync-api.md) | Intègre sync. dans des applications avec l'API REST ou les SDK Python et TypeScript : imports, idempotence, webhooks, erreurs. | « Ajoute le lipsync de sync. à mon app Next.js » |
 | [troubleshoot](troubleshoot.md) | Trouve pourquoi une tâche a échoué, s'est bloquée ou a été refusée, la reprend sans payer deux fois et peut signaler le problème à sync. | « Mon lipsync a échoué, pourquoi ? » |
 
@@ -84,7 +84,7 @@ La page de chaque skill présente des exemples de prompts, les prérequis, les q
 
 ## Le travail payant est toujours validé d'abord
 
-Chaque génération est facturée : chaque skill annonce donc le coût avant de lancer un travail payant et attend votre feu vert. Si vous préférez ne pas être sollicité deux fois, fixez un budget dès le départ, par exemple « vas-y, tout ce qui coûte moins de 5 $ me va ». Les traitements portant sur de nombreuses vidéos, comme [localize-campaign](localize-campaign.md) et [batch-lipsync](batch-lipsync.md), chiffrent l'ensemble du traitement et proposent un pilote avant le reste.
+Chaque génération est facturée : chaque skill annonce donc le coût avant de lancer un travail payant et attend votre feu vert. Si vous préférez ne pas être sollicité deux fois, fixez un budget dès le départ, par exemple « vas-y, tout ce qui coûte moins de 5 $ me va ». Les traitements portant sur de nombreuses vidéos, comme [localize-campaign](localize-campaign.md) et [batch-lipsync](batch-lipsync.md), chiffrent l'ensemble du traitement et proposent un pilote avant le reste. Après cette seule validation, le reste démarre ensemble plutôt qu'un par un.
 
 <!-- llms-ignore -->
 ## Ressources associées

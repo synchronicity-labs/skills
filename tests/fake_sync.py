@@ -29,6 +29,7 @@ class FakeSync:
         self.fail_rows = set()  # output names whose generation ends FAILED
         self.signed_requests_with_key = 0
         self.batches = {}
+        self.batch_access = True  # False answers /v2/batch like a plan below Scale
         self.asset_durations = {}  # asset id -> seconds, for GET /v2/assets/{id}
 
     def handler(self):
@@ -111,6 +112,10 @@ class FakeSync:
                         fake.max_active = max(fake.max_active, fake.active)
                     return self._json(201, {"id": gen_id, "status": "PENDING"})
                 if self.path == "/v2/batch":
+                    if not fake.batch_access:
+                        return self._json(402, {"statusCode": 402, "errorCode": "plan_feature_unavailable",
+                                                "message": "Batch processing requires the Scale plan or above.",
+                                                "requiredPlan": "scale"})
                     if body.get("dry_run"):
                         return self._json(200, {"status": "VALIDATED"})
                     batch_id = "batch_" + uuid.uuid4().hex[:8]

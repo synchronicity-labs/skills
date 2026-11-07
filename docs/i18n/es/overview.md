@@ -3,7 +3,7 @@ title: "Skills de agente de sync. labs"
 subtitle: "Sincroniza labios, dobla y crea vídeos que hablan desde Claude Code, Codex, Cursor y otros agentes."
 description: "Instala las skills de agente oficiales de sync. labs para sincronizar los labios de vídeos, hacer hablar a fotos y personajes de IA, traducir y doblar, corregir palabras habladas, localizar campañas, sincronizar labios por lotes e integrar sync. en apps desde tu agente."
 og:description: "Skills de agente oficiales de sync. labs para lipsync, doblaje, fotos que hablan, edición de diálogos, localización de campañas, ejecuciones por lotes e integraciones con la API."
-source-sha256: 43b442f47491f360fa5d1f80e5df5946ef813c244306230b85705d683afd7de1
+source-sha256: b2127b6c0b20e7920f0f6566eac05cca6fab410de78464947c0690fc7d640c07
 ---
 
 # Skills de agente de sync. labs
@@ -76,7 +76,7 @@ npx -y @sync.so/mcp-server@latest
 | [translate-and-dub](translate-and-dub.md) | Dobla un vídeo a otros idiomas con los labios sincronizados. | «Dobla este vídeo de YouTube al español» |
 | [edit-dialogue](edit-dialogue.md) | Cambia o elimina algunas palabras habladas con la propia voz de quien habla. | «Cambia el precio que digo a $49» |
 | [localize-campaign](localize-campaign.md) | Localiza un conjunto de vídeos para varios mercados: plan, piloto, ejecución y hoja de revisión. | «Haz estos tres anuncios en español, alemán y japonés» |
-| [batch-lipsync](batch-lipsync.md) | Sincroniza los labios de cada fila de un CSV o de una carpeta, con reanudación, dentro de los límites de tu plan o mediante la Batch API. | «Sincroniza cada fila de leads.csv sobre presenter.mp4» |
+| [batch-lipsync](batch-lipsync.md) | Sincroniza los labios de cada fila de un CSV o de una carpeta, con reanudación, dentro de los límites de tu plan o, en los planes Scale, mediante la Batch API. | «Sincroniza cada fila de leads.csv sobre presenter.mp4» |
 | [sync-api](sync-api.md) | Integra sync. en apps con la API REST o los SDK de Python y TypeScript: subidas, idempotencia, webhooks y errores. | «Añade lipsync de sync. a mi app de Next.js» |
 | [troubleshoot](troubleshoot.md) | Averigua por qué un trabajo falló, se atascó o fue rechazado, lo reanuda sin pagar dos veces y puede informar del problema a sync. | «Mi lipsync ha fallado, ¿por qué?» |
 
@@ -84,7 +84,7 @@ La página de cada skill incluye prompts de ejemplo, lo que necesitas, preguntas
 
 ## El trabajo de pago siempre se aprueba antes
 
-Cada generación se factura, así que cada skill indica el coste antes de empezar trabajo de pago y espera a que des luz verde. Si prefieres que no te pregunte dos veces, fija un presupuesto desde el principio, por ejemplo «adelante, cualquier cosa por debajo de $5 me vale». Las ejecuciones con muchos vídeos, como [localize-campaign](localize-campaign.md) y [batch-lipsync](batch-lipsync.md), estiman el coste de toda la ejecución y ofrecen un piloto antes del resto.
+Cada generación se factura, así que cada skill indica el coste antes de empezar trabajo de pago y espera a que des luz verde. Si prefieres que no te pregunte dos veces, fija un presupuesto desde el principio, por ejemplo «adelante, cualquier cosa por debajo de $5 me vale». Las ejecuciones con muchos vídeos, como [localize-campaign](localize-campaign.md) y [batch-lipsync](batch-lipsync.md), estiman el coste de toda la ejecución y ofrecen un piloto antes del resto. Tras esa única aprobación, el resto arranca a la vez en lugar de uno a uno.
 
 <!-- llms-ignore -->
 ## Recursos relacionados
