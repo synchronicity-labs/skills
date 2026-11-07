@@ -179,6 +179,18 @@ class SyncBatchTest(unittest.TestCase):
         self.assertIn("batch-status first", proc.stderr)
         self.assertEqual(len(self.fake.creates), creates, "no individual creates while the batch is unresolved")
 
+    def test_batch_below_scale_points_to_run_and_leaves_rows_free(self):
+        self.fake.batch_access = False
+        path = self.manifest([{"id": f"row-{i}", "video": "presenter.mp4", "audio": f"vo{i % 6}.wav"} for i in range(20)])
+        for extra in (["--dry-run"], []):
+            proc = self.run_script("submit-batch", str(path), *extra, check=False)
+            self.assertNotEqual(proc.returncode, 0)
+            self.assertIn("Scale plans and above", proc.stderr)
+            self.assertIn("Use run instead", proc.stderr)
+        self.assertEqual(self.fake.batches, {})
+        self.run_script("run", str(path), "--only", "row-0")
+        self.assertEqual(len(self.fake.creates), 1, "a refused batch doesn't block run")
+
     def test_batch_api_dry_run_submit_status_and_results(self):
         path = self.manifest([{"id": f"row-{i}", "video": "presenter.mp4", "audio": f"vo{i % 6}.wav"} for i in range(20)])
         dry = self.run_script("submit-batch", str(path), "--dry-run")

@@ -7,6 +7,10 @@ Usage:
   sync_batch.py submit-batch MANIFEST.csv [--dry-run] [--webhook-url URL] [--model sync-3]
   sync_batch.py batch-status MANIFEST.csv [--wait] [--out DIR]
 
+submit-batch uses the Batch API, which is for Scale plans and above: a queued pipeline for
+large runs of short rows whose results can take up to about 24 hours. On every other plan,
+and for any run that should start now, use run.
+
 Manifest columns: id, video or image, audio or (script + voice_id), optional sync_mode and model.
 Values can be local paths, https URLs or sync. asset IDs. Needs SYNC_API_KEY.
 
@@ -502,6 +506,10 @@ def cmd_run(args):
     write_results(manifest, all_rows, state)
 
 
+NO_BATCH_ACCESS = ("The Batch API is for Scale plans and above, and this plan doesn't include it ({error}). "
+                   "Nothing was submitted. Use run instead: it starts every row now, within the plan's concurrency.")
+
+
 def cmd_submit_batch(args):
     manifest = Path(args.manifest)
     rows = read_manifest(manifest)
@@ -524,13 +532,29 @@ def cmd_submit_batch(args):
         body["webhook_url"] = args.webhook_url
     if args.dry_run:
         body["dry_run"] = True
-        print(json.dumps(api("POST", "/v2/batch", body)) + (f" ({skipped} rows already submitted were left out)" if skipped else ""))
+        try:
+            validated = api("POST", "/v2/batch", body)
+        except ApiError as err:
+            if err.status == 402:
+                sys.exit(NO_BATCH_ACCESS.format(error=err))
+            raise
+        print(json.dumps(validated) + (f" ({skipped} rows already submitted were left out)" if skipped else ""))
         return
     state.data["batch"] = {"submitting": True, "rows": [r["id"] for r in pending], "submittedAt": time.time()}
     for r in pending:
         state.data["rows"].setdefault(r["id"], {}).update(mode="batch", fingerprint=prints[r["id"]])
     state.save()
-    created = api("POST", "/v2/batch", body)
+    try:
+        created = api("POST", "/v2/batch", body)
+    except ApiError as err:
+        if err.status != 402:
+            raise
+        # A 402 is a refusal before anything is created, so the rows are free for run again.
+        state.data["batch"] = batch or None
+        for r in pending:
+            state.data["rows"][r["id"]].pop("mode", None)
+        state.save()
+        sys.exit(NO_BATCH_ACCESS.format(error=err))
     state.data["batch"] = {"id": created["id"], "status": created.get("status"), "rows": [r["id"] for r in pending]}
     state.save()
     print(f"Batch {created['id']} submitted with {len(pending)} rows"
