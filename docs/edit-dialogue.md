@@ -21,7 +21,7 @@ og:description: "Fix a wrong price, name, date or word in a video, in the speake
 | A wrong price, name, date or word, or a filler to cut | `edit-dialogue` |
 | A whole new script | [lipsync](lipsync.md) with a chosen voice |
 | The same video in another language | [translate-and-dub](translate-and-dub.md) |
-| One recording personalized per recipient | `edit-dialogue` for the previews, then [batch-lipsync](batch-lipsync.md) |
+| One recording personalized per recipient | `edit-dialogue`, one preview and one video per recipient |
 
 ## Try
 
@@ -47,6 +47,9 @@ Ask for a pronunciation. The agent adds a respelling like "shivawn", written as 
 
 **Some edits failed.**
 Usually the new wording is too long for the gap it fills. The agent says which edits failed and suggests shorter wording.
+
+**Can it make one version per recipient?**
+Yes. You agree each recipient's edits in one table, the previews start together, and after one approval of the total the videos start together too, up to your plan's limit. Through the MCP server that's one `jobs_create-many` call for the previews and one for the videos.
 
 **Can I replace a whole paragraph?**
 This workflow is for targeted words. For a new script, lipsync with a voice is the better tool, and the agent will say so.

@@ -1,9 +1,9 @@
 ---
 title: "batch-lipsync-Skill"
-subtitle: "Mach jede Zeile einer CSV-Datei oder eines Ordners lippensynchron, fortsetzbar, innerhalb der Limits deines Tarifs oder über die Batch API."
+subtitle: "Mach jede Zeile einer CSV-Datei oder eines Ordners lippensynchron, fortsetzbar, innerhalb der Limits deines Tarifs oder, im Scale-Tarif, über die Batch API."
 description: "Der batch-lipsync-Skill von sync. labs macht viele Videos auf einmal lippensynchron, aus einer CSV-Datei, einer Tabelle, einem Ordner oder einer Liste: Er schätzt die Kosten des gesamten Laufs, bietet einen Pilotlauf an, hält sich an die gleichzeitigen Aufträge deines Tarifs und setzt fort, ohne doppelt zu zahlen."
-og:description: "Mach aus deinem Agenten jede Zeile einer CSV-Datei oder eines Ordners lippensynchron, fortsetzbar, innerhalb der Limits deines Tarifs oder über die Batch API."
-source-sha256: f377f784e898a1d3716f298a9ebe4a645dd10ebef89f2b1ba50334da4e4e4cdb
+og:description: "Mach aus deinem Agenten jede Zeile einer CSV-Datei oder eines Ordners lippensynchron, fortsetzbar, innerhalb der Limits deines Tarifs oder, im Scale-Tarif, über die Batch API."
+source-sha256: dce75e3282ede2eced47c63275e8fa42accbe43a3e500b1e433052a4990cd187
 ---
 
 # batch-lipsync
@@ -15,7 +15,9 @@ source-sha256: f377f784e898a1d3716f298a9ebe4a645dd10ebef89f2b1ba50334da4e4e4cdb
 
 `batch-lipsync` macht viele Videos auf einmal lippensynchron: ein Ergebnis pro Zeile einer CSV-Datei, einer Tabelle, eines Ordners oder einer Liste wie „dieser Moderator mit jeder dieser 40 Audiodateien“. Er erstellt ein Manifest, schätzt die Kosten des gesamten Laufs, bietet einen Pilotlauf an, verarbeitet dann jede Zeile innerhalb der Limits deines Tarifs und sammelt die Ergebnisse in einer Ergebnistabelle.
 
-Mit einem API-Schlüssel nutzt er ein mitgeliefertes Skript, `sync_batch.py`, das jede Datei einmal hochlädt, die gleichzeitigen Aufträge deines Tarifs einhält, nach einer Unterbrechung fortsetzt und jedes Ergebnis herunterlädt. Ab dem Scale-Tarif können 20 oder mehr Zeilen stattdessen über die [Batch API](https://sync.so/docs/api-reference/guides/batch-processing) laufen, entweder mit dem Skript oder direkt über die Batch-Tools des MCP-Servers.
+Mit einem API-Schlüssel nutzt er ein mitgeliefertes Skript, `sync_batch.py`, das jede Datei einmal hochlädt, die gleichzeitigen Aufträge deines Tarifs einhält, nach einer Unterbrechung fortsetzt und jedes Ergebnis herunterlädt. Über den sync. MCP-Server startet er alle Zeilen mit einem einzigen Aufruf von `jobs_create-many`, der die gleichzeitigen Aufträge deines Tarifs einhält, und verfolgt sie alle mit `jobs_get-many`. Wo diese Tools nicht angeboten werden, startet er stattdessen eine Generierung pro Zeile.
+
+Ab dem Scale-Tarif kann ein großer Lauf mit 20 bis 500 kurzen Zeilen, der Stunden warten kann, stattdessen über die [Batch API](https://sync.so/docs/api-reference/guides/batch-processing) laufen, entweder mit dem Skript oder über die Batch-Tools des MCP-Servers.
 
 ## Wann du ihn nutzt
 
@@ -23,7 +25,7 @@ Mit einem API-Schlüssel nutzt er ein mitgeliefertes Skript, `sync_batch.py`, da
 | --- | --- |
 | Viele Zeilen mit Video plus Audio oder Skript | `batch-lipsync` |
 | Ein personalisiertes Video pro Lead oder Kunde | `batch-lipsync` |
-| Eine Aufnahme, personalisiert mit dem Namen jedes Empfängers in derselben Stimme | Vorschauen mit [edit-dialogue](edit-dialogue.md), dann `batch-lipsync` |
+| Eine Aufnahme, personalisiert mit dem Namen jedes Empfängers in derselben Stimme | [edit-dialogue](edit-dialogue.md) |
 | Mehrere Videos in andere Sprachen | [localize-campaign](localize-campaign.md) |
 | Ein einzelnes Video | [lipsync](lipsync.md) |
 
@@ -52,8 +54,11 @@ Führe denselben Befehl erneut aus. Fertige Zeilen werden übersprungen, übermi
 **Ich habe eine Zeile geändert, nachdem sie gelaufen ist.**
 Das Skript weigert sich, das Ergebnis dieser Zeile wiederzuverwenden. Gib der geänderten Zeile eine neue ID, damit wird sie zu einer neuen Generierung.
 
+**Startet er die Zeilen eine nach der anderen?**
+Nein. Du gibst den gesamten Lauf einmal frei, dann starten die Zeilen zusammen, so viele gleichzeitig, wie dein Tarif verarbeitet. Über den MCP-Server ist das ein Aufruf von `jobs_create-many` pro 50 Zeilen, in jedem kostenpflichtigen Tarif, und Zeilen, die auf einen freien Platz warten müssen, starten, sobald frühere fertig sind.
+
 **Sollte ich die Batch API nutzen?**
-Ab Scale, für 20 bis 500 kurze Zeilen, wenn eine Bearbeitungszeit von bis zu 24 Stunden in Ordnung ist. In anderen kostenpflichtigen Tarifen kann ein Batch nur so viele Zeilen enthalten, wie der Tarif gleichzeitig verarbeitet, der normale Lauf ist also genauso schnell.
+Nur ab dem Scale-Tarif, für einen großen Lauf mit 20 bis 500 kurzen Zeilen (jede bis zu 30 Sekunden), wenn eine Bearbeitungszeit von Stunden in Ordnung ist. Ein Batch ist eine Warteschlange zur Verarbeitung, kein schnellerer Weg, ein paar Generierungen zu senden: Der normale Lauf startet jede Zeile sofort, bis zum Limit deines Tarifs. Unterhalb von Scale ist die Batch API nicht verfügbar.
 
 **Einige Zeilen sind fehlgeschlagen.**
 Die Ergebnistabelle listet jeden Fehler mit Grund auf. Zeilen, die an fehlerhaften Eingaben gescheitert sind, brauchen eine korrigierte Eingabe. Wiederhole den Rest mit `--retry-failed`.
@@ -61,5 +66,6 @@ Die Ergebnistabelle listet jeden Fehler mit Grund auf. Zeilen, die an fehlerhaft
 ## Es funktioniert, wenn
 
 - Die Kostenschätzung jede Zeile abdeckt oder dir sagt, für welche Zeilen kein Preis ermittelt werden konnte.
+- Die Zeilen nach einer einzigen Freigabe zusammen starten statt einzeln.
 - Nie mehr Generierungen gleichzeitig laufen, als dein Tarif erlaubt.
 - Ein erneuter Lauf über ein fertiges Manifest nichts Neues erstellt.

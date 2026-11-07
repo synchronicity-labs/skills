@@ -1,9 +1,9 @@
 ---
 title: "Skill batch-lipsync"
-subtitle: "Synchronisez les lèvres pour chaque ligne d'un CSV ou d'un dossier, avec reprise, dans les limites de votre forfait ou via la Batch API."
+subtitle: "Synchronisez les lèvres pour chaque ligne d'un CSV ou d'un dossier, avec reprise, dans les limites de votre forfait ou, avec les forfaits Scale, via la Batch API."
 description: "Le skill d'agent batch-lipsync de sync. labs synchronise les lèvres de nombreuses vidéos en une fois à partir d'un CSV, d'un tableur, d'un dossier ou d'une liste : il chiffre l'ensemble du traitement, propose un pilote, respecte la concurrence de votre forfait et reprend sans payer deux fois."
-og:description: "Synchronisez depuis votre agent les lèvres pour chaque ligne d'un CSV ou d'un dossier, avec reprise, dans les limites de votre forfait ou via la Batch API."
-source-sha256: f377f784e898a1d3716f298a9ebe4a645dd10ebef89f2b1ba50334da4e4e4cdb
+og:description: "Synchronisez depuis votre agent les lèvres pour chaque ligne d'un CSV ou d'un dossier, avec reprise, dans les limites de votre forfait ou, avec les forfaits Scale, via la Batch API."
+source-sha256: dce75e3282ede2eced47c63275e8fa42accbe43a3e500b1e433052a4990cd187
 ---
 
 # batch-lipsync
@@ -15,7 +15,9 @@ source-sha256: f377f784e898a1d3716f298a9ebe4a645dd10ebef89f2b1ba50334da4e4e4cdb
 
 `batch-lipsync` synchronise les lèvres de nombreuses vidéos en une fois : un résultat par ligne d'un CSV, d'un tableur, d'un dossier ou d'une liste comme « ce présentateur avec chacun de ces 40 fichiers audio ». Il crée un manifeste, chiffre l'ensemble du traitement, propose un pilote, puis traite chaque ligne dans les limites de votre forfait et rassemble les résultats dans un tableau.
 
-Avec une clé API, il utilise un script fourni, `sync_batch.py`, qui importe chaque fichier une seule fois, respecte la concurrence de votre forfait, reprend après une interruption et télécharge chaque résultat. Avec les forfaits Scale et supérieurs, 20 lignes ou plus peuvent passer par la [Batch API](https://sync.so/docs/api-reference/guides/batch-processing), avec le script ou directement via les outils batch du serveur MCP.
+Avec une clé API, il utilise un script fourni, `sync_batch.py`, qui importe chaque fichier une seule fois, respecte la concurrence de votre forfait, reprend après une interruption et télécharge chaque résultat. Via le serveur MCP de sync., il lance toutes les lignes en un seul appel à `jobs_create-many`, qui respecte la concurrence de votre forfait, puis les suit toutes avec `jobs_get-many`. Si ces outils ne sont pas proposés, il lance une génération par ligne.
+
+Avec les forfaits Scale et supérieurs, un gros traitement de 20 à 500 lignes courtes qui peut attendre plusieurs heures peut passer par la [Batch API](https://sync.so/docs/api-reference/guides/batch-processing), avec le script ou via les outils batch du serveur MCP.
 
 ## Quand l'utiliser
 
@@ -23,7 +25,7 @@ Avec une clé API, il utilise un script fourni, `sync_batch.py`, qui importe cha
 | --- | --- |
 | De nombreuses lignes de vidéo avec audio ou script | `batch-lipsync` |
 | Une vidéo personnalisée par prospect ou client | `batch-lipsync` |
-| Un enregistrement personnalisé avec le nom de chaque destinataire, dans la même voix | Aperçus [edit-dialogue](edit-dialogue.md), puis `batch-lipsync` |
+| Un enregistrement personnalisé avec le nom de chaque destinataire, dans la même voix | [edit-dialogue](edit-dialogue.md) |
 | Plusieurs vidéos dans d'autres langues | [localize-campaign](localize-campaign.md) |
 | Une seule vidéo | [lipsync](lipsync.md) |
 
@@ -52,8 +54,11 @@ Relancez la même commande. Les lignes terminées sont ignorées, les lignes sou
 **J'ai modifié une ligne après son traitement.**
 Le script refuse de réutiliser le résultat de cette ligne. Donnez un nouvel ID à la ligne modifiée, ce qui en fait une nouvelle génération.
 
+**Lance-t-il les lignes une par une ?**
+Non. Vous validez l'ensemble du traitement une seule fois, puis les lignes démarrent ensemble, autant à la fois que votre forfait en traite. Via le serveur MCP, cela représente un appel à `jobs_create-many` par tranche de 50 lignes, avec n'importe quel forfait payant, et les lignes qui doivent attendre une place libre démarrent dès que les précédentes se terminent.
+
 **Dois-je utiliser la Batch API ?**
-Avec Scale et supérieurs, pour 20 à 500 lignes courtes quand un délai de traitement allant jusqu'à 24 heures vous convient. Avec les autres forfaits payants, un batch ne peut contenir qu'autant de lignes que le forfait en traite simultanément : le traitement classique est donc tout aussi rapide.
+Uniquement avec les forfaits Scale et supérieurs, pour un gros traitement de 20 à 500 lignes courtes (chacune jusqu'à 30 secondes) quand un délai de plusieurs heures vous convient. Un batch est une file de traitement, pas un moyen plus rapide d'envoyer quelques générations : le traitement classique lance chaque ligne immédiatement, dans la limite de votre forfait. En dessous de Scale, la Batch API n'est pas disponible.
 
 **Certaines lignes ont échoué.**
 Le tableau des résultats liste chaque échec avec sa cause. Les lignes qui ont échoué à cause d'une entrée incorrecte nécessitent une entrée corrigée. Relancez les autres avec `--retry-failed`.
@@ -61,5 +66,6 @@ Le tableau des résultats liste chaque échec avec sa cause. Les lignes qui ont 
 ## Tout fonctionne si
 
 - L'estimation couvre toutes les lignes, ou indique celles qu'elle n'a pas pu chiffrer.
+- Après une seule validation, les lignes démarrent ensemble plutôt qu'une par une.
 - Jamais plus de générations ne tournent simultanément que ce que votre forfait autorise.
 - Relancer un manifeste terminé ne crée rien de nouveau.

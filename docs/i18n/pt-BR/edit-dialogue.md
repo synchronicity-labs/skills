@@ -3,7 +3,7 @@ title: "Skill edit-dialogue"
 subtitle: "Mude ou remova algumas palavras faladas na própria voz de quem fala."
 description: "A skill de agente edit-dialogue da sync. labs corrige algumas palavras faladas em um vídeo com um único falante sem regravar: ela transcreve, gera uma prévia das novas palavras na própria voz de quem fala e depois ressincroniza os lábios só naquele trecho."
 og:description: "Corrija um preço, nome, data ou palavra errada em um vídeo, na própria voz de quem fala, sem regravar."
-source-sha256: e97f36785b8be640b8b1d969367d2b1f7e55a841dadf015870558bb2bc22faf2
+source-sha256: 7a852d6188b73945ee1a9952d4adf87a01f82c4e8e971f67ecb86e57e355677d
 ---
 
 # edit-dialogue
@@ -22,7 +22,7 @@ A `edit-dialogue` corrige algumas palavras faladas em um vídeo sem regravar. El
 | Um preço, nome, data ou palavra errada, ou uma muleta de fala para cortar | `edit-dialogue` |
 | Um roteiro totalmente novo | [lipsync](lipsync.md) com uma voz escolhida |
 | O mesmo vídeo em outro idioma | [translate-and-dub](translate-and-dub.md) |
-| Uma gravação personalizada para cada destinatário | `edit-dialogue` para as prévias e depois [batch-lipsync](batch-lipsync.md) |
+| Uma gravação personalizada para cada destinatário | `edit-dialogue`, uma prévia e um vídeo por destinatário |
 
 ## Experimente
 
@@ -48,6 +48,9 @@ Peça uma pronúncia. O agente adiciona uma grafia fonética como “shivawn”,
 
 **Algumas edições falharam.**
 Normalmente o novo texto é longo demais para o espaço que ocupa. O agente informa quais edições falharam e sugere um texto mais curto.
+
+**Dá para fazer uma versão por destinatário?**
+Sim. Você combina as edições de cada destinatário em uma única tabela, as prévias começam juntas e, depois de uma única aprovação do total, os vídeos também começam juntos, até o limite do seu plano. Pelo servidor MCP, isso é uma chamada a `jobs_create-many` para as prévias e outra para os vídeos.
 
 **Posso substituir um parágrafo inteiro?**
 Este fluxo é para palavras pontuais. Para um roteiro novo, lipsync com uma voz é a ferramenta mais adequada, e o agente vai dizer isso.

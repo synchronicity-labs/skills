@@ -62,7 +62,7 @@
       "name": "edit-dialogue",
       "displayName": "Fix spoken words",
       "summary": "Change or remove a few words in the speaker's own voice",
-      "description": "Change or remove a few spoken words in a single-speaker video with sync. labs (sync.so), keeping the speaker's own voice and re-syncing the lips, with no reshoot. Use for fixing a misspoken word, a wrong name, number, price or date, a mispronunciation, a typo in a spoken line, or cutting a filler word or phrase. Not for replacing a whole script (lipsync with a new script), translation (translate-and-dub), or switching to a different voice.",
+      "description": "Change or remove a few spoken words in a single-speaker video with sync. labs (sync.so), keeping the speaker's own voice and re-syncing the lips, with no reshoot. Use for fixing a misspoken word, a wrong name, number, price or date, a mispronunciation, a typo in a spoken line, or cutting a filler word or phrase, including one version per recipient's name from a single recording. Not for replacing a whole script (lipsync with a new script), translation (translate-and-dub), or switching to a different voice.",
       "guideUrl": "https://sync.so/docs/plugins-and-extensions/agent-skills/edit-dialogue",
       "sourceUrl": "https://github.com/synchronicity-labs/skills/tree/main/skills/edit-dialogue",
       "install": "npx skills add synchronicity-labs/skills --skill edit-dialogue"
@@ -80,7 +80,7 @@
       "name": "batch-lipsync",
       "displayName": "Batch lipsync",
       "summary": "Lipsync every row of a CSV, resumably, within plan limits",
-      "description": "Lip-sync many videos at once with sync. labs (sync.so), from a CSV, spreadsheet, folder or list. Pairs each video or avatar with its own audio or script, quotes the whole run, works within the plan's concurrency limit or uses the Batch API, resumes safely without paying twice, and collects every output. Use for bulk or batch lipsync of supplied audio or scripts, personalized video at scale (one video per lead, customer or recipient name), ad and creative variants, many voiceovers onto one presenter, or any \"do this for each row\" lipsync job. Not for one video (lipsync), translating videos into other languages (translate-and-dub for one video, localize-campaign for several).",
+      "description": "Lip-sync many videos at once with sync. labs (sync.so), from a CSV, spreadsheet, folder or list. Pairs each video or avatar with its own audio or script, quotes the whole run once, starts the rows together within the plan's concurrency limit (or, on Scale plans, through the Batch API for large runs that can wait), resumes safely without paying twice, and collects every output. Use for bulk or batch lipsync of supplied audio or scripts, personalized video at scale (one video per lead, customer or recipient name), ad and creative variants, many voiceovers onto one presenter, or any \"do this for each row\" lipsync job. Not for one video (lipsync), translating videos into other languages (translate-and-dub for one video, localize-campaign for several).",
       "guideUrl": "https://sync.so/docs/plugins-and-extensions/agent-skills/batch-lipsync",
       "sourceUrl": "https://github.com/synchronicity-labs/skills/tree/main/skills/batch-lipsync",
       "install": "npx skills add synchronicity-labs/skills --skill batch-lipsync"

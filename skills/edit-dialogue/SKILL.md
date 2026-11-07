@@ -1,6 +1,6 @@
 ---
 name: edit-dialogue
-description: Change or remove a few spoken words in a single-speaker video with sync. labs (sync.so), keeping the speaker's own voice and re-syncing the lips, with no reshoot. Use for fixing a misspoken word, a wrong name, number, price or date, a mispronunciation, a typo in a spoken line, or cutting a filler word or phrase. Not for replacing a whole script (lipsync with a new script), translation (translate-and-dub), or switching to a different voice.
+description: Change or remove a few spoken words in a single-speaker video with sync. labs (sync.so), keeping the speaker's own voice and re-syncing the lips, with no reshoot. Use for fixing a misspoken word, a wrong name, number, price or date, a mispronunciation, a typo in a spoken line, or cutting a filler word or phrase, including one version per recipient's name from a single recording. Not for replacing a whole script (lipsync with a new script), translation (translate-and-dub), or switching to a different voice.
 license: MIT
 compatibility: Needs the sync. MCP server. See references/connect.md.
 ---
@@ -28,6 +28,7 @@ If no sync. tools are available, follow [references/connect.md](references/conne
 | Quote | `dialogue-videos_estimate` |
 | Create | `dialogue-videos_create` |
 | Wait | `generations_get` |
+| Many variants | `jobs_create-many`, `jobs_get-many` |
 
 ## Steps
 
@@ -45,9 +46,20 @@ If no sync. tools are available, follow [references/connect.md](references/conne
 8. **Create.** Call `dialogue-videos_create` once with the same `dialogueEditId`, the model, the project and a new `idempotencyKey`. If the response is lost, retry once with the same key and inputs.
 9. **Wait and deliver.** Poll `generations_get` with the returned `id` and `wait: true` until it's final. Give the exact `outputMediaUrl` unchanged.
 
+## Many variants
+
+To make many versions of one recording, such as one per recipient's name, transcribe once (steps 1 to 4), then:
+
+1. **Agree every variant's edits** as in step 5, as a table with one row per variant, and confirm them once, mentioning the synthesis charges.
+2. **Previews.** With `jobs_create-many` listed, save a new UUID for the set, then call it with `tool: "dialogue-previews_create"`, that UUID as `idempotencyKey`, and one item per variant: the `projectId` with `projectIntent: "explicit"`, the `videoAssetId`, the `transcriptionJobId` and that variant's `edits`. Leave `idempotencyKey` out of the items: the tool derives one per item when the account reports `keyedPreview`. Without `keyedPreview`, never resend a preview set after an unclear response; tell the user instead. Preview requests are limited to 30 a minute, so send at most 30 variants per call and wait a minute before the next. Follow them with `jobs_get-many` and `wait: true`, and handle partial completions as in step 6. Without `jobs_create-many`, make the previews one at a time as in step 6, at the same pace.
+3. **Quote once.** Call `dialogue-videos_estimate` for each completed preview, show the count and the total, and wait for one approval of the whole set.
+4. **Renders.** Write one `idempotencyKey` per variant into your variant table, plus a new UUID for the set, before calling. Then call `jobs_create-many` with `tool: "dialogue-videos_create"`, that UUID as `idempotencyKey`, and one item per approved preview: `projectId` with `projectIntent: "explicit"`, `videoAssetId`, the preview's ID as `dialogueEditId`, `model: "sync-3"` and the variant's `idempotencyKey`. Send at most 50 per call. Follow them with `jobs_get-many` and `wait: true`. When the response has `remaining`, send it again exactly as returned once running jobs finish; if the tool refuses a single remaining item, send that variant with `dialogue-videos_create` and the same key. Without `jobs_create-many`, call `dialogue-videos_create` once per preview with its own key, keeping at most the plan's `generationLimits.concurrency` from `account_get-context` in flight.
+5. **Deliver** a table of variant, status and exact `outputMediaUrl`.
+
+On Scale plans, a large run that can wait hours can render as Batch API rows with `dialogueEdit` instead (early access, through the batch-lipsync skill). It's a queued pipeline, not a faster start.
+
 ## Limits
 
 - One speaker per video, up to 10 minutes, and at most 100 edits per preview.
 - Targeted words only. For a whole new script, explain that this workflow keeps the original recording, and offer the lipsync skill with a script and a chosen voice instead. Never split a new script into many word edits to get around this.
 - The speaker's voice is cloned for the new words. Assume the user has the rights to their own media, and don't ask about consent on routine requests. Decline only when the request is to make a real, identifiable person, such as a politician or celebrity, appear to say something they didn't say, in order to deceive.
-- To make many variants of one recording, such as one per recipient's name, use one preview per variant, then render them together with the batch-lipsync skill.

@@ -45,6 +45,9 @@ By the length of the source video, once per language. The quote shows the breakd
 **Is on-screen text translated?**
 No. Titles, captions and logos stay as they are. Only the speech changes.
 
+**Are the languages dubbed one after another?**
+No. After one approval, every language starts together, up to your plan's limit. Through the MCP server that's a single `jobs_create-many` call.
+
 **One language failed.**
 Each language is its own job, so the others still finish. The agent reports which one failed and why.
 

@@ -75,7 +75,7 @@ npx -y @sync.so/mcp-server@latest
 | [translate-and-dub](translate-and-dub.md) | Dubs a video into other languages with matching lips. | "Dub this YouTube video into Spanish" |
 | [edit-dialogue](edit-dialogue.md) | Changes or removes a few spoken words in the speaker's own voice. | "Change the price I say to $49" |
 | [localize-campaign](localize-campaign.md) | Localizes a set of videos across markets: plan, pilot, run, review sheet. | "Make these three ads in Spanish, German and Japanese" |
-| [batch-lipsync](batch-lipsync.md) | Lip-syncs every row of a CSV or folder, resumably, within your plan's limits or through the Batch API. | "Lipsync each row of leads.csv onto presenter.mp4" |
+| [batch-lipsync](batch-lipsync.md) | Lip-syncs every row of a CSV or folder, resumably, within your plan's limits or, on Scale plans, through the Batch API. | "Lipsync each row of leads.csv onto presenter.mp4" |
 | [sync-api](sync-api.md) | Builds sync. into apps with the REST API or the Python and TypeScript SDKs: uploads, idempotency, webhooks, errors. | "Add sync. lipsync to my Next.js app" |
 | [troubleshoot](troubleshoot.md) | Finds why a job failed, stalled or was rejected, resumes it without paying twice, and can report the problem to sync. | "My lipsync failed, why?" |
 
@@ -83,7 +83,7 @@ Each skill's page has example prompts, what you need, common questions and how t
 
 ## Paid work is always approved first
 
-Every generation is billed, so every skill quotes the cost before it starts paid work and waits for you to say go. If you'd rather not be asked twice, give a budget up front, for example "go ahead, anything under $5 is fine". Runs over many videos, such as [localize-campaign](localize-campaign.md) and [batch-lipsync](batch-lipsync.md), quote the whole run and offer a pilot before the rest.
+Every generation is billed, so every skill quotes the cost before it starts paid work and waits for you to say go. If you'd rather not be asked twice, give a budget up front, for example "go ahead, anything under $5 is fine". Runs over many videos, such as [localize-campaign](localize-campaign.md) and [batch-lipsync](batch-lipsync.md), quote the whole run and offer a pilot before the rest. After that one approval, the rest start together instead of one by one.
 
 <!-- llms-ignore -->
 ## Related resources
