@@ -166,50 +166,50 @@ class SyncBatchTest(unittest.TestCase):
         self.assertIn("already running", proc.stderr)
         self.assertEqual(self.fake.creates, [])
 
-    def test_pilot_rows_stay_out_of_the_batch_and_run_waits_for_the_batch(self):
-        path = self.manifest([{"id": f"row-{i}", "video": "presenter.mp4", "audio": f"vo{i % 6}.wav"} for i in range(21)])
-        self.run_script("run", str(path), "--only", "row-0")
-        self.run_script("submit-batch", str(path))
-        batch = next(iter(self.fake.batches.values()))
-        self.assertEqual(len(batch["rows"]), 20)
-        self.assertNotIn("row-0", [r["request_id"] for r in batch["rows"]], "the pilot row isn't charged again")
-        creates = len(self.fake.creates)
-        proc = self.run_script("run", str(path), check=False)
-        self.assertNotEqual(proc.returncode, 0)
-        self.assertIn("batch-status first", proc.stderr)
-        self.assertEqual(len(self.fake.creates), creates, "no individual creates while the batch is unresolved")
+    def test_legacy_submission_state_blocks_duplicate_work(self):
+        path = self.six_rows()
+        state_path = path.with_name(path.name + ".state.json")
+        for legacy, saved in (
+            ({"submitting": True}, {}),
+            ({"id": "previous-submission", "status": "PROCESSING"}, {}),
+            ({"id": "previous-submission", "status": "COMPLETED"}, {}),
+            ({"id": "previous-submission", "status": "FAILED"}, {}),
+            ({"id": "previous-submission", "status": "COMPLETED"}, {"status": "COMPLETED"}),
+            ({"id": "previous-submission", "status": "COMPLETED"}, {"status": "PROCESSING"}),
+        ):
+            with self.subTest(legacy=legacy, saved=saved):
+                self.fake.reset()
+                state_path.write_text(json.dumps({"batch": legacy, "rows": {"lead-000": {"mode": "batch", **saved}}}))
+                proc = self.run_script("run", str(path), "--only", "lead-000", check=False)
+                self.assertEqual(self.fake.creates, [], "old submission state must not create duplicate paid work")
+                self.assertNotEqual(proc.returncode, 0)
+                self.assertIn("unfinished work from an older script version", proc.stderr)
 
-    def test_batch_below_scale_points_to_run_and_leaves_rows_free(self):
-        self.fake.batch_access = False
-        path = self.manifest([{"id": f"row-{i}", "video": "presenter.mp4", "audio": f"vo{i % 6}.wav"} for i in range(20)])
-        for extra in (["--dry-run"], []):
-            proc = self.run_script("submit-batch", str(path), *extra, check=False)
-            self.assertNotEqual(proc.returncode, 0)
-            self.assertIn("Scale plans and above", proc.stderr)
-            self.assertIn("Use run instead", proc.stderr)
-        self.assertEqual(self.fake.batches, {})
-        self.run_script("run", str(path), "--only", "row-0")
-        self.assertEqual(len(self.fake.creates), 1, "a refused batch doesn't block run")
-
-    def test_batch_api_dry_run_submit_status_and_results(self):
-        path = self.manifest([{"id": f"row-{i}", "video": "presenter.mp4", "audio": f"vo{i % 6}.wav"} for i in range(20)])
-        dry = self.run_script("submit-batch", str(path), "--dry-run")
-        self.assertIn("VALIDATED", dry.stdout)
-        self.assertEqual(self.fake.batches, {})
-        self.run_script("submit-batch", str(path))
-        self.assertEqual(len(self.fake.batches), 1)
-        second = self.run_script("submit-batch", str(path), check=False)
-        self.assertNotEqual(second.returncode, 0, "a second submit of the same manifest is refused")
-        self.assertIn("still running", second.stderr)
-        self.assertEqual(len(self.fake.batches), 1)
-        out = self.dir / "batch-out"
-        self.run_script("batch-status", str(path), "--wait", "--interval", "0.1", "--out", str(out))
-        self.assertEqual(len(list(out.iterdir())), 10, "completed rows are downloaded")
-        self.assertEqual(self.fake.signed_requests_with_key, 0, "the API key is never sent to signed URLs")
-        with open(self.dir / "results.csv") as fh:
-            rows = list(csv.DictReader(fh))
-        self.assertEqual(sum(r["status"] == "FAILED" for r in rows), 10)
-        self.assertTrue(all(r["error"] == "no face" for r in rows if r["status"] == "FAILED"))
+        gen_id = "confirmed-generation"
+        self.fake.generations[gen_id] = {"status": "COMPLETED", "polls": 0, "name": "lead-000"}
+        out = self.dir / "out"
+        for saved, message in (
+            ({"status": "COMPLETED", "outputUrl": f"{self.base}/signed/out/{gen_id}"}, "already completed"),
+            ({"generationId": gen_id}, "lead-000: COMPLETED"),
+            ({"status": "FAILED"}, "FAILED earlier"),
+            ({"status": "REJECTED"}, "REJECTED earlier"),
+        ):
+            with self.subTest(saved=saved):
+                state_path.write_text(json.dumps({
+                    "batch": {"id": "previous-submission", "status": "COMPLETED"},
+                    "rows": {"lead-000": {"mode": "batch", **saved}, "lead-001": {"mode": "batch"}},
+                }))
+                proc = self.run_script("run", str(path), "--only", "lead-000", "--out", str(out))
+                self.assertEqual(self.fake.creates, [], "reconciled rows must reuse or report their saved outcome")
+                self.assertIn(message, proc.stdout)
+        self.assertTrue((out / "lead-000.mp4").exists())
+        state_path.write_text(json.dumps({
+            "batch": {"id": "previous-submission", "status": "COMPLETED"},
+            "rows": {"lead-000": {"mode": "batch", "status": "FAILED"}},
+        }))
+        self.run_script("run", str(path), "--only", "lead-000", "--retry-failed")
+        self.assertEqual(len(self.fake.creates), 1, "a confirmed failed row can be retried explicitly")
+        self.assertEqual(json.loads(state_path.read_text())["rows"]["lead-000"]["status"], "COMPLETED")
 
 
 if __name__ == "__main__":

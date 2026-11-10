@@ -3,7 +3,7 @@ title: "localize-campaign-Skill"
 subtitle: "Lokalisiere eine Reihe von Videos für mehrere Märkte: Plan, Pilot, Durchlauf, Review-Tabelle."
 description: "Der localize-campaign-Skill von sync. labs erstellt jedes Video einer Kampagne, eines Kurses oder einer Produktreihe in jeder Zielsprache: Er ordnet Märkte Sprachen zu, schätzt die Kosten der Matrix, testet eine Version im Pilotlauf und führt dann den Rest mit einer Review-Tabelle aus."
 og:description: "Lokalisiere aus deinem Agenten mehrere Videos in mehrere Sprachen, mit einem Pilotlauf zuerst und einer Review-Tabelle am Ende."
-source-sha256: 1da869421315f34ece2a880344bb9e5a1a6f20f02c65f76e84caa179ba54edb7
+source-sha256: be752c55e5f10643954e19e5d881c95e767bcc4b0c501e48164d5855d5281879
 ---
 
 # localize-campaign
@@ -47,8 +47,8 @@ Text im Bild, eingebrannte Untertitel, Logos und Abspanntafeln bleiben in der Au
 **Wie heißen die Dateien?**
 Standardmäßig `<campaign>_<video>_<lang>.mp4`, zum Beispiel `spring24_hero-30s_de.mp4`. Wenn du ein anderes Muster brauchst, lege es vor dem Durchlauf fest.
 
-**Kann alles in einem Batch laufen?**
-Das ist nicht nötig. Nach dem Pilotlauf starten die übrigen Versionen zusammen, bis zum Limit deines Tarifs, mit einem einzigen Aufruf von `jobs_create-many` über den MCP-Server, in jedem kostenpflichtigen Tarif. Ab dem Scale-Tarif kann ein großer Lauf mit 20 oder mehr kurzen Versionen, der Stunden warten kann, auch über die Batch API laufen, eine Warteschlange, deren Ergebnisse bis zu einem Tag dauern können.
+**Kann er die Versionen gemeinsam starten?**
+Ja. Nach dem Pilotlauf starten die übrigen Versionen zusammen, bis zum Limit deines Tarifs, mit einem einzigen Aufruf von `jobs_create-many` über den MCP-Server, in jedem kostenpflichtigen Tarif.
 
 **Der Durchlauf wurde unterbrochen.**
 Jede Version hat ihren eigenen gespeicherten Schlüssel und ihre Generierungs-ID, deshalb macht die Fortsetzung dort weiter, wo sie aufgehört hat, ohne doppelt zu zahlen.

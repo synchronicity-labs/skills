@@ -3,7 +3,7 @@ title: "Skill localize-campaign"
 subtitle: "Localisez un ensemble de vidéos pour plusieurs marchés : plan, pilote, exécution, fiche de relecture."
 description: "Le skill d'agent localize-campaign de sync. labs produit chaque vidéo d'une campagne, d'une formation ou d'une gamme de produits dans chaque langue cible : il associe les marchés aux langues, chiffre la matrice, réalise un pilote sur une version, puis traite le reste avec une fiche de relecture."
 og:description: "Localisez plusieurs vidéos dans plusieurs langues depuis votre agent, avec un pilote d'abord et une fiche de relecture à la fin."
-source-sha256: 1da869421315f34ece2a880344bb9e5a1a6f20f02c65f76e84caa179ba54edb7
+source-sha256: be752c55e5f10643954e19e5d881c95e767bcc4b0c501e48164d5855d5281879
 ---
 
 # localize-campaign
@@ -47,8 +47,8 @@ Le texte à l'écran, les sous-titres incrustés, les logos et les cartons de fi
 **Comment les fichiers sont-ils nommés ?**
 `<campaign>_<video>_<lang>.mp4` par défaut, par exemple `spring24_hero-30s_de.mp4`. Convenez d'un autre modèle avant le traitement si besoin.
 
-**Peut-il tout traiter en un seul batch ?**
-Ce n'est pas nécessaire. Après le pilote, les autres versions démarrent ensemble, dans la limite de votre forfait, en un seul appel à `jobs_create-many` via le serveur MCP, avec n'importe quel forfait payant. Avec les forfaits Scale et supérieurs, un gros traitement de 20 versions courtes ou plus qui peut attendre plusieurs heures peut aussi passer par la Batch API, une file de traitement dont les résultats peuvent prendre jusqu'à une journée.
+**Peut-il lancer les versions ensemble ?**
+Oui. Après le pilote, les autres versions démarrent ensemble, dans la limite de votre forfait, en un seul appel à `jobs_create-many` via le serveur MCP, avec n'importe quel forfait payant.
 
 **Le traitement a été interrompu.**
 Chaque version a sa propre clé enregistrée et son ID de génération : la reprise repart là où elle s'était arrêtée, sans payer deux fois.

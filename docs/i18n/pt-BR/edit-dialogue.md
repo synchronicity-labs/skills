@@ -3,7 +3,7 @@ title: "Skill edit-dialogue"
 subtitle: "Mude ou remova algumas palavras faladas na própria voz de quem fala."
 description: "A skill de agente edit-dialogue da sync. labs corrige algumas palavras faladas em um vídeo com um único falante sem regravar: ela transcreve, gera uma prévia das novas palavras na própria voz de quem fala e depois ressincroniza os lábios só naquele trecho."
 og:description: "Corrija um preço, nome, data ou palavra errada em um vídeo, na própria voz de quem fala, sem regravar."
-source-sha256: 7a852d6188b73945ee1a9952d4adf87a01f82c4e8e971f67ecb86e57e355677d
+source-sha256: 987e84b2b0109308cf6cc142fe8b371eee3106b2a26e7a6b633b9a2acf5a9fd7
 ---
 
 # edit-dialogue
@@ -50,7 +50,7 @@ Peça uma pronúncia. O agente adiciona uma grafia fonética como “shivawn”,
 Normalmente o novo texto é longo demais para o espaço que ocupa. O agente informa quais edições falharam e sugere um texto mais curto.
 
 **Dá para fazer uma versão por destinatário?**
-Sim. Você combina as edições de cada destinatário em uma única tabela, as prévias começam juntas e, depois de uma única aprovação do total, os vídeos também começam juntos, até o limite do seu plano. Pelo servidor MCP, isso é uma chamada a `jobs_create-many` para as prévias e outra para os vídeos.
+Sim. Você combina as edições de cada destinatário em uma única tabela, as prévias começam juntas e, depois de uma única aprovação do total, os vídeos também começam juntos, até o limite do seu plano. Pelo MCP, é uma chamada a `jobs_create-many` para as prévias e outra para os vídeos, em qualquer plano pago.
 
 **Posso substituir um parágrafo inteiro?**
 Este fluxo é para palavras pontuais. Para um roteiro novo, lipsync com uma voz é a ferramenta mais adequada, e o agente vai dizer isso.

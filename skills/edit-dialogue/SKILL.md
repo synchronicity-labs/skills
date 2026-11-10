@@ -58,8 +58,6 @@ To make many versions of one recording, such as one per recipient's name, transc
 4. **Renders.** Write one `idempotencyKey` per variant into your variant table, plus a new UUID for the set, before calling. Then call `jobs_create-many` with `tool: "dialogue-videos_create"`, that UUID as `idempotencyKey`, and one item per approved preview: `projectId` with `projectIntent: "explicit"`, `videoAssetId`, the preview's ID as `dialogueEditId`, `model: "sync-3"` and the variant's `idempotencyKey`. Send at most 50 per call. Follow them with `jobs_get-many` and `wait: true`. When the response has `remaining`, send it again exactly as returned once running jobs finish; if the tool refuses a single remaining item, send that variant with `dialogue-videos_create` and the same key. Without `jobs_create-many`, call `dialogue-videos_create` once per preview with its own key, keeping at most the plan's `generationLimits.concurrency` from `account_get-context` in flight.
 5. **Deliver** a table of variant, status and exact `outputMediaUrl`.
 
-On Scale plans, a large run that can wait hours can render as Batch API rows with `dialogueEdit` instead (early access, through the batch-lipsync skill). It's a queued pipeline, not a faster start.
-
 ## Limits
 
 - One speaker per video, up to 10 minutes, and at most 100 edits per preview.

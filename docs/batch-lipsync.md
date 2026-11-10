@@ -1,9 +1,9 @@
 ---
 title: "batch-lipsync skill"
-subtitle: "Lip-sync every row of a CSV or folder, resumably, within your plan's limits or, on Scale plans, through the Batch API."
+subtitle: "Lip-sync every row of a CSV or folder, resumably, within your plan's limits."
 description: "The sync. labs batch-lipsync agent skill lip-syncs many videos in one go from a CSV, spreadsheet, folder or list: it quotes the whole run, offers a pilot, keeps to your plan's concurrency and resumes without paying twice."
 og:subtitle: "Lip-sync every row of a CSV or folder, resumably."
-og:description: "Lip-sync every row of a CSV or folder from your agent, resumably, within your plan's limits or, on Scale plans, through the Batch API."
+og:description: "Lip-sync every row of a CSV or folder from your agent, resumably, within your plan's limits."
 ---
 
 # batch-lipsync
@@ -16,8 +16,6 @@ og:description: "Lip-sync every row of a CSV or folder from your agent, resumabl
 `batch-lipsync` lip-syncs many videos in one go: one output per row of a CSV, a spreadsheet, a folder, or a list like "this presenter with each of these 40 audio files". It builds a manifest, quotes the whole run, offers a pilot, then runs every row within your plan's limits and collects the outputs into a results table.
 
 With an API key it uses a bundled script, `sync_batch.py`, that uploads each file once, keeps to your plan's concurrency, resumes after an interruption, and downloads every result. Through the sync. MCP server it starts every row with one `jobs_create-many` call, which keeps to your plan's concurrency, and follows them all with `jobs_get-many`. Where those tools aren't listed, it starts one generation per row instead.
-
-On Scale plans and above, a large run of 20 to 500 short rows that can wait hours can go through the [Batch API](https://sync.so/docs/api-reference/guides/batch-processing) instead, either with the script or through the MCP server's batch tools.
 
 ## When to reach for it
 
@@ -56,9 +54,6 @@ The script refuses to reuse that row's result. Give the changed row a new ID, wh
 
 **Does it start the rows one at a time?**
 No. You approve the whole run once, then the rows start together, as many at a time as your plan runs. Through the MCP server that's one `jobs_create-many` call per 50 rows, on any paid plan, and the rows that have to wait for a free slot start as soon as earlier ones finish.
-
-**Should I use the Batch API?**
-Only on Scale plans and above, for a large run of 20 to 500 short rows (each up to 30 seconds) when a turnaround of hours is fine. A batch is a queued pipeline, not a faster way to send a few generations: the regular run starts every row right away, up to your plan's limit. Below Scale the Batch API isn't available.
 
 **Some rows failed.**
 The results table lists each failure with its reason. Rows that failed on bad input need a fixed input. Retry the rest with `--retry-failed`.

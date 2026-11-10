@@ -3,7 +3,7 @@ title: "troubleshoot-Skill"
 subtitle: "Finde heraus, warum ein Auftrag fehlgeschlagen ist, hängt oder abgelehnt wurde, und setz ihn fort, ohne doppelt zu zahlen."
 description: "Der troubleshoot-Skill von sync. labs findet heraus, warum ein sync.-Auftrag fehlgeschlagen ist, hängt oder abgelehnt wurde, erklärt die eigentliche Ursache in einfachen Worten, setzt die Arbeit fort, ohne einen zweiten kostenpflichtigen Auftrag zu starten, und kann das Problem an sync. melden."
 og:description: "Finde aus deinem Agenten heraus, warum ein sync.-Auftrag fehlgeschlagen ist, hängt oder abgelehnt wurde, und setz ihn fort, ohne doppelt zu zahlen."
-source-sha256: 8de9f50b08fda9e8256cefecc063b3e44871e28eb125c0e2060560fcdabb8fff
+source-sha256: fa414afa2a128c47622b7f5b68079ff308b41856882f1713822114f55fd26741
 ---
 
 # troubleshoot
@@ -35,7 +35,7 @@ source-sha256: 8de9f50b08fda9e8256cefecc063b3e44871e28eb125c0e2060560fcdabb8fff
 ## Was du brauchst
 
 - Den verbundenen sync. MCP-Server, um den Auftragsstatus und dein Konto zu lesen. Ohne ihn kann der Skill trotzdem eine Fehlermeldung erklären, die du einfügst.
-- Den Fehlertext oder, falls vorhanden, die ID der Generierung oder des Batches.
+- Den Fehlertext oder, falls vorhanden, die ID der Generierung.
 
 ## Häufige Fragen
 

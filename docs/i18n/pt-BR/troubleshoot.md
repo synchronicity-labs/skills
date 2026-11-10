@@ -3,7 +3,7 @@ title: "Skill troubleshoot"
 subtitle: "Descubra por que um trabalho falhou, travou ou foi rejeitado e retome sem pagar duas vezes."
 description: "A skill de agente troubleshoot da sync. labs descobre por que um trabalho da sync. falhou, travou ou foi rejeitado, explica a causa real em palavras simples, retoma o trabalho sem iniciar um segundo trabalho pago e pode relatar o problema à sync."
 og:description: "Descubra a partir do seu agente por que um trabalho da sync. falhou, travou ou foi rejeitado e retome sem pagar duas vezes."
-source-sha256: 8de9f50b08fda9e8256cefecc063b3e44871e28eb125c0e2060560fcdabb8fff
+source-sha256: fa414afa2a128c47622b7f5b68079ff308b41856882f1713822114f55fd26741
 ---
 
 # troubleshoot
@@ -35,7 +35,7 @@ A `troubleshoot` descobre por que um trabalho da sync. falhou, travou ou foi rej
 ## O que você precisa
 
 - O servidor MCP da sync. conectado, para ler o status dos trabalhos e a sua conta. Sem ele, a skill ainda consegue explicar uma mensagem de erro que você colar.
-- O texto do erro, ou o ID da geração ou do batch, se você tiver.
+- O texto do erro, ou o ID da geração, se você tiver.
 
 ## Perguntas frequentes
 

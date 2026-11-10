@@ -3,7 +3,7 @@ title: "Skill edit-dialogue"
 subtitle: "Cambia o elimina algunas palabras habladas con la propia voz de quien habla."
 description: "La skill de agente edit-dialogue de sync. labs corrige algunas palabras habladas en un vídeo con un solo hablante sin volver a grabar: transcribe, te deja escuchar las palabras nuevas con la propia voz de quien habla y vuelve a sincronizar los labios solo en esa parte."
 og:description: "Corrige un precio, un nombre, una fecha o una palabra equivocados en un vídeo, con la propia voz de quien habla y sin volver a grabar."
-source-sha256: 7a852d6188b73945ee1a9952d4adf87a01f82c4e8e971f67ecb86e57e355677d
+source-sha256: 987e84b2b0109308cf6cc142fe8b371eee3106b2a26e7a6b633b9a2acf5a9fd7
 ---
 
 # edit-dialogue
@@ -50,7 +50,7 @@ Pide una pronunciación. El agente añade una reescritura fonética como «shiva
 Normalmente el texto nuevo es demasiado largo para el hueco que ocupa. El agente te dice qué cambios fallaron y te sugiere un texto más corto.
 
 **¿Puede hacer una versión por destinatario?**
-Sí. Acuerdas las ediciones de cada destinatario en una sola tabla, las vistas previas arrancan juntas y, tras una única aprobación del total, los vídeos también arrancan juntos, hasta el límite de tu plan. Con el servidor MCP es una llamada a `jobs_create-many` para las vistas previas y otra para los vídeos.
+Sí. Acuerdas las ediciones de cada destinatario en una sola tabla, las vistas previas arrancan juntas y, tras una única aprobación del total, los vídeos también arrancan juntos, hasta el límite de tu plan. El MCP usa una llamada a `jobs_create-many` para los previews y otra para los vídeos, en cualquier plan de pago.
 
 **¿Puedo sustituir un párrafo entero?**
 Este flujo es para palabras concretas. Para un guion nuevo, lipsync con una voz es la mejor herramienta, y el agente te lo dirá.

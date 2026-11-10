@@ -22,7 +22,6 @@ USES = {
                        "ai-video-to-talking", "batch-lipsync", "localize-campaign"],
     "api.md": ["lipsync", "talking-photo", "translate-and-dub", "ai-video-to-talking",
                "localize-campaign", "sync-api"],
-    "batch-api.md": ["batch-lipsync", "sync-api"],
 }
 HEADER = "<!-- Generated from shared/{name} by scripts/sync_shared.py. Edit the shared file, not this copy. -->\n\n"
 

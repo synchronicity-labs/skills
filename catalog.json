@@ -80,7 +80,7 @@
       "name": "batch-lipsync",
       "displayName": "Batch lipsync",
       "summary": "Lipsync every row of a CSV, resumably, within plan limits",
-      "description": "Lip-sync many videos at once with sync. labs (sync.so), from a CSV, spreadsheet, folder or list. Pairs each video or avatar with its own audio or script, quotes the whole run once, starts the rows together within the plan's concurrency limit (or, on Scale plans, through the Batch API for large runs that can wait), resumes safely without paying twice, and collects every output. Use for bulk or batch lipsync of supplied audio or scripts, personalized video at scale (one video per lead, customer or recipient name), ad and creative variants, many voiceovers onto one presenter, or any \"do this for each row\" lipsync job. Not for one video (lipsync), translating videos into other languages (translate-and-dub for one video, localize-campaign for several).",
+      "description": "Lip-sync many videos at once with sync. labs (sync.so), from a CSV, spreadsheet, folder or list. Pairs each video or avatar with its own audio or script, quotes the whole run once, starts the rows together within the plan's concurrency limit, resumes safely without paying twice, and collects every output. Use for bulk or batch lipsync of supplied audio or scripts, personalized video at scale (one video per lead, customer or recipient name), ad and creative variants, many voiceovers onto one presenter, or any \"do this for each row\" lipsync job. Not for one video (lipsync), translating videos into other languages (translate-and-dub for one video, localize-campaign for several).",
       "guideUrl": "https://sync.so/docs/plugins-and-extensions/agent-skills/batch-lipsync",
       "sourceUrl": "https://github.com/synchronicity-labs/skills/tree/main/skills/batch-lipsync",
       "install": "npx skills add synchronicity-labs/skills --skill batch-lipsync"
@@ -89,7 +89,7 @@
       "name": "sync-api",
       "displayName": "Build with the sync. API",
       "summary": "Integrate sync. lipsync and dubbing into your own code",
-      "description": "Build sync. labs (sync.so) lipsync, dubbing and talking-image generation into an app, backend, script or pipeline with the sync. REST API or the official Python (syncsdk) and TypeScript (@sync.so/sdk) SDKs. Covers API keys, uploads, creating generations with idempotency keys, webhooks with signature checks, polling, models, cost estimates, error handling, concurrency limits and the Batch API. Use whenever code calls or should call the sync. API, for example \"add lipsync to my Next.js app\", \"write a Python script that dubs videos with sync.\", \"handle sync. webhooks\", \"why does my sync. request return 429\", or reviewing an existing sync. integration. Not for making one video in this chat (lipsync, talking-photo, translate-and-dub).",
+      "description": "Build sync. labs (sync.so) lipsync, dubbing and talking-image generation into an app, backend, script or pipeline with the sync. REST API or the official Python (syncsdk) and TypeScript (@sync.so/sdk) SDKs. Covers API keys, uploads, creating generations with idempotency keys, webhooks with signature checks, polling, models, cost estimates, error handling and concurrency limits. Use whenever code calls or should call the sync. API, for example \"add lipsync to my Next.js app\", \"write a Python script that dubs videos with sync.\", \"handle sync. webhooks\", \"why does my sync. request return 429\", or reviewing an existing sync. integration. Not for making one video in this chat (lipsync, talking-photo, translate-and-dub).",
       "guideUrl": "https://sync.so/docs/plugins-and-extensions/agent-skills/sync-api",
       "sourceUrl": "https://github.com/synchronicity-labs/skills/tree/main/skills/sync-api",
       "install": "npx skills add synchronicity-labs/skills --skill sync-api"
@@ -97,7 +97,7 @@
     {
       "name": "troubleshoot",
       "displayName": "Troubleshoot sync.",
-      "summary": "Find why a sync. job failed and resume it safely",
+      "summary": "Find why a generation failed and resume without paying twice",
       "description": "Diagnose and recover sync. labs (sync.so) work that failed, stalled, was rejected or errored, then resume it safely without paying twice. Covers sign-in and missing tools, rejected inputs, plan, credit and concurrency limits, stuck or slow jobs, lost responses after a timeout, dubbing provider errors and poor lipsync quality, and can report the problem to the sync. team. Use for \"my lipsync failed\", \"why was this rejected\", \"it's been processing forever\", \"I got a 429 or 402\", \"the sync tools disappeared\", or any sync. error message. Not for first-time setup (setup) or writing integration code (sync-api).",
       "guideUrl": "https://sync.so/docs/plugins-and-extensions/agent-skills/troubleshoot",
       "sourceUrl": "https://github.com/synchronicity-labs/skills/tree/main/skills/troubleshoot",

@@ -34,7 +34,7 @@ og:description: "Find out from your agent why a sync. job failed, stalled or was
 ## What you need
 
 - The sync. MCP server connected, for reading job status and your account. Without it, the skill can still explain an error message you paste.
-- The error text, or the generation or batch ID if you have it.
+- The error text, or the generation ID if you have it.
 
 ## Common questions
 
