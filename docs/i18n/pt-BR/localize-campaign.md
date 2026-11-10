@@ -3,7 +3,7 @@ title: "Skill localize-campaign"
 subtitle: "Localize um conjunto de vídeos para vários mercados: plano, piloto, execução e planilha de revisão."
 description: "A skill de agente localize-campaign da sync. labs produz cada vídeo de uma campanha, curso ou linha de produtos em cada idioma de destino: ela associa mercados a idiomas, estima o custo da matriz, faz um piloto com uma versão e depois executa o restante com uma planilha de revisão."
 og:description: "Localize vários vídeos em vários idiomas a partir do seu agente, com um piloto primeiro e uma planilha de revisão no final."
-source-sha256: 49dd60abc93a0662b85b0cdffea139fa6b7b680a6e501957b1f6078c2ff61519
+source-sha256: be752c55e5f10643954e19e5d881c95e767bcc4b0c501e48164d5855d5281879
 ---
 
 # localize-campaign
@@ -47,8 +47,8 @@ Texto na tela, legendas embutidas, logotipos e cartelas finais ficam no idioma d
 **Como os arquivos são nomeados?**
 `<campaign>_<video>_<lang>.mp4` por padrão, por exemplo `spring24_hero-30s_de.mp4`. Combine outro padrão antes da execução, se precisar.
 
-**Dá para rodar tudo em um único batch?**
-Não é preciso. Depois do piloto, as demais versões começam juntas, até o limite do seu plano, com uma única chamada a `jobs_create-many` pelo servidor MCP, em qualquer plano pago. Com aprovação da organização e o plano Scale ou superior, uma execução grande de 20 versões curtas ou mais que pode esperar horas também pode usar a Batch API. O acesso fica desativado por padrão, inclusive para simulações. Os resultados podem levar até um dia. Sem aprovação, a criação retorna `403 batch_access_not_enabled` antes de verificar o plano. Depois da aprovação, um plano abaixo de Scale retorna `402 plan_feature_unavailable`. Fale com support@sync.so para solicitar aprovação. Usuários e administradores da organização não podem ativá-lo por conta própria. Jobs existentes, status e resultados continuam disponíveis.
+**Dá para executar as versões juntas?**
+Sim. Depois do piloto, as demais versões começam juntas, até o limite do seu plano, com uma única chamada a `jobs_create-many` pelo servidor MCP, em qualquer plano pago.
 
 **A execução foi interrompida.**
 Cada versão tem sua própria chave salva e seu ID de geração, então a retomada continua de onde parou sem pagar duas vezes.

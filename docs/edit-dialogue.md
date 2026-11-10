@@ -49,7 +49,7 @@ Ask for a pronunciation. The agent adds a respelling like "shivawn", written as 
 Usually the new wording is too long for the gap it fills. The agent says which edits failed and suggests shorter wording.
 
 **Can it make one version per recipient?**
-Yes. You agree each recipient's edits in one table, the previews start together, and after one approval of the total the videos start together too, up to your plan's limit. Through the MCP server that's one `jobs_create-many` call for the previews and one for the videos, on any paid plan. Queued Batch API renders require explicit organization approval and a Scale plan or above, including for dry runs. Access is off by default. Contact support@sync.so to request approval; users and organization admins cannot enable it themselves. Dialogue edit rows also need their own early-access approval.
+Yes. You agree each recipient's edits in one table, the previews start together, and after one approval of the total the videos start together too, up to your plan's limit. Through the MCP server that's one `jobs_create-many` call for the previews and one for the videos, on any paid plan.
 
 **Can I replace a whole paragraph?**
 This workflow is for targeted words. For a new script, lipsync with a voice is the better tool, and the agent will say so.

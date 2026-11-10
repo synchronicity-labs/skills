@@ -1,9 +1,9 @@
 ---
 title: "batch-lipsync-Skill"
-subtitle: "Mach jede Zeile einer CSV-Datei oder eines Ordners lippensynchron, fortsetzbar und innerhalb der Limits deines Tarifs. Wartende Batches brauchen die Freigabe der Organisation und den Scale-Tarif oder höher."
+subtitle: "Mach jede Zeile einer CSV-Datei oder eines Ordners lippensynchron, fortsetzbar und innerhalb der Limits deines Tarifs."
 description: "Der batch-lipsync-Skill von sync. labs macht viele Videos auf einmal lippensynchron, aus einer CSV-Datei, einer Tabelle, einem Ordner oder einer Liste: Er schätzt die Kosten des gesamten Laufs, bietet einen Pilotlauf an, hält sich an die gleichzeitigen Aufträge deines Tarifs und setzt fort, ohne doppelt zu zahlen."
-og:description: "Mach aus deinem Agenten jede Zeile einer CSV-Datei oder eines Ordners lippensynchron, fortsetzbar und innerhalb der Limits deines Tarifs. Wartende Batches brauchen die Freigabe der Organisation und den Scale-Tarif oder höher."
-source-sha256: 88b105777897ba2ccc422d0ae150405831fcb548f0979660ae8d98f556b64469
+og:description: "Mach aus deinem Agenten jede Zeile einer CSV-Datei oder eines Ordners lippensynchron, fortsetzbar und innerhalb der Limits deines Tarifs."
+source-sha256: 248d8aeaba8ec4f8a8d623d478e622bd2ec0597afd293daf74bb25a0b15dd204
 ---
 
 # batch-lipsync
@@ -16,8 +16,6 @@ source-sha256: 88b105777897ba2ccc422d0ae150405831fcb548f0979660ae8d98f556b64469
 `batch-lipsync` macht viele Videos auf einmal lippensynchron: ein Ergebnis pro Zeile einer CSV-Datei, einer Tabelle, eines Ordners oder einer Liste wie „dieser Moderator mit jeder dieser 40 Audiodateien“. Er erstellt ein Manifest, schätzt die Kosten des gesamten Laufs, bietet einen Pilotlauf an, verarbeitet dann jede Zeile innerhalb der Limits deines Tarifs und sammelt die Ergebnisse in einer Ergebnistabelle.
 
 Mit einem API-Schlüssel nutzt er ein mitgeliefertes Skript, `sync_batch.py`, das jede Datei einmal hochlädt, die gleichzeitigen Aufträge deines Tarifs einhält, nach einer Unterbrechung fortsetzt und jedes Ergebnis herunterlädt. Über den sync. MCP-Server startet er alle Zeilen mit einem einzigen Aufruf von `jobs_create-many`, der die gleichzeitigen Aufträge deines Tarifs einhält, und verfolgt sie alle mit `jobs_get-many`. Wo diese Tools nicht angeboten werden, startet er stattdessen eine Generierung pro Zeile.
-
-Mit der Freigabe der Organisation und dem Scale-Tarif oder höher kann ein großer Lauf mit 20 bis 500 kurzen Zeilen, der Stunden warten kann, über die [Batch API](https://sync.so/docs/api-reference/guides/batch-processing) laufen, mit dem Skript oder den Batch-Tools des MCP-Servers. Der Zugriff ist standardmäßig deaktiviert, auch für Probeläufe. Wende dich an support@sync.so, um die Freigabe zu beantragen. Nutzer und Organisationsadministratoren können ihn nicht selbst aktivieren.
 
 ## Wann du ihn nutzt
 
@@ -56,9 +54,6 @@ Das Skript weigert sich, das Ergebnis dieser Zeile wiederzuverwenden. Gib der ge
 
 **Startet er die Zeilen eine nach der anderen?**
 Nein. Du gibst den gesamten Lauf einmal frei, dann starten die Zeilen zusammen, so viele gleichzeitig, wie dein Tarif verarbeitet. Über den MCP-Server ist das ein Aufruf von `jobs_create-many` pro 50 Zeilen, in jedem kostenpflichtigen Tarif, und Zeilen, die auf einen freien Platz warten müssen, starten, sobald frühere fertig sind.
-
-**Sollte ich die Batch API nutzen?**
-Nur mit der Freigabe der Organisation und dem Scale-Tarif oder höher, für einen großen Lauf mit 20 bis 500 kurzen Zeilen, jede bis zu 30 Sekunden, wenn eine Bearbeitungszeit von Stunden in Ordnung ist. Für Probeläufe gelten dieselben Zugriffsregeln. Ohne Freigabe liefert die Erstellung `403 batch_access_not_enabled`, bevor der Tarif geprüft wird. Wende dich an support@sync.so, um die Freigabe zu beantragen. Nach der Freigabe liefert ein Tarif unter Scale `402 plan_feature_unavailable`. Nutze den normalen Lauf, solange der Zugriff fehlt. `jobs_create-many` bleibt in jedem kostenpflichtigen Tarif innerhalb der Tarifgrenze verfügbar. Vorhandene Aufträge, ihr Status und ihre Ergebnisse bleiben verfügbar.
 
 **Einige Zeilen sind fehlgeschlagen.**
 Die Ergebnistabelle listet jeden Fehler mit Grund auf. Zeilen, die an fehlerhaften Eingaben gescheitert sind, brauchen eine korrigierte Eingabe. Wiederhole den Rest mit `--retry-failed`.

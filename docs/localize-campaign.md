@@ -46,8 +46,8 @@ On-screen text, burned-in captions, logos and end cards stay in the source langu
 **What are the files called?**
 `<campaign>_<video>_<lang>.mp4` by default, for example `spring24_hero-30s_de.mp4`. Agree another pattern before the run if you need one.
 
-**Can it run as one batch?**
-It doesn't need to. After the pilot, the rest of the versions start together, up to your plan's limit, with one `jobs_create-many` call through the MCP server on any paid plan. With organization approval and a Scale plan or above, a large run of 20 or more short versions that can wait hours can also go through the Batch API, whose results can take up to a day. Access is off by default, including for dry runs. Without approval, creation returns `403 batch_access_not_enabled` before the plan check. Contact support@sync.so to request approval; users and organization admins cannot enable access themselves. After approval, a plan below Scale returns `402 plan_feature_unavailable`. Existing jobs, batch status and results stay available.
+**Can it run the versions together?**
+Yes. After the pilot, the rest of the versions start together, up to your plan's limit, with one `jobs_create-many` call through the MCP server on any paid plan.
 
 **The run was interrupted.**
 Each version has its own saved key and generation ID, so resuming picks up where it stopped without paying twice.

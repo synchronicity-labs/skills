@@ -28,8 +28,6 @@ class FakeSync:
         self.fail_first_with_503 = set()  # row output names that get one 503 first
         self.fail_rows = set()  # output names whose generation ends FAILED
         self.signed_requests_with_key = 0
-        self.batches = {}
-        self.batch_error = None  # Optional (HTTP status, error code) for a refused submission
         self.asset_durations = {}  # asset id -> seconds, for GET /v2/assets/{id}
 
     def handler(self):
@@ -111,16 +109,6 @@ class FakeSync:
                         fake.active += 1
                         fake.max_active = max(fake.max_active, fake.active)
                     return self._json(201, {"id": gen_id, "status": "PENDING"})
-                if self.path == "/v2/batch":
-                    if fake.batch_error:
-                        status, code = fake.batch_error
-                        return self._json(status, {"statusCode": status, "errorCode": code,
-                                                   "message": "Batch submission denied."})
-                    if body.get("dry_run"):
-                        return self._json(200, {"status": "VALIDATED"})
-                    batch_id = "batch_" + uuid.uuid4().hex[:8]
-                    fake.batches[batch_id] = {"rows": body["rows"], "polls": 0}
-                    return self._json(201, {"id": batch_id, "status": "PENDING"})
                 self._json(404, {"message": self.path})
 
             def do_GET(self):
@@ -128,19 +116,7 @@ class FakeSync:
                 if self.path.startswith("/signed/"):
                     if self.headers.get("x-api-key"):
                         fake.signed_requests_with_key += 1
-                    if self.path.startswith("/signed/result/"):
-                        batch_id = self.path.rsplit("/", 1)[1]
-                        lines = []
-                        for i, row in enumerate(fake.batches[batch_id]["rows"]):
-                            ok = i % 2 == 0
-                            lines.append(json.dumps({
-                                "request_id": row["request_id"], "status": "COMPLETED" if ok else "FAILED",
-                                "error": None if ok else {"code": "INVALID_INPUT", "message": "no face"},
-                                "response": {"id": str(uuid.uuid4()), "output_url": f"http://127.0.0.1:{port}/signed/out/{row['request_id']}"} if ok else None,
-                            }))
-                        raw = ("\n".join(lines) + "\n").encode()
-                    else:
-                        raw = b"fake-mp4-bytes"
+                    raw = b"fake-mp4-bytes"
                     self.send_response(200)
                     self.send_header("Content-Length", str(len(raw)))
                     self.end_headers()
@@ -163,20 +139,6 @@ class FakeSync:
                 if self.path.startswith("/v2/assets/"):
                     asset_id = self.path.rsplit("/", 1)[1]
                     return self._json(200, {"id": asset_id, "durationSeconds": fake.asset_durations.get(asset_id)})
-                if self.path.startswith("/v2/batch/"):
-                    batch_id = self.path.rsplit("/", 1)[1]
-                    batch = fake.batches[batch_id]
-                    batch["polls"] += 1
-                    done = batch["polls"] >= 2
-                    return self._json(200, {"id": batch_id, "status": "COMPLETED" if done else "PROCESSING",
-                                            "metrics": {"total_generations": len(batch["rows"])},
-                                            "outputUrl": f"http://127.0.0.1:{port}/v2/batches/{batch_id}/result"})
-                if self.path.startswith("/v2/batches/") and self.path.endswith("/result"):
-                    batch_id = self.path.split("/")[3]
-                    self.send_response(302)
-                    self.send_header("Location", f"http://127.0.0.1:{port}/signed/result/{batch_id}")
-                    self.end_headers()
-                    return
                 self._json(404, {"message": self.path})
 
         return Handler

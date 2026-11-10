@@ -61,7 +61,7 @@
     {
       "name": "edit-dialogue",
       "displayName": "Fix spoken words",
-      "summary": "Change or remove words; queued batches need approved access",
+      "summary": "Change or remove a few words in the speaker's own voice",
       "description": "Change or remove a few spoken words in a single-speaker video with sync. labs (sync.so), keeping the speaker's own voice and re-syncing the lips, with no reshoot. Use for fixing a misspoken word, a wrong name, number, price or date, a mispronunciation, a typo in a spoken line, or cutting a filler word or phrase, including one version per recipient's name from a single recording. Not for replacing a whole script (lipsync with a new script), translation (translate-and-dub), or switching to a different voice.",
       "guideUrl": "https://sync.so/docs/plugins-and-extensions/agent-skills/edit-dialogue",
       "sourceUrl": "https://github.com/synchronicity-labs/skills/tree/main/skills/edit-dialogue",
@@ -70,7 +70,7 @@
     {
       "name": "localize-campaign",
       "displayName": "Localize a campaign",
-      "summary": "Localize videos across markets with a pilot and review sheet",
+      "summary": "Dub a set of videos for several markets, with a review sheet",
       "description": "Localize a whole video campaign into several languages and markets with sync. labs (sync.so). Plans the video × language matrix, maps markets to languages, pilots one video so names and terms are right before spending on the rest, dubs and lip-syncs every version, and delivers consistently named files plus a review sheet per market. Use for several source videos across languages or markets, such as \"make these ads in Spanish, German and Japanese\", launching a campaign or a course in new markets, international or multi-market rollouts. Not for one video into a few languages (translate-and-dub), new speech in the same language (lipsync, batch-lipsync), or subtitles only.",
       "guideUrl": "https://sync.so/docs/plugins-and-extensions/agent-skills/localize-campaign",
       "sourceUrl": "https://github.com/synchronicity-labs/skills/tree/main/skills/localize-campaign",
@@ -79,8 +79,8 @@
     {
       "name": "batch-lipsync",
       "displayName": "Batch lipsync",
-      "summary": "Run CSV lipsync within plan limits, with safe resume",
-      "description": "Lip-sync many videos at once with sync. labs (sync.so), from a CSV, spreadsheet, folder or list. Pairs each video or avatar with its own audio or script, quotes the whole run once, starts the rows together within the plan's concurrency limit (or, with organization approval and a Scale plan or above, through the Batch API for large runs that can wait), resumes safely without paying twice, and collects every output. Use for bulk or batch lipsync of supplied audio or scripts, personalized video at scale (one video per lead, customer or recipient name), ad and creative variants, many voiceovers onto one presenter, or any \"do this for each row\" lipsync job. Not for one video (lipsync), translating videos into other languages (translate-and-dub for one video, localize-campaign for several).",
+      "summary": "Lipsync every row of a CSV, resumably, within plan limits",
+      "description": "Lip-sync many videos at once with sync. labs (sync.so), from a CSV, spreadsheet, folder or list. Pairs each video or avatar with its own audio or script, quotes the whole run once, starts the rows together within the plan's concurrency limit, resumes safely without paying twice, and collects every output. Use for bulk or batch lipsync of supplied audio or scripts, personalized video at scale (one video per lead, customer or recipient name), ad and creative variants, many voiceovers onto one presenter, or any \"do this for each row\" lipsync job. Not for one video (lipsync), translating videos into other languages (translate-and-dub for one video, localize-campaign for several).",
       "guideUrl": "https://sync.so/docs/plugins-and-extensions/agent-skills/batch-lipsync",
       "sourceUrl": "https://github.com/synchronicity-labs/skills/tree/main/skills/batch-lipsync",
       "install": "npx skills add synchronicity-labs/skills --skill batch-lipsync"
@@ -88,8 +88,8 @@
     {
       "name": "sync-api",
       "displayName": "Build with the sync. API",
-      "summary": "Build sync. into code with safe retries and batch access checks",
-      "description": "Build sync. labs (sync.so) lipsync, dubbing and talking-image generation into an app, backend, script or pipeline with the sync. REST API or the official Python (syncsdk) and TypeScript (@sync.so/sdk) SDKs. Covers API keys, uploads, creating generations with idempotency keys, webhooks with signature checks, polling, models, cost estimates, error handling, concurrency limits and the Batch API. Use whenever code calls or should call the sync. API, for example \"add lipsync to my Next.js app\", \"write a Python script that dubs videos with sync.\", \"handle sync. webhooks\", \"why does my sync. request return 429\", or reviewing an existing sync. integration. Not for making one video in this chat (lipsync, talking-photo, translate-and-dub).",
+      "summary": "Integrate sync. lipsync and dubbing into your own code",
+      "description": "Build sync. labs (sync.so) lipsync, dubbing and talking-image generation into an app, backend, script or pipeline with the sync. REST API or the official Python (syncsdk) and TypeScript (@sync.so/sdk) SDKs. Covers API keys, uploads, creating generations with idempotency keys, webhooks with signature checks, polling, models, cost estimates, error handling and concurrency limits. Use whenever code calls or should call the sync. API, for example \"add lipsync to my Next.js app\", \"write a Python script that dubs videos with sync.\", \"handle sync. webhooks\", \"why does my sync. request return 429\", or reviewing an existing sync. integration. Not for making one video in this chat (lipsync, talking-photo, translate-and-dub).",
       "guideUrl": "https://sync.so/docs/plugins-and-extensions/agent-skills/sync-api",
       "sourceUrl": "https://github.com/synchronicity-labs/skills/tree/main/skills/sync-api",
       "install": "npx skills add synchronicity-labs/skills --skill sync-api"
@@ -97,7 +97,7 @@
     {
       "name": "troubleshoot",
       "displayName": "Troubleshoot sync.",
-      "summary": "Find why a sync. job failed and resume it safely",
+      "summary": "Find why a generation failed and resume without paying twice",
       "description": "Diagnose and recover sync. labs (sync.so) work that failed, stalled, was rejected or errored, then resume it safely without paying twice. Covers sign-in and missing tools, rejected inputs, plan, credit and concurrency limits, stuck or slow jobs, lost responses after a timeout, dubbing provider errors and poor lipsync quality, and can report the problem to the sync. team. Use for \"my lipsync failed\", \"why was this rejected\", \"it's been processing forever\", \"I got a 429 or 402\", \"the sync tools disappeared\", or any sync. error message. Not for first-time setup (setup) or writing integration code (sync-api).",
       "guideUrl": "https://sync.so/docs/plugins-and-extensions/agent-skills/troubleshoot",
       "sourceUrl": "https://github.com/synchronicity-labs/skills/tree/main/skills/troubleshoot",
