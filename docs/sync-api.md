@@ -49,6 +49,9 @@ The SDKs can lag the API. The skill calls that endpoint over HTTP instead of for
 **What should I do with a 429?**
 Wait the time the response gives you, retry with the same idempotency key, and keep at most your plan's concurrency limit of jobs in flight with a queue on your side. See [Concurrency & Rate Limits](https://sync.so/docs/api-reference/guides/rate-limits).
 
+**Who can create a queued batch?**
+The Batch API requires organization approval and a Scale plan or above, including for dry runs. Access is off by default. Without approval, creation returns `403 batch_access_not_enabled` before the plan check. Contact support@sync.so to request approval; users and organization admins cannot enable access themselves. After approval, a plan below Scale returns `402 plan_feature_unavailable`. Existing jobs, batch status and results stay available. Normal requests within your plan's concurrency remain available, as does MCP `jobs_create-many` on any paid plan.
+
 ## It's working if
 
 - The API key lives on the server, never in browser or mobile code.

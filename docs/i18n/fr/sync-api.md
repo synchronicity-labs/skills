@@ -3,7 +3,7 @@ title: "Skill sync-api"
 subtitle: "Intégrez sync. dans vos applications avec l'API REST ou les SDK Python et TypeScript."
 description: "Le skill d'agent sync-api de sync. labs aide votre agent de code à intégrer sync. dans une application, un backend, un script ou un pipeline : imports, générations avec clés d'idempotence, webhooks vérifiés, polling, erreurs et limites de concurrence."
 og:description: "Faites écrire à votre agent de code des intégrations sync. côté serveur avec clés d'idempotence, webhooks vérifiés et gestion correcte des erreurs 429."
-source-sha256: 061702b8ed38fec950d9150ef03d9c00dbdc027e8ec001ce4faf5aaeca1fdec9
+source-sha256: 1b2d510001c97cc2617187e1c85cdcf498c6d4b091c3c10d9d2b1d7dee9e4193
 ---
 
 # sync-api
@@ -49,6 +49,9 @@ Les SDK peuvent être en retard sur l'API. Le skill appelle alors cet endpoint e
 
 **Que faire face à une erreur 429 ?**
 Attendez le délai indiqué dans la réponse, réessayez avec la même clé d'idempotence et ne gardez pas plus de travaux en cours que la limite de concurrence de votre forfait, avec une file d'attente de votre côté. Voir [Concurrence et limites de débit](https://sync.so/docs/api-reference/guides/rate-limits).
+
+**Qui peut créer un batch en file d'attente ?**
+La Batch API nécessite l'approbation explicite de l'organisation et un forfait Scale ou supérieur, y compris pour les tests à blanc. L'accès est désactivé par défaut. Sans approbation, la création renvoie `403 batch_access_not_enabled` avant le contrôle du forfait. Contactez support@sync.so pour demander l'approbation. Les utilisateurs et les administrateurs de l'organisation ne peuvent pas activer l'accès. Après approbation, un forfait inférieur à Scale renvoie `402 plan_feature_unavailable`. Les travaux existants, les statuts des batches et leurs résultats restent disponibles. Les requêtes classiques dans la limite du forfait et `jobs_create-many` du MCP restent disponibles avec tout forfait payant.
 
 ## Tout fonctionne si
 

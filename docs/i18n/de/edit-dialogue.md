@@ -3,7 +3,7 @@ title: "edit-dialogue-Skill"
 subtitle: "Ändere oder entferne einzelne gesprochene Wörter in der eigenen Stimme der sprechenden Person."
 description: "Der edit-dialogue-Skill von sync. labs korrigiert einzelne gesprochene Wörter in einem Video mit einer sprechenden Person ohne Nachdreh: Er transkribiert, spielt dir die neuen Wörter als Vorschau in der eigenen Stimme der Person vor und passt dann nur an dieser Stelle die Lippen neu an."
 og:description: "Korrigiere einen falschen Preis, Namen, ein Datum oder ein Wort in einem Video, in der eigenen Stimme der sprechenden Person, ohne Nachdreh."
-source-sha256: 7a852d6188b73945ee1a9952d4adf87a01f82c4e8e971f67ecb86e57e355677d
+source-sha256: e600a9398994cc8954d04bcfe97d32f8830b99c91552aa7b7db8ccc11762a46e
 ---
 
 # edit-dialogue
@@ -50,7 +50,7 @@ Bitte um eine Aussprache. Der Agent fügt eine Lautschreibung wie „shivawn“ 
 Meist ist die neue Formulierung zu lang für die Lücke, die sie füllt. Der Agent sagt, welche Änderungen fehlgeschlagen sind, und schlägt kürzere Formulierungen vor.
 
 **Kann er eine Version pro Empfänger erstellen?**
-Ja. Du legst die Änderungen für jeden Empfänger in einer Tabelle fest, die Vorschauen starten zusammen, und nach einer einzigen Freigabe der Gesamtsumme starten auch die Videos zusammen, bis zum Limit deines Tarifs. Über den MCP-Server ist das ein Aufruf von `jobs_create-many` für die Vorschauen und einer für die Videos.
+Ja. Du legst die Änderungen für jeden Empfänger in einer Tabelle fest, die Vorschauen starten zusammen, und nach einer einzigen Freigabe der Gesamtsumme starten auch die Videos zusammen, bis zum Limit deines Tarifs. Über den MCP-Server ist das ein Aufruf von `jobs_create-many` für die Vorschauen und einer für die Videos, in jedem kostenpflichtigen Tarif. Wartende Renderaufträge über die Batch API brauchen die ausdrückliche Freigabe der Organisation und den Scale-Tarif oder höher, auch für Probeläufe. Der Zugriff ist standardmäßig deaktiviert. Wende dich an support@sync.so, um die Freigabe zu beantragen. Nutzer und Organisationsadministratoren können ihn nicht selbst aktivieren. Zeilen zur Dialogbearbeitung brauchen zusätzlich eine eigene Early-Access-Freigabe.
 
 **Kann ich einen ganzen Absatz ersetzen?**
 Dieser Workflow ist für gezielte Wörter gedacht. Für ein neues Skript ist lipsync mit einer Stimme das bessere Werkzeug, und der Agent sagt dir das auch.

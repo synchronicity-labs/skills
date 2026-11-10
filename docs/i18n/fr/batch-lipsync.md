@@ -1,9 +1,9 @@
 ---
 title: "Skill batch-lipsync"
-subtitle: "Synchronisez les lèvres pour chaque ligne d'un CSV ou d'un dossier, avec reprise, dans les limites de votre forfait ou, avec les forfaits Scale, via la Batch API."
+subtitle: "Synchronisez les lèvres pour chaque ligne d'un CSV ou d'un dossier, avec reprise, dans les limites de votre forfait. Les batches en file d'attente nécessitent l'approbation de l'organisation et un forfait Scale ou supérieur."
 description: "Le skill d'agent batch-lipsync de sync. labs synchronise les lèvres de nombreuses vidéos en une fois à partir d'un CSV, d'un tableur, d'un dossier ou d'une liste : il chiffre l'ensemble du traitement, propose un pilote, respecte la concurrence de votre forfait et reprend sans payer deux fois."
-og:description: "Synchronisez depuis votre agent les lèvres pour chaque ligne d'un CSV ou d'un dossier, avec reprise, dans les limites de votre forfait ou, avec les forfaits Scale, via la Batch API."
-source-sha256: dce75e3282ede2eced47c63275e8fa42accbe43a3e500b1e433052a4990cd187
+og:description: "Synchronisez depuis votre agent les lèvres pour chaque ligne d'un CSV ou d'un dossier, avec reprise, dans les limites de votre forfait. Les batches en file d'attente nécessitent l'approbation de l'organisation et un forfait Scale ou supérieur."
+source-sha256: 88b105777897ba2ccc422d0ae150405831fcb548f0979660ae8d98f556b64469
 ---
 
 # batch-lipsync
@@ -17,7 +17,7 @@ source-sha256: dce75e3282ede2eced47c63275e8fa42accbe43a3e500b1e433052a4990cd187
 
 Avec une clé API, il utilise un script fourni, `sync_batch.py`, qui importe chaque fichier une seule fois, respecte la concurrence de votre forfait, reprend après une interruption et télécharge chaque résultat. Via le serveur MCP de sync., il lance toutes les lignes en un seul appel à `jobs_create-many`, qui respecte la concurrence de votre forfait, puis les suit toutes avec `jobs_get-many`. Si ces outils ne sont pas proposés, il lance une génération par ligne.
 
-Avec les forfaits Scale et supérieurs, un gros traitement de 20 à 500 lignes courtes qui peut attendre plusieurs heures peut passer par la [Batch API](https://sync.so/docs/api-reference/guides/batch-processing), avec le script ou via les outils batch du serveur MCP.
+Avec l'approbation de l'organisation et un forfait Scale ou supérieur, un gros traitement de 20 à 500 lignes courtes qui peut attendre plusieurs heures peut passer par la [Batch API](https://sync.so/docs/api-reference/guides/batch-processing), avec le script ou les outils batch du serveur MCP. L'accès est désactivé par défaut, y compris pour les tests à blanc. Contactez support@sync.so pour demander l'approbation. Les utilisateurs et les administrateurs de l'organisation ne peuvent pas l'activer eux-mêmes.
 
 ## Quand l'utiliser
 
@@ -58,7 +58,7 @@ Le script refuse de réutiliser le résultat de cette ligne. Donnez un nouvel ID
 Non. Vous validez l'ensemble du traitement une seule fois, puis les lignes démarrent ensemble, autant à la fois que votre forfait en traite. Via le serveur MCP, cela représente un appel à `jobs_create-many` par tranche de 50 lignes, avec n'importe quel forfait payant, et les lignes qui doivent attendre une place libre démarrent dès que les précédentes se terminent.
 
 **Dois-je utiliser la Batch API ?**
-Uniquement avec les forfaits Scale et supérieurs, pour un gros traitement de 20 à 500 lignes courtes (chacune jusqu'à 30 secondes) quand un délai de plusieurs heures vous convient. Un batch est une file de traitement, pas un moyen plus rapide d'envoyer quelques générations : le traitement classique lance chaque ligne immédiatement, dans la limite de votre forfait. En dessous de Scale, la Batch API n'est pas disponible.
+Uniquement avec l'approbation de l'organisation et un forfait Scale ou supérieur, pour un gros traitement de 20 à 500 lignes courtes, chacune jusqu'à 30 secondes, quand un délai de plusieurs heures vous convient. Le test à blanc nécessite le même accès. Sans approbation, la création renvoie `403 batch_access_not_enabled` avant le contrôle du forfait. Contactez support@sync.so pour demander l'approbation. Après approbation, un forfait inférieur à Scale renvoie `402 plan_feature_unavailable`. Utilisez le traitement classique tant que l'accès manque. `jobs_create-many` reste disponible avec tout forfait payant, dans la limite de sa concurrence. Les travaux existants, leurs statuts et leurs résultats restent disponibles.
 
 **Certaines lignes ont échoué.**
 Le tableau des résultats liste chaque échec avec sa cause. Les lignes qui ont échoué à cause d'une entrée incorrecte nécessitent une entrée corrigée. Relancez les autres avec `--retry-failed`.

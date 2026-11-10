@@ -179,17 +179,38 @@ class SyncBatchTest(unittest.TestCase):
         self.assertIn("batch-status first", proc.stderr)
         self.assertEqual(len(self.fake.creates), creates, "no individual creates while the batch is unresolved")
 
-    def test_batch_below_scale_points_to_run_and_leaves_rows_free(self):
-        self.fake.batch_access = False
+    def test_batch_denial_points_to_run_and_leaves_rows_free(self):
+        cases = [(402, "plan_feature_unavailable", "Scale plans and above"),
+                 (403, "batch_access_not_enabled", "support@sync.so")]
+        for status, code, next_step in cases:
+            with self.subTest(status=status, code=code):
+                self.fake.batch_error = (status, code)
+                path = self.manifest([{"id": f"row-{i}", "video": "presenter.mp4", "audio": f"vo{i % 6}.wav"} for i in range(20)])
+                path = path.rename(path.with_name(f"manifest-{status}.csv"))
+                for extra in (["--dry-run"], []):
+                    with self.subTest(args=extra):
+                        proc = self.run_script("submit-batch", str(path), *extra, check=False)
+                        self.assertNotEqual(proc.returncode, 0)
+                        self.assertIn(next_step, proc.stderr)
+                        self.assertIn("Use run instead", proc.stderr)
+                self.assertEqual(self.fake.batches, {})
+                creates = len(self.fake.creates)
+                self.run_script("run", str(path), "--only", "row-0")
+                self.assertEqual(len(self.fake.creates), creates + 1, "a refused batch doesn't block run")
+
+    def test_unknown_batch_403_keeps_submission_unconfirmed(self):
+        self.fake.batch_error = (403, "unexpected_forbidden")
         path = self.manifest([{"id": f"row-{i}", "video": "presenter.mp4", "audio": f"vo{i % 6}.wav"} for i in range(20)])
-        for extra in (["--dry-run"], []):
-            proc = self.run_script("submit-batch", str(path), *extra, check=False)
-            self.assertNotEqual(proc.returncode, 0)
-            self.assertIn("Scale plans and above", proc.stderr)
-            self.assertIn("Use run instead", proc.stderr)
-        self.assertEqual(self.fake.batches, {})
-        self.run_script("run", str(path), "--only", "row-0")
-        self.assertEqual(len(self.fake.creates), 1, "a refused batch doesn't block run")
+        submitted = self.run_script("submit-batch", str(path), check=False)
+        self.assertNotEqual(submitted.returncode, 0)
+        self.assertIn("unexpected_forbidden", submitted.stderr)
+        again = self.run_script("submit-batch", str(path), check=False)
+        self.assertNotEqual(again.returncode, 0)
+        self.assertIn("List your batches with GET /v2/batch", again.stderr)
+        normal = self.run_script("run", str(path), check=False)
+        self.assertNotEqual(normal.returncode, 0)
+        self.assertIn("submission is unconfirmed", normal.stderr)
+        self.assertEqual(self.fake.creates, [], "an unknown rejection must not risk submitting rows twice")
 
     def test_batch_api_dry_run_submit_status_and_results(self):
         path = self.manifest([{"id": f"row-{i}", "video": "presenter.mp4", "audio": f"vo{i % 6}.wav"} for i in range(20)])

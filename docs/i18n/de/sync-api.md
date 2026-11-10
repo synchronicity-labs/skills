@@ -3,7 +3,7 @@ title: "sync-api-Skill"
 subtitle: "Bau sync. mit der REST-API oder den Python- und TypeScript-SDKs in Apps ein."
 description: "Der sync-api-Skill von sync. labs hilft deinem Coding-Agenten, sync. in eine App, ein Backend, ein Skript oder eine Pipeline einzubauen: Uploads, Generierungen mit Idempotenzschlüsseln, verifizierte Webhooks, Polling, Fehler und Limits für gleichzeitige Aufträge."
 og:description: "Lass deinen Coding-Agenten serverseitige sync.-Integrationen mit Idempotenzschlüsseln, verifizierten Webhooks und korrekter 429-Behandlung schreiben."
-source-sha256: 061702b8ed38fec950d9150ef03d9c00dbdc027e8ec001ce4faf5aaeca1fdec9
+source-sha256: 1b2d510001c97cc2617187e1c85cdcf498c6d4b091c3c10d9d2b1d7dee9e4193
 ---
 
 # sync-api
@@ -49,6 +49,9 @@ Die SDKs können hinter der API zurückliegen. Der Skill ruft diesen Endpoint da
 
 **Was mache ich mit einem 429?**
 Warte die Zeit ab, die die Antwort angibt, versuche es mit demselben Idempotenzschlüssel erneut und halte höchstens so viele Aufträge gleichzeitig in Bearbeitung, wie das Limit deines Tarifs erlaubt, mit einer Warteschlange auf deiner Seite. Siehe [Parallelität und Rate Limits](https://sync.so/docs/api-reference/guides/rate-limits).
+
+**Wer darf einen wartenden Batch erstellen?**
+Die Batch API erfordert die ausdrückliche Freigabe der Organisation und den Scale-Tarif oder höher, auch für Probeläufe. Der Zugriff ist standardmäßig deaktiviert. Ohne Freigabe liefert die Erstellung `403 batch_access_not_enabled`, bevor der Tarif geprüft wird. Wende dich an support@sync.so, um die Freigabe zu beantragen. Nutzer und Organisationsadministratoren können den Zugriff nicht selbst aktivieren. Nach der Freigabe liefert ein Tarif unter Scale `402 plan_feature_unavailable`. Vorhandene Aufträge, Batch-Status und Ergebnisse bleiben verfügbar. Normale Anfragen innerhalb der Tarifgrenze und `jobs_create-many` des MCP bleiben in jedem kostenpflichtigen Tarif verfügbar.
 
 ## Es funktioniert, wenn
 

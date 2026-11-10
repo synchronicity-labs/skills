@@ -3,7 +3,7 @@ title: "Agent Skills von sync. labs"
 subtitle: "Lippensynchronisation, Synchronisation und sprechende Videos aus Claude Code, Codex, Cursor und anderen Agenten."
 description: "Installiere die offiziellen Agent Skills von sync. labs, um aus deinem Agenten Videos lippensynchron zu machen, Fotos und KI-Figuren sprechen zu lassen, zu übersetzen und zu synchronisieren, gesprochene Wörter zu korrigieren, Kampagnen zu lokalisieren, Lipsync im Batch auszuführen und sync. in Apps einzubauen."
 og:description: "Offizielle Agent Skills von sync. labs für Lipsync, Synchronisation, sprechende Fotos, Dialogbearbeitung, Kampagnenlokalisierung, Batch-Läufe und API-Integrationen."
-source-sha256: b2127b6c0b20e7920f0f6566eac05cca6fab410de78464947c0690fc7d640c07
+source-sha256: 24b8cddee31c4d5d92596b8f747b83bf2483caf8e4a4eb585163234f70db670c
 ---
 
 # Agent Skills von sync. labs
@@ -75,9 +75,9 @@ npx -y @sync.so/mcp-server@latest
 | [ai-video-to-talking](ai-video-to-talking.md) | Gibt KI-generierten Clips aus Veo, Kling, Sora und anderen Dialog, auch in Szenen mit mehreren Einstellungen. | „Mein Veo-Clip hat keinen Dialog. Lass sie diesen Satz sagen.“ |
 | [translate-and-dub](translate-and-dub.md) | Synchronisiert ein Video in andere Sprachen, mit passenden Lippenbewegungen. | „Synchronisiere dieses YouTube-Video auf Spanisch“ |
 | [edit-dialogue](edit-dialogue.md) | Ändert oder entfernt einzelne gesprochene Wörter in der eigenen Stimme der sprechenden Person. | „Ändere den Preis, den ich nenne, auf 49 $“ |
-| [localize-campaign](localize-campaign.md) | Lokalisiert eine Reihe von Videos für mehrere Märkte: Plan, Pilot, Durchlauf, Review-Tabelle. | „Mach diese drei Anzeigen auf Spanisch, Deutsch und Japanisch“ |
-| [batch-lipsync](batch-lipsync.md) | Synchronisiert jede Zeile einer CSV-Datei oder eines Ordners lippensynchron, fortsetzbar, innerhalb der Limits deines Tarifs oder, im Scale-Tarif, über die Batch API. | „Synchronisiere jede Zeile aus leads.csv auf presenter.mp4“ |
-| [sync-api](sync-api.md) | Baut sync. mit der REST-API oder den Python- und TypeScript-SDKs in Apps ein: Uploads, Idempotenz, Webhooks, Fehler. | „Füge meiner Next.js-App sync. Lipsync hinzu“ |
+| [localize-campaign](localize-campaign.md) | Lokalisiert eine Reihe von Videos für mehrere Märkte: Plan, Pilot, Durchlauf, Review-Tabelle. Batches in der Warteschlange brauchen eine Freigabe für die Organisation und den Scale-Tarif oder höher. | „Mach diese drei Anzeigen auf Spanisch, Deutsch und Japanisch“ |
+| [batch-lipsync](batch-lipsync.md) | Synchronisiert jede Zeile einer CSV-Datei oder eines Ordners innerhalb der Limits deines Tarifs und setzt sicher fort. Wartende Batches brauchen die Freigabe der Organisation und den Scale-Tarif oder höher. | „Synchronisiere jede Zeile aus leads.csv auf presenter.mp4“ |
+| [sync-api](sync-api.md) | Baut sync. mit der REST-API oder den Python- und TypeScript-SDKs in Apps ein: Uploads, Idempotenz, Webhooks, Fehler. Unterstützt Batches in der Warteschlange mit einer Freigabe für die Organisation ab dem Scale-Tarif. | „Füge meiner Next.js-App sync. Lipsync hinzu“ |
 | [troubleshoot](troubleshoot.md) | Findet heraus, warum ein Auftrag fehlgeschlagen ist, hängt oder abgelehnt wurde, setzt ihn fort, ohne doppelt zu zahlen, und kann das Problem an sync. melden. | „Mein Lipsync ist fehlgeschlagen, warum?“ |
 
 Auf der Seite jedes Skills findest du Beispiel-Prompts, die Voraussetzungen, häufige Fragen und woran du erkennst, dass er funktioniert.

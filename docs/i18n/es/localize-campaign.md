@@ -3,7 +3,7 @@ title: "Skill localize-campaign"
 subtitle: "Localiza un conjunto de vídeos para varios mercados: plan, piloto, ejecución y hoja de revisión."
 description: "La skill de agente localize-campaign de sync. labs produce cada vídeo de una campaña, un curso o una serie de producto en cada idioma de destino: asigna idiomas a los mercados, estima el coste de la matriz, hace un piloto con una versión y después ejecuta el resto con una hoja de revisión."
 og:description: "Localiza varios vídeos a varios idiomas desde tu agente, con un piloto primero y una hoja de revisión al final."
-source-sha256: 1da869421315f34ece2a880344bb9e5a1a6f20f02c65f76e84caa179ba54edb7
+source-sha256: 49dd60abc93a0662b85b0cdffea139fa6b7b680a6e501957b1f6078c2ff61519
 ---
 
 # localize-campaign
@@ -48,7 +48,7 @@ El texto en pantalla, los subtítulos incrustados, los logotipos y las cartelas 
 `<campaign>_<video>_<lang>.mp4` por defecto, por ejemplo `spring24_hero-30s_de.mp4`. Si necesitas otro patrón, acuérdalo antes de la ejecución.
 
 **¿Puede ejecutarse como un solo batch?**
-No hace falta. Tras el piloto, el resto de versiones arrancan juntas, hasta el límite de tu plan, con una sola llamada a `jobs_create-many` desde el servidor MCP, en cualquier plan de pago. En los planes Scale y superiores, una ejecución grande de 20 versiones cortas o más que pueda esperar horas también puede ir por la Batch API, una cola de procesamiento cuyos resultados pueden tardar hasta un día.
+No hace falta. Tras el piloto, el resto de versiones arrancan juntas, hasta el límite de tu plan, con una sola llamada a `jobs_create-many` desde el servidor MCP, en cualquier plan de pago. Con aprobación de la organización y en los planes Scale y superiores, una ejecución grande de 20 versiones cortas o más que pueda esperar horas también puede ir por la Batch API. El acceso está desactivado por defecto, incluso para pruebas en seco. Los resultados pueden tardar hasta un día. Sin aprobación, la creación devuelve `403 batch_access_not_enabled` antes de comprobar el plan. Tras la aprobación, un plan inferior a Scale devuelve `402 plan_feature_unavailable`. Contacta con support@sync.so para solicitar aprobación. Los usuarios y administradores de la organización no pueden activarlo por su cuenta. Los trabajos existentes, su estado y sus resultados siguen disponibles.
 
 **La ejecución se interrumpió.**
 Cada versión tiene su propia clave guardada y su ID de generación, así que al reanudar continúa donde se detuvo sin pagar dos veces.

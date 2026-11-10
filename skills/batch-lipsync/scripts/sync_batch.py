@@ -7,9 +7,9 @@ Usage:
   sync_batch.py submit-batch MANIFEST.csv [--dry-run] [--webhook-url URL] [--model sync-3]
   sync_batch.py batch-status MANIFEST.csv [--wait] [--out DIR]
 
-submit-batch uses the Batch API, which is for Scale plans and above: a queued pipeline for
-large runs of short rows whose results can take up to about 24 hours. On every other plan,
-and for any run that should start now, use run.
+submit-batch uses the Batch API, which requires organization approval and a Scale plan or
+above, including for dry runs. Request approval from support@sync.so. It queues large runs
+of short rows whose results can take up to about 24 hours. For other runs, use run.
 
 Manifest columns: id, video or image, audio or (script + voice_id), optional sync_mode and model.
 Values can be local paths, https URLs or sync. asset IDs. Needs SYNC_API_KEY.
@@ -506,8 +506,16 @@ def cmd_run(args):
     write_results(manifest, all_rows, state)
 
 
-NO_BATCH_ACCESS = ("The Batch API is for Scale plans and above, and this plan doesn't include it ({error}). "
-                   "Nothing was submitted. Use run instead: it starts every row now, within the plan's concurrency.")
+def batch_denial_message(err: ApiError) -> str | None:
+    if err.status == 402:
+        reason = "The Batch API is for Scale plans and above, and this plan doesn't include it."
+    elif err.status == 403 and err.code == "batch_access_not_enabled":
+        reason = ("Batch API access is not enabled for this organization. "
+                  "Contact support@sync.so to request approval. A Scale plan or above is also required.")
+    else:
+        return None
+    return (f"{reason} ({err}) Nothing was submitted. "
+            "Use run instead: it starts every row now, within the plan's concurrency.")
 
 
 def cmd_submit_batch(args):
@@ -535,8 +543,9 @@ def cmd_submit_batch(args):
         try:
             validated = api("POST", "/v2/batch", body)
         except ApiError as err:
-            if err.status == 402:
-                sys.exit(NO_BATCH_ACCESS.format(error=err))
+            message = batch_denial_message(err)
+            if message:
+                sys.exit(message)
             raise
         print(json.dumps(validated) + (f" ({skipped} rows already submitted were left out)" if skipped else ""))
         return
@@ -547,14 +556,15 @@ def cmd_submit_batch(args):
     try:
         created = api("POST", "/v2/batch", body)
     except ApiError as err:
-        if err.status != 402:
+        message = batch_denial_message(err)
+        if not message:
             raise
-        # A 402 is a refusal before anything is created, so the rows are free for run again.
+        # These access refusals create nothing, so the rows are free for run again.
         state.data["batch"] = batch or None
         for r in pending:
             state.data["rows"][r["id"]].pop("mode", None)
         state.save()
-        sys.exit(NO_BATCH_ACCESS.format(error=err))
+        sys.exit(message)
     state.data["batch"] = {"id": created["id"], "status": created.get("status"), "rows": [r["id"] for r in pending]}
     state.save()
     print(f"Batch {created['id']} submitted with {len(pending)} rows"

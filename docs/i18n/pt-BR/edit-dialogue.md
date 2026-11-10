@@ -3,7 +3,7 @@ title: "Skill edit-dialogue"
 subtitle: "Mude ou remova algumas palavras faladas na própria voz de quem fala."
 description: "A skill de agente edit-dialogue da sync. labs corrige algumas palavras faladas em um vídeo com um único falante sem regravar: ela transcreve, gera uma prévia das novas palavras na própria voz de quem fala e depois ressincroniza os lábios só naquele trecho."
 og:description: "Corrija um preço, nome, data ou palavra errada em um vídeo, na própria voz de quem fala, sem regravar."
-source-sha256: 7a852d6188b73945ee1a9952d4adf87a01f82c4e8e971f67ecb86e57e355677d
+source-sha256: e600a9398994cc8954d04bcfe97d32f8830b99c91552aa7b7db8ccc11762a46e
 ---
 
 # edit-dialogue
@@ -50,7 +50,7 @@ Peça uma pronúncia. O agente adiciona uma grafia fonética como “shivawn”,
 Normalmente o novo texto é longo demais para o espaço que ocupa. O agente informa quais edições falharam e sugere um texto mais curto.
 
 **Dá para fazer uma versão por destinatário?**
-Sim. Você combina as edições de cada destinatário em uma única tabela, as prévias começam juntas e, depois de uma única aprovação do total, os vídeos também começam juntos, até o limite do seu plano. Pelo servidor MCP, isso é uma chamada a `jobs_create-many` para as prévias e outra para os vídeos.
+Sim. Você combina as edições de cada destinatário em uma única tabela, as prévias começam juntas e, depois de uma única aprovação do total, os vídeos também começam juntos, até o limite do seu plano. Pelo MCP, é uma chamada a `jobs_create-many` para as prévias e outra para os vídeos, em qualquer plano pago. As renderizações em fila pela Batch API exigem aprovação explícita da organização e o plano Scale ou superior, inclusive para simulações. O acesso fica desativado por padrão. Fale com support@sync.so para solicitar aprovação. Usuários e administradores da organização não podem ativá-lo por conta própria. As linhas de edição de diálogo também precisam da própria aprovação de acesso antecipado.
 
 **Posso substituir um parágrafo inteiro?**
 Este fluxo é para palavras pontuais. Para um roteiro novo, lipsync com uma voz é a ferramenta mais adequada, e o agente vai dizer isso.

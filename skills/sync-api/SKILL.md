@@ -38,7 +38,7 @@ Full examples: [references/python.md](references/python.md) and [references/type
 ## Scale
 
 - Each plan caps how many generations run at once. The 429 response carries `concurrencyLimit` and `retryAfterSeconds`, plus `X-Sync-Concurrency-Limit` and `Retry-After` headers. Queue jobs on your side and keep at most that many in flight. Creating generations is also rate-limited, at about 100 a minute.
-- On Scale plans and above, hundreds of short jobs that can take hours can go through the Batch API, which queues them outside the plan's concurrency: [references/batch-api.md](references/batch-api.md). It's a queued pipeline for large runs, not a faster way to send a few jobs. Below Scale, and for any run that should start now, send normal requests side by side within the concurrency limit.
+- With organization approval and a Scale plan or above, hundreds of short jobs that can take hours can go through the Batch API, which queues them outside the plan's concurrency: [references/batch-api.md](references/batch-api.md). It's a queued pipeline for large runs, not a faster way to send a few jobs. Access is off by default, including dry runs. Without approval, creation returns `403 batch_access_not_enabled` before the plan check. Request approval from support@sync.so; users and organization admins cannot enable it themselves. After approval, plans below Scale return `402 plan_feature_unavailable`. Existing batches, status and results remain available. For other runs, send normal requests side by side within the concurrency limit.
 
 ## Before you hand the code back
 

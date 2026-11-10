@@ -1,9 +1,9 @@
 ---
 title: "Skill batch-lipsync"
-subtitle: "Sincroniza los labios de cada fila de un CSV o de una carpeta, con reanudación, dentro de los límites de tu plan o, en los planes Scale, mediante la Batch API."
+subtitle: "Sincroniza los labios de cada fila de un CSV o de una carpeta, con reanudación, dentro de los límites de tu plan. Los batches en cola requieren aprobación de la organización y Scale o superior."
 description: "La skill de agente batch-lipsync de sync. labs sincroniza los labios de muchos vídeos de una vez a partir de un CSV, una hoja de cálculo, una carpeta o una lista: estima el coste de toda la ejecución, ofrece un piloto, respeta la concurrencia de tu plan y se reanuda sin pagar dos veces."
-og:description: "Sincroniza los labios de cada fila de un CSV o de una carpeta desde tu agente, con reanudación, dentro de los límites de tu plan o, en los planes Scale, mediante la Batch API."
-source-sha256: dce75e3282ede2eced47c63275e8fa42accbe43a3e500b1e433052a4990cd187
+og:description: "Sincroniza los labios de cada fila de un CSV o de una carpeta desde tu agente, con reanudación, dentro de los límites de tu plan. Los batches en cola requieren aprobación de la organización y Scale o superior."
+source-sha256: 88b105777897ba2ccc422d0ae150405831fcb548f0979660ae8d98f556b64469
 ---
 
 # batch-lipsync
@@ -17,7 +17,7 @@ source-sha256: dce75e3282ede2eced47c63275e8fa42accbe43a3e500b1e433052a4990cd187
 
 Con una clave API usa un script incluido, `sync_batch.py`, que sube cada archivo una sola vez, respeta la concurrencia de tu plan, se reanuda tras una interrupción y descarga todos los resultados. Con el servidor MCP de sync. lanza todas las filas con una sola llamada a `jobs_create-many`, que respeta la concurrencia de tu plan, y las sigue todas con `jobs_get-many`. Si esas herramientas no aparecen, lanza una generación por fila.
 
-En los planes Scale y superiores, una ejecución grande de 20 a 500 filas cortas que pueda esperar horas puede ir por la [Batch API](https://sync.so/docs/api-reference/guides/batch-processing), ya sea con el script o con las herramientas de batch del servidor MCP.
+Con aprobación de la organización y en los planes Scale y superiores, una ejecución grande de 20 a 500 filas cortas que pueda esperar horas puede ir por la [Batch API](https://sync.so/docs/api-reference/guides/batch-processing), con el script o con las herramientas de batch del servidor MCP. El acceso está desactivado por defecto, incluso para las pruebas en seco. Contacta con support@sync.so para solicitar aprobación. Los usuarios y administradores de la organización no pueden activarlo por su cuenta.
 
 ## Cuándo usarla
 
@@ -58,7 +58,7 @@ El script se niega a reutilizar el resultado de esa fila. Dale un ID nuevo a la 
 No. Apruebas toda la ejecución una vez y después las filas arrancan juntas, tantas a la vez como procesa tu plan. Con el servidor MCP es una llamada a `jobs_create-many` por cada 50 filas, en cualquier plan de pago, y las filas que tienen que esperar a un hueco libre arrancan en cuanto terminan las anteriores.
 
 **¿Debería usar la Batch API?**
-Solo en los planes Scale y superiores, para una ejecución grande de 20 a 500 filas cortas (cada una de hasta 30 segundos) cuando te sirve un plazo de entrega de horas. Un batch es una cola de procesamiento, no una forma más rápida de enviar unas pocas generaciones: la ejecución normal lanza cada fila enseguida, hasta el límite de tu plan. Por debajo de Scale, la Batch API no está disponible.
+Solo con aprobación de la organización y en los planes Scale y superiores, para una ejecución grande de 20 a 500 filas cortas (cada una de hasta 30 segundos) cuando te sirve un plazo de entrega de horas. La prueba en seco requiere el mismo acceso. Sin aprobación, la creación devuelve `403 batch_access_not_enabled` antes de comprobar el plan. Contacta con support@sync.so para solicitar aprobación. Tras la aprobación, un plan inferior a Scale devuelve `402 plan_feature_unavailable`. Usa la ejecución normal mientras no tengas acceso. `jobs_create-many` sigue disponible en cualquier plan de pago, dentro de la concurrencia del plan. Los trabajos existentes, su estado y sus resultados siguen disponibles.
 
 **Algunas filas han fallado.**
 La tabla de resultados recoge cada fallo con su motivo. Las filas que fallaron por una entrada incorrecta necesitan una entrada corregida. Reintenta el resto con `--retry-failed`.

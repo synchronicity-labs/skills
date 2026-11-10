@@ -3,7 +3,7 @@ title: "Skill edit-dialogue"
 subtitle: "Modifiez ou supprimez quelques mots prononcés, avec la voix même de la personne qui parle."
 description: "Le skill d'agent edit-dialogue de sync. labs corrige quelques mots prononcés dans une vidéo à un seul locuteur sans nouveau tournage : il transcrit, vous fait écouter un aperçu des nouveaux mots avec la voix du locuteur, puis resynchronise les lèvres sur ce seul passage."
 og:description: "Corrigez un prix, un nom, une date ou un mot erroné dans une vidéo, avec la voix du locuteur, sans nouveau tournage."
-source-sha256: 7a852d6188b73945ee1a9952d4adf87a01f82c4e8e971f67ecb86e57e355677d
+source-sha256: e600a9398994cc8954d04bcfe97d32f8830b99c91552aa7b7db8ccc11762a46e
 ---
 
 # edit-dialogue
@@ -50,7 +50,7 @@ Demandez une prononciation. L'agent ajoute une graphie phonétique comme « shiv
 En général, le nouveau texte est trop long pour l'espace qu'il occupe. L'agent indique les modifications qui ont échoué et propose une formulation plus courte.
 
 **Peut-il faire une version par destinataire ?**
-Oui. Vous validez les modifications de chaque destinataire dans un seul tableau, les aperçus démarrent ensemble, puis, après une seule validation du total, les vidéos démarrent ensemble elles aussi, dans la limite de votre forfait. Via le serveur MCP, cela représente un appel à `jobs_create-many` pour les aperçus et un autre pour les vidéos.
+Oui. Vous validez les modifications de chaque destinataire dans un seul tableau, les aperçus démarrent ensemble, puis, après une seule validation du total, les vidéos démarrent ensemble elles aussi, dans la limite de votre forfait. Via le MCP, c'est un appel à `jobs_create-many` pour les aperçus et un autre pour les vidéos, avec tout forfait payant. Les rendus en file d'attente via la Batch API nécessitent l'approbation explicite de l'organisation et un forfait Scale ou supérieur, y compris pour les tests à blanc. L'accès est désactivé par défaut. Contactez support@sync.so pour demander l'approbation. Les utilisateurs et les administrateurs de l'organisation ne peuvent pas l'activer eux-mêmes. Les lignes d'édition de dialogue nécessitent aussi leur propre approbation d'accès anticipé.
 
 **Puis-je remplacer un paragraphe entier ?**
 Ce workflow est fait pour des mots ciblés. Pour un nouveau script, lipsync avec une voix est le meilleur outil, et l'agent vous le dira.

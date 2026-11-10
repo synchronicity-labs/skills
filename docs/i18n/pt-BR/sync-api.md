@@ -3,7 +3,7 @@ title: "Skill sync-api"
 subtitle: "Integre a sync. a apps com a API REST ou os SDKs de Python e TypeScript."
 description: "A skill de agente sync-api da sync. labs ajuda o seu agente de programação a integrar a sync. a um app, backend, script ou pipeline: uploads, gerações com chaves de idempotência, webhooks verificados, polling, erros e limites de concorrência."
 og:description: "Faça o seu agente de programação escrever integrações da sync. no servidor com chaves de idempotência, webhooks verificados e tratamento correto de 429."
-source-sha256: 061702b8ed38fec950d9150ef03d9c00dbdc027e8ec001ce4faf5aaeca1fdec9
+source-sha256: 1b2d510001c97cc2617187e1c85cdcf498c6d4b091c3c10d9d2b1d7dee9e4193
 ---
 
 # sync-api
@@ -49,6 +49,9 @@ Os SDKs podem ficar atrás da API. A skill chama esse endpoint por HTTP em vez d
 
 **O que fazer com um 429?**
 Espere o tempo que a resposta indica, tente de novo com a mesma chave de idempotência e mantenha no máximo o limite de concorrência do seu plano em trabalhos em andamento, com uma fila do seu lado. Veja [Concorrência e limites de taxa](https://sync.so/docs/api-reference/guides/rate-limits).
+
+**Quem pode criar um batch em fila?**
+A Batch API exige aprovação explícita da organização e o plano Scale ou superior, inclusive para simulações. O acesso fica desativado por padrão. Sem aprovação, a criação retorna `403 batch_access_not_enabled` antes de verificar o plano. Fale com support@sync.so para solicitar aprovação. Usuários e administradores da organização não podem ativar o acesso. Depois da aprovação, um plano abaixo de Scale retorna `402 plan_feature_unavailable`. Jobs existentes, status de batch e resultados continuam disponíveis. Requisições normais dentro da concorrência do plano e `jobs_create-many` do MCP continuam disponíveis em qualquer plano pago.
 
 ## Está funcionando se
 
