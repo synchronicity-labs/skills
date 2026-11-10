@@ -7,6 +7,8 @@ compatibility: Needs the sync. MCP server or a SYNC_API_KEY. See references/conn
 
 # Localize a campaign
 
+[sync. labs](https://sync.so) | [Campaign localization guide](https://sync.so/docs/plugins-and-extensions/agent-skills/localize-campaign)
+
 Delivers every video in every target language as a dubbed, lip-synced MP4 with a predictable name, plus a sheet the regional teams can review from.
 
 If no sync. tools are available, follow [references/connect.md](references/connect.md) first. Without the MCP tools, each version is one `POST /v2/generate` with `dubParams`, as in [references/api.md](references/api.md).

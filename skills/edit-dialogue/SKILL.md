@@ -7,6 +7,8 @@ compatibility: Needs the sync. MCP server. See references/connect.md.
 
 # Fix spoken words
 
+[sync. labs](https://sync.so) | [Dialogue editing guide](https://sync.so/docs/plugins-and-extensions/agent-skills/edit-dialogue)
+
 Delivers one MP4 where only the agreed words change. Everything else keeps the original picture and voice.
 
 If no sync. tools are available, follow [references/connect.md](references/connect.md) first. The REST version of this workflow is in early access and needs features enabled per organization; see https://sync.so/docs/developer-guides/dialogue-editing.

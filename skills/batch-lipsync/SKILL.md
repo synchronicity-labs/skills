@@ -7,6 +7,8 @@ compatibility: Needs the sync. MCP server or a SYNC_API_KEY. The bundled script 
 
 # Lipsync many videos
 
+[sync. labs](https://sync.so) | [Batch lipsync guide](https://sync.so/docs/plugins-and-extensions/agent-skills/batch-lipsync)
+
 Delivers one MP4 per row of the user's list, plus a results table that maps each row to its output.
 
 If no sync. tools are available and there's no `SYNC_API_KEY`, follow [references/connect.md](references/connect.md) first.

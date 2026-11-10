@@ -7,6 +7,8 @@ compatibility: Needs network access and a sync. API key in SYNC_API_KEY. Python 
 
 # Build with the sync. API
 
+[sync. labs](https://sync.so) | [API integration guide](https://sync.so/docs/plugins-and-extensions/agent-skills/sync-api)
+
 Builds a server-side integration that uploads media, saves each request before submitting it, tracks jobs to completion, and retries without starting duplicate paid work.
 
 ## Ground rules

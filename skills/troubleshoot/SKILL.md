@@ -7,6 +7,8 @@ compatibility: Works best with the sync. MCP server connected. See references/co
 
 # Troubleshoot sync. work
 
+[sync. labs](https://sync.so) | [Troubleshooting guide](https://sync.so/docs/plugins-and-extensions/agent-skills/troubleshoot)
+
 Finds out what actually happened, says it plainly, and resumes the work without starting a second paid job.
 
 ## 1. Gather the facts
