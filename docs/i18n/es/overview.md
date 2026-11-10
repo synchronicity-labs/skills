@@ -3,7 +3,7 @@ title: "Skills de agente de sync. labs"
 subtitle: "Sincroniza labios, dobla y crea vídeos que hablan desde Claude Code, Codex, Cursor y otros agentes."
 description: "Instala las skills de agente oficiales de sync. labs para sincronizar los labios de vídeos, hacer hablar a fotos y personajes de IA, traducir y doblar, corregir palabras habladas, localizar campañas, sincronizar labios por lotes e integrar sync. en apps desde tu agente."
 og:description: "Skills de agente oficiales de sync. labs para lipsync, doblaje, fotos que hablan, edición de diálogos, localización de campañas, ejecuciones por lotes e integraciones con la API."
-source-sha256: 24b8cddee31c4d5d92596b8f747b83bf2483caf8e4a4eb585163234f70db670c
+source-sha256: b96e1c1a63d24d84ce7c9870c8efdca15eb04a8575bd6a0131c40ebd8aae388f
 ---
 
 # Skills de agente de sync. labs
@@ -74,7 +74,7 @@ npx -y @sync.so/mcp-server@latest
 | [talking-photo](talking-photo.md) | Hace hablar a una foto, un retrato o un personaje. | «Haz que este retrato diga: bienvenido al equipo» |
 | [ai-video-to-talking](ai-video-to-talking.md) | Pone diálogo en clips generados con IA en Veo, Kling, Sora y otros, incluidas escenas con varios planos. | «Mi clip de Veo no tiene diálogo. Haz que diga esta frase.» |
 | [translate-and-dub](translate-and-dub.md) | Dobla un vídeo a otros idiomas con los labios sincronizados. | «Dobla este vídeo de YouTube al español» |
-| [edit-dialogue](edit-dialogue.md) | Cambia o elimina algunas palabras habladas con la propia voz de quien habla. | «Cambia el precio que digo a $49» |
+| [edit-dialogue](edit-dialogue.md) | Cambia o elimina algunas palabras habladas con la propia voz de quien habla. Los batches en cola requieren aprobación de la organización y Scale o superior. | «Cambia el precio que digo a $49» |
 | [localize-campaign](localize-campaign.md) | Localiza un conjunto de vídeos para varios mercados: plan, piloto, ejecución y hoja de revisión. Los batches en cola requieren aprobación de la organización y Scale o superior. | «Haz estos tres anuncios en español, alemán y japonés» |
 | [batch-lipsync](batch-lipsync.md) | Sincroniza los labios de cada fila de un CSV o de una carpeta dentro de los límites de tu plan, con reanudación segura. Los batches en cola requieren aprobación de la organización y Scale o superior. | «Sincroniza cada fila de leads.csv sobre presenter.mp4» |
 | [sync-api](sync-api.md) | Integra sync. en apps con la API REST o los SDK de Python y TypeScript: subidas, idempotencia, webhooks y errores. Incluye batches en cola con aprobación de la organización en los planes Scale y superiores. | «Añade lipsync de sync. a mi app de Next.js» |

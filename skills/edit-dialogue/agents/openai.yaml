@@ -1,4 +1,4 @@
 interface:
   display_name: "Fix spoken words"
-  short_description: "Change or remove a few words in the speaker's own voice"
+  short_description: "Change or remove words; queued batches need approved access"
   default_prompt: "Use $edit-dialogue to fix a word I said wrong in this video."
