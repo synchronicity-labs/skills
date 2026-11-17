@@ -3,7 +3,7 @@ title: "Skill setup"
 subtitle: "Connectez sync. à votre agent, vérifiez votre compte et obtenez une première vidéo."
 description: "Le skill d'agent setup de sync. labs connecte sync. à Claude Code, Codex, Cursor et d'autres agents, affiche votre forfait et vos crédits, et propose une première vidéo. Il ne lance jamais de travail payant."
 og:description: "Connectez sync. à votre agent, vérifiez votre compte, votre forfait et vos crédits, et obtenez une première vidéo."
-source-sha256: 8bf4757e0b9fd57ed1bb43b1d923220a2e62a7d62a8dd8ae8c1dd87f2a19d10a
+source-sha256: ae2bfa128b4b762a1a026c8166da3703a17b939f5a03609c9529941e7c1b8472
 ---
 
 # setup
@@ -40,6 +40,8 @@ Les demandes de création comme « synchronise les lèvres de cette vidéo » vo
 | Scripts et CI | Définissez `SYNC_API_KEY`, ou lancez le serveur local avec `npx -y @sync.so/mcp-server@latest` |
 
 Le serveur hébergé vous connecte avec votre compte sync., il n'y a donc aucune clé à copier. Pour une clé API, voir [Authentification](https://sync.so/docs/api-reference/guides/authentication). Pour en savoir plus sur le serveur lui-même, consultez le guide du [serveur MCP](https://sync.so/docs/plugins-and-extensions/mcp-server).
+
+Un agent qui peut exécuter des commandes peut aussi vous connecter sans navigateur : donnez-lui votre adresse e-mail, il exécute `npx -y @sync.so/mcp-server@latest setup`, puis vous lui indiquez le code à six chiffres que sync. vous envoie par e-mail. Une nouvelle adresse reçoit un compte gratuit, et un compte existant connecte son espace de travail personnel. sync. vous envoie un e-mail quand un agent se connecte, avec un lien pour le déconnecter.
 
 ## Questions fréquentes
 

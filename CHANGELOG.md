@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Agents with a terminal can connect a person by emailed code: the shared connection reference and the `setup` skill now cover `npx -y @sync.so/mcp-server@latest setup --email` and `--code`, which sign the person up or in without a browser and add the sync. MCP server. Team organizations and chat apps keep the hosted server and browser sign-in.
 - Each skill links to the sync. homepage and its guide on sync.so/docs, so directory visitors can reach the product and instructions directly.
 - Skills, shared references and eval mocks use the sync. MCP server's `<noun>_<verb>` tool names (mcp-server#148): `lipsync_create`, `generations_get`, `generations_estimate-cost`, `account_get-context`, `dubbing_create`, `voices_list`, `models_list` and the rest. The old names stay callable on the server for a deprecation period, but clients list only the new ones.
 - Several independent jobs start together with the MCP server's `jobs_create-many` and are followed with `jobs_get-many` (mcp-server#164), on any paid plan, after one quote and one approval for the whole set: `batch-lipsync` (one `lipsync_create` item per row), `translate-and-dub` (one `dubbing_create` item per language), `localize-campaign` (the versions after the pilot) and `edit-dialogue` (one preview, then one video, per variant). Where those tools aren't listed, as in the ChatGPT app, the skills keep starting one job at a time within the plan's concurrency, and `batch-lipsync` keeps its bundled script.
