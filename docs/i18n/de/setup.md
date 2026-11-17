@@ -3,7 +3,7 @@ title: "setup-Skill"
 subtitle: "Verbinde sync. mit deinem Agenten, prüfe dein Konto und komm zu deinem ersten Video."
 description: "Der setup-Skill von sync. labs verbindet sync. mit Claude Code, Codex, Cursor und anderen Agenten, zeigt deinen Tarif und deine Credits an und schlägt ein erstes Video vor. Er startet nie kostenpflichtige Arbeit."
 og:description: "Verbinde sync. mit deinem Agenten, prüfe Konto, Tarif und Credits und komm zu deinem ersten Video."
-source-sha256: 8bf4757e0b9fd57ed1bb43b1d923220a2e62a7d62a8dd8ae8c1dd87f2a19d10a
+source-sha256: ae2bfa128b4b762a1a026c8166da3703a17b939f5a03609c9529941e7c1b8472
 ---
 
 # setup
@@ -40,6 +40,8 @@ Medienanfragen wie „mach das lippensynchron“ gehen direkt an den jeweiligen 
 | Skripte und CI | Setze `SYNC_API_KEY` oder starte den lokalen Server mit `npx -y @sync.so/mcp-server@latest` |
 
 Der gehostete Server meldet dich mit deinem sync.-Konto an, es gibt also keinen Schlüssel zu kopieren. Für einen API-Schlüssel siehe [Authentifizierung](https://sync.so/docs/api-reference/guides/authentication). Mehr über den Server selbst findest du in der Anleitung zum [MCP-Server](https://sync.so/docs/plugins-and-extensions/mcp-server).
+
+Ein Agent, der Befehle ausführen kann, verbindet dich auch ohne Browser: Gib ihm deine E-Mail-Adresse, er führt `npx -y @sync.so/mcp-server@latest setup` aus, und du nennst ihm den sechsstelligen Code, den sync. dir per E-Mail schickt. Eine neue E-Mail-Adresse bekommt ein kostenloses Konto, ein bestehendes Konto verbindet seinen persönlichen Workspace. sync. schickt dir eine E-Mail, wenn sich ein Agent verbindet, mit einem Link, der ihn wieder trennt.
 
 ## Häufige Fragen
 

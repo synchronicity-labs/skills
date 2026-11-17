@@ -3,7 +3,7 @@ title: "Skill setup"
 subtitle: "Conecta sync. a tu agente, revisa tu cuenta y llega a tu primer vídeo."
 description: "La skill de agente setup de sync. labs conecta sync. a Claude Code, Codex, Cursor y otros agentes, muestra tu plan y tus créditos y te sugiere un primer vídeo. Nunca inicia trabajo de pago."
 og:description: "Conecta sync. a tu agente, revisa tu cuenta, tu plan y tus créditos y llega a tu primer vídeo."
-source-sha256: 8bf4757e0b9fd57ed1bb43b1d923220a2e62a7d62a8dd8ae8c1dd87f2a19d10a
+source-sha256: ae2bfa128b4b762a1a026c8166da3703a17b939f5a03609c9529941e7c1b8472
 ---
 
 # setup
@@ -40,6 +40,8 @@ Las peticiones de contenido como «sincroniza los labios de esto» van directame
 | Scripts y CI | Define `SYNC_API_KEY` o ejecuta el servidor local con `npx -y @sync.so/mcp-server@latest` |
 
 El servidor alojado inicia sesión con tu cuenta de sync., así que no tienes que copiar ninguna clave. Para obtener una clave API, consulta [Autenticación](https://sync.so/docs/api-reference/guides/authentication). Para saber más sobre el propio servidor, consulta la guía del [servidor MCP](https://sync.so/docs/plugins-and-extensions/mcp-server).
+
+Un agente que puede ejecutar comandos también puede conectarte sin navegador: dale tu correo electrónico, ejecuta `npx -y @sync.so/mcp-server@latest setup` y tú le dices el código de seis dígitos que sync. te envía por correo. Un correo nuevo recibe una cuenta gratuita y una cuenta existente conecta su espacio de trabajo personal. sync. te avisa por correo cuando un agente se conecta, con un enlace para desconectarlo.
 
 ## Preguntas frecuentes
 

@@ -40,6 +40,8 @@ Media requests like "lipsync this" go straight to their own skill, which connect
 
 The hosted server signs you in with your sync. account, so there's no key to copy. For an API key, see [Authentication](https://sync.so/docs/api-reference/guides/authentication). For more about the server itself, see the [MCP Server](https://sync.so/docs/plugins-and-extensions/mcp-server) guide.
 
+An agent that can run commands can also connect you without a browser: give it your email address, it runs `npx -y @sync.so/mcp-server@latest setup`, and you tell it the six-digit code sync. emails you. A new email address gets a free account, and an existing account connects its personal workspace. sync. emails you when an agent connects, with a link that disconnects it.
+
 ## Common questions
 
 **It says the tools aren't there after I connected.**
