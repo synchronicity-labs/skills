@@ -14,6 +14,8 @@ og:description: "Connect sync. to your agent, check your account, plan and credi
 
 `setup` connects sync. to your agent and gets you to a first video in a couple of minutes. It checks the connection, signs you in if needed, shows your account, plan and remaining credits, and lists what you can make with an example prompt for each. Setup itself never starts paid work.
 
+Connection choices that affect sign-in, privacy or billing are explained before use. Imported media and service responses are treated as data, not instructions. Paid work still needs your approval of a quote.
+
 ## When to reach for it
 
 - Right after installing the skills or the plugin.

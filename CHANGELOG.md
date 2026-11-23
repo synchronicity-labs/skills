@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- The shared connection guide now explains how the agent selects a connection and tells the user when that choice affects the workflow. It no longer asks the agent to hide the connection choice.
+- The connection and media references now identify account responses, imported media, captions and voice metadata as untrusted data.
 - Agents with a terminal can connect a person by emailed code: the shared connection reference and the `setup` skill now cover `npx -y @sync.so/mcp-server@latest setup --email` and `--code`, which sign the person up or in without a browser and add the sync. MCP server. Team organizations and chat apps keep the hosted server and browser sign-in.
 - Each skill links to the sync. homepage and its guide on sync.so/docs, so directory visitors can reach the product and instructions directly.
 - Skills, shared references and eval mocks use the sync. MCP server's `<noun>_<verb>` tool names (mcp-server#148): `lipsync_create`, `generations_get`, `generations_estimate-cost`, `account_get-context`, `dubbing_create`, `voices_list`, `models_list` and the rest. The old names stay callable on the server for a deprecation period, but clients list only the new ones.

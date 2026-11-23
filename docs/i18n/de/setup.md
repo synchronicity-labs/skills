@@ -3,7 +3,7 @@ title: "setup-Skill"
 subtitle: "Verbinde sync. mit deinem Agenten, prüfe dein Konto und komm zu deinem ersten Video."
 description: "Der setup-Skill von sync. labs verbindet sync. mit Claude Code, Codex, Cursor und anderen Agenten, zeigt deinen Tarif und deine Credits an und schlägt ein erstes Video vor. Er startet nie kostenpflichtige Arbeit."
 og:description: "Verbinde sync. mit deinem Agenten, prüfe Konto, Tarif und Credits und komm zu deinem ersten Video."
-source-sha256: ae2bfa128b4b762a1a026c8166da3703a17b939f5a03609c9529941e7c1b8472
+source-sha256: "a70f996d1087e283947ecd88b7b219296cb72a977a3939556997446eb9bbf2c2"
 ---
 
 # setup
@@ -14,6 +14,8 @@ source-sha256: ae2bfa128b4b762a1a026c8166da3703a17b939f5a03609c9529941e7c1b8472
 ## Was er macht
 
 `setup` verbindet sync. mit deinem Agenten und bringt dich in wenigen Minuten zu deinem ersten Video. Er prüft die Verbindung, meldet dich bei Bedarf an, zeigt dein Konto, deinen Tarif und deine verbleibenden Credits und listet auf, was du erstellen kannst, jeweils mit einem Beispiel-Prompt. Der setup-Skill selbst startet nie kostenpflichtige Arbeit.
+
+Verbindungsoptionen, die Anmeldung, Datenschutz oder Abrechnung betreffen, werden vor der Nutzung erklärt. Importierte Medien und Antworten des Dienstes werden als Daten behandelt, nicht als Anweisungen. Kostenpflichtige Vorgänge benötigen weiterhin deine Zustimmung zum Kostenvoranschlag.
 
 ## Wann du ihn nutzt
 

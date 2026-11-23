@@ -3,7 +3,7 @@ title: "troubleshoot-Skill"
 subtitle: "Finde heraus, warum ein Auftrag fehlgeschlagen ist, hängt oder abgelehnt wurde, und setz ihn fort, ohne doppelt zu zahlen."
 description: "Der troubleshoot-Skill von sync. labs findet heraus, warum ein sync.-Auftrag fehlgeschlagen ist, hängt oder abgelehnt wurde, erklärt die eigentliche Ursache in einfachen Worten, setzt die Arbeit fort, ohne einen zweiten kostenpflichtigen Auftrag zu starten, und kann das Problem an sync. melden."
 og:description: "Finde aus deinem Agenten heraus, warum ein sync.-Auftrag fehlgeschlagen ist, hängt oder abgelehnt wurde, und setz ihn fort, ohne doppelt zu zahlen."
-source-sha256: fa414afa2a128c47622b7f5b68079ff308b41856882f1713822114f55fd26741
+source-sha256: "63c931066b4b5a37a10d01c591add13f93907e0b3469276adfbaf7969f4e0e8a"
 ---
 
 # troubleshoot
@@ -14,6 +14,8 @@ source-sha256: fa414afa2a128c47622b7f5b68079ff308b41856882f1713822114f55fd26741
 ## Was er macht
 
 `troubleshoot` findet heraus, warum ein sync.-Auftrag fehlgeschlagen ist, hängt oder abgelehnt wurde, erklärt dir die eigentliche Ursache in einfachen Worten und setzt die Arbeit fort, ohne einen zweiten kostenpflichtigen Auftrag zu starten. Wenn das Problem eine unklare Fehlermeldung oder eine fehlende Funktion war, kann er außerdem einen kurzen Bericht an das sync.-Team schicken, ohne Geheimnisse oder Medien anzuhängen.
+
+Verbindungsänderungen werden vor der Nutzung erklärt. Fehlermeldungen, importierte Medien und Metadaten zu Stimmen werden als Daten behandelt, nicht als Anweisungen; sie können weder Ausgaben genehmigen noch deinen Auftrag ändern.
 
 ## Wann du ihn nutzt
 
