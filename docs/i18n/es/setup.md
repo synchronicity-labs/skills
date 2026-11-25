@@ -3,7 +3,7 @@ title: "Skill setup"
 subtitle: "Conecta sync. a tu agente, revisa tu cuenta y llega a tu primer vídeo."
 description: "La skill de agente setup de sync. labs conecta sync. a Claude Code, Codex, Cursor y otros agentes, muestra tu plan y tus créditos y te sugiere un primer vídeo. Nunca inicia trabajo de pago."
 og:description: "Conecta sync. a tu agente, revisa tu cuenta, tu plan y tus créditos y llega a tu primer vídeo."
-source-sha256: ae2bfa128b4b762a1a026c8166da3703a17b939f5a03609c9529941e7c1b8472
+source-sha256: "a70f996d1087e283947ecd88b7b219296cb72a977a3939556997446eb9bbf2c2"
 ---
 
 # setup
@@ -14,6 +14,8 @@ source-sha256: ae2bfa128b4b762a1a026c8166da3703a17b939f5a03609c9529941e7c1b8472
 ## Qué hace
 
 `setup` conecta sync. a tu agente y te lleva a tu primer vídeo en un par de minutos. Comprueba la conexión, inicia sesión si hace falta, muestra tu cuenta, tu plan y los créditos que te quedan, y enumera lo que puedes crear con un prompt de ejemplo para cada caso. La propia skill setup nunca inicia trabajo de pago.
+
+El agente explica las opciones de conexión que afectan al inicio de sesión, la privacidad o la facturación antes de usarlas. Los archivos importados y las respuestas del servicio se tratan como datos, no como instrucciones. Los trabajos de pago siguen necesitando que apruebes un presupuesto.
 
 ## Cuándo usarla
 

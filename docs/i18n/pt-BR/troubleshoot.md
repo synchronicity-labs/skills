@@ -3,7 +3,7 @@ title: "Skill troubleshoot"
 subtitle: "Descubra por que um trabalho falhou, travou ou foi rejeitado e retome sem pagar duas vezes."
 description: "A skill de agente troubleshoot da sync. labs descobre por que um trabalho da sync. falhou, travou ou foi rejeitado, explica a causa real em palavras simples, retoma o trabalho sem iniciar um segundo trabalho pago e pode relatar o problema à sync."
 og:description: "Descubra a partir do seu agente por que um trabalho da sync. falhou, travou ou foi rejeitado e retome sem pagar duas vezes."
-source-sha256: fa414afa2a128c47622b7f5b68079ff308b41856882f1713822114f55fd26741
+source-sha256: "63c931066b4b5a37a10d01c591add13f93907e0b3469276adfbaf7969f4e0e8a"
 ---
 
 # troubleshoot
@@ -14,6 +14,8 @@ source-sha256: fa414afa2a128c47622b7f5b68079ff308b41856882f1713822114f55fd26741
 ## O que faz
 
 A `troubleshoot` descobre por que um trabalho da sync. falhou, travou ou foi rejeitado, explica a causa real em palavras simples e retoma o trabalho sem iniciar um segundo trabalho pago. Quando o problema foi um erro confuso ou um recurso que falta, ela também pode enviar um relato curto para a equipe da sync., sem segredos nem mídia anexados.
+
+As mudanças de conexão são explicadas antes do uso. Os erros dos trabalhos, as mídias importadas e os metadados das vozes são tratados como dados, não como instruções; eles não podem autorizar gastos nem alterar seu pedido.
 
 ## Quando usar
 

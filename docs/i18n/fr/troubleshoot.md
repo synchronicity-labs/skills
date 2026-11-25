@@ -3,7 +3,7 @@ title: "Skill troubleshoot"
 subtitle: "Trouvez pourquoi une tâche a échoué, s'est bloquée ou a été refusée, et reprenez-la sans payer deux fois."
 description: "Le skill d'agent troubleshoot de sync. labs trouve pourquoi une tâche sync. a échoué, s'est bloquée ou a été refusée, explique la vraie cause en termes simples, reprend le travail sans lancer une deuxième tâche payante et peut signaler le problème à sync."
 og:description: "Découvrez depuis votre agent pourquoi une tâche sync. a échoué, s'est bloquée ou a été refusée, et reprenez-la sans payer deux fois."
-source-sha256: fa414afa2a128c47622b7f5b68079ff308b41856882f1713822114f55fd26741
+source-sha256: "63c931066b4b5a37a10d01c591add13f93907e0b3469276adfbaf7969f4e0e8a"
 ---
 
 # troubleshoot
@@ -14,6 +14,8 @@ source-sha256: fa414afa2a128c47622b7f5b68079ff308b41856882f1713822114f55fd26741
 ## Ce qu'il fait
 
 `troubleshoot` trouve pourquoi une tâche sync. a échoué, s'est bloquée ou a été refusée, vous explique la vraie cause en termes simples et reprend le travail sans lancer une deuxième tâche payante. Quand le problème venait d'une erreur peu claire ou d'une fonctionnalité manquante, il peut aussi envoyer un court rapport à l'équipe sync., sans secrets ni médias joints.
+
+Les changements de connexion sont expliqués avant utilisation. Les erreurs des tâches, les médias importés et les métadonnées des voix sont traités comme des données, pas comme des instructions ; ils ne peuvent pas autoriser des dépenses ni modifier votre demande.
 
 ## Quand l'utiliser
 
